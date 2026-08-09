@@ -1,0 +1,2106 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel do Produtor - OpalaVerde</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8faf8;
+        }
+
+        .sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 280px;
+    height: 100vh;
+    background: linear-gradient(180deg, #1a4a14, #2d5a27);
+    color: white;
+    z-index: 1000;
+    box-shadow: 3px 0 15px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;  /* ✅ ADICIONAR */
+}
+
+       .sidebar-header {
+    padding: 25px 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    text-align: center;
+    flex-shrink: 0;  /* ✅ CONFIRMAR */
+}
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+
+        .logo-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .logo-icon img{
+            width: 50px;
+            height: 50px;
+            position: absolute;
+        }
+
+        .tagline {
+            font-size: 0.85rem;
+            color: #b8d4b8;
+            margin-top: 5px;
+        }
+
+        .nav-menu {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;      /* ✅ Scroll SOMENTE aqui */
+    overflow-x: hidden;
+    padding: 20px 0;
+}
+
+        .nav-item {
+            margin: 3px 0;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 15px 25px;
+            color: #e8f5e8;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: rgba(255,255,255,0.1);
+            border-left-color: #4CAF50;
+            color: white;
+        }
+
+        .nav-icon {
+            width: 20px;
+            margin-right: 15px;
+            text-align: center;
+        }
+
+        .user-profile {
+    padding: 20px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    background: rgba(0,0,0,0.2);
+    flex-shrink: 0;  /* ✅ Garante que não encolhe */
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    /* ❌ NUNCA: position: absolute, bottom: 0 */
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;  /* ✅ Ocupa espaço disponível */
+}
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: #4CAF50;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .main-content {
+            margin-left: 280px;
+            min-height: 100vh;
+        }
+
+        .top-bar {
+            background: white;
+            padding: 20px 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .page-title {
+            font-size: 1.8rem;
+            color: #2d5a27;
+            font-weight: 700;
+        }
+
+        .quick-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn-primary {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #4CAF50;
+            border: 2px solid #4CAF50;
+            padding: 10px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+        }
+
+        .content-section {
+            padding: 30px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #4CAF50;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 1rem;
+        }
+
+        .products-section {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+
+        .section-header {
+            padding: 25px 30px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            color: #2d5a27;
+            font-weight: 600;
+        }
+
+        .search-container {
+            flex: 1;
+            max-width: 300px;
+            position: relative;
+            margin-right: 20px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px 40px 10px 15px;
+            border: 2px solid #e0e8e0;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
+
+        .search-btn {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #666;
+            cursor: pointer;
+        }
+
+        .products-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .products-table th,
+        .products-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .products-table th {
+            background: #f8faf8;
+            font-weight: 600;
+            color: #2d5a27;
+        }
+
+        .product-image-cell {
+            width: 80px;
+            height: 80px;
+            border-radius: 10px;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .product-name {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .product-category {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .stock-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .stock-high {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .stock-medium {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .stock-low {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .stock-out {
+            background: #f5c6cb;
+            color: #721c24;
+        }
+
+        .status-toggle {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .status-toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #4CAF50;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        .actions-cell {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 0.8rem;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-edit {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .btn-edit:hover {
+            background: #138496;
+        }
+
+        .btn-delete {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background: #c82333;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            overflow-y: auto;
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 20px auto;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 800px;
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            padding: 20px 30px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 1.4rem;
+            color: #2d5a27;
+            font-weight: 600;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+            padding: 5px;
+        }
+
+        .close-btn:hover {
+            color: #333;
+        }
+
+        .modal-body {
+            padding: 30px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-input,
+        .form-select,
+        .form-textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e8e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .image-upload-area {
+            border: 2px dashed #4CAF50;
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #f8fff8;
+        }
+
+        .image-upload-area:hover {
+            background: #f0fff0;
+            border-color: #45a049;
+        }
+
+        .image-upload-area.dragover {
+            background: #e8f5e8;
+            border-color: #2d5a27;
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            color: #4CAF50;
+            margin-bottom: 15px;
+        }
+
+        .upload-text {
+            color: #2d5a27;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .upload-hint {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .image-preview {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .preview-container {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .preview-item {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 2px solid #4CAF50;
+        }
+
+        .preview-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .remove-image {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(220, 53, 69, 0.9);
+            color: white;
+            border: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .certification-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .cert-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px;
+            border: 2px solid #e0e8e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .cert-option:hover {
+            border-color: #4CAF50;
+            background: #f8fff8;
+        }
+
+        .cert-option input[type="checkbox"]:checked + .cert-label {
+            color: #4CAF50;
+            font-weight: 600;
+        }
+
+        .cert-option input[type="checkbox"]:checked {
+            accent-color: #4CAF50;
+        }
+
+        .modal-footer {
+            padding: 20px 30px;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+        }
+
+        .btn-cancel {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .btn-cancel:hover {
+            background: #545b62;
+        }
+
+        .stock-input-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .stock-input {
+            flex: 1;
+        }
+
+        .stock-buttons {
+            display: flex;
+            gap: 5px;
+        }
+
+        .stock-btn {
+            width: 32px;
+            height: 32px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .stock-btn-minus {
+            background: #dc3545;
+            color: white;
+        }
+
+        .stock-btn-plus {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+
+        .empty-icon {
+            font-size: 4rem;
+            color: #4CAF50;
+            margin-bottom: 20px;
+        }
+
+        .empty-title {
+            font-size: 1.5rem;
+            color: #2d5a27;
+            margin-bottom: 10px;
+        }
+
+        .empty-text {
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+            
+            .sidebar.open {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .modal-content {
+                margin: 10px;
+                width: calc(100% - 20px);
+            }
+            
+            .products-table {
+                font-size: 0.9rem;
+            }
+            
+            .actions-cell {
+                flex-direction: column;
+            }
+        }
+
+        .filter-bar {
+            padding: 20px 30px;
+            background: #f8faf8;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .filter-select {
+            padding: 8px 12px;
+            border: 2px solid #e0e8e0;
+            border-radius: 6px;
+            background: white;
+            min-width: 150px;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 3000;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #e0e8e0;
+            border-top: 4px solid #4CAF50;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            z-index: 3000;
+            transform: translateX(300px);
+            transition: transform 0.3s ease;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast.success {
+            background: #4CAF50;
+        }
+
+        .toast.error {
+            background: #dc3545;
+        }
+
+        .mobile-menu-toggle {
+    display: none;
+    background: #4CAF50;
+    border: none;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 2000;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+}
+
+.mobile-menu-toggle svg {
+    width: 20px;
+    height: 20px;
+}
+
+@media (max-width: 768px) {
+    .mobile-menu-toggle {
+        display: block;
+    }
+
+    .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+    }
+
+    .sidebar.mobile-open {
+        transform: translateX(0);
+    }
+
+    .main-content {
+        margin-left: 0;
+    }
+
+    .header {
+        margin-left: 0;
+        padding-left: 70px;
+    }
+
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .export-modal-content {
+        margin: 20px;
+        width: calc(100% - 40px);
+    }
+
+    .export-options {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+
+.logout-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.logout-btn:hover {
+    background: rgba(244, 67, 54, 0.8);
+    border-color: #f44336;
+    transform: translateY(-2px);
+}
+
+.logout-btn svg {
+    display: block;
+}
+
+        /* Modal de confirmação de logout (igual ao das páginas do cliente) */
+        .logout-modal {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 3000; opacity: 0; visibility: hidden;
+            transition: all 0.3s ease; backdrop-filter: blur(3px);
+        }
+        .logout-modal.active { opacity: 1; visibility: visible; }
+        .logout-modal-content {
+            background: white; padding: 35px; border-radius: 20px;
+            max-width: 420px; width: 90%; text-align: center;
+            transform: scale(0.9); transition: transform 0.3s ease;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            border: 2px solid #e8f5e8;
+        }
+        .logout-modal.active .logout-modal-content { transform: scale(1); }
+        .logout-icon {
+            width: 70px; height: 70px;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 25px; box-shadow: 0 8px 25px rgba(255, 107, 107, 0.3);
+        }
+        .logout-icon svg { width: 35px; height: 35px; fill: white; }
+        .logout-modal h3 { color: #2d5a27; margin-bottom: 15px; font-size: 1.5rem; font-weight: 700; }
+        .logout-modal p { color: #666; margin-bottom: 30px; line-height: 1.6; font-size: 1rem; }
+        .logout-modal-actions { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; }
+        .confirm-logout, .cancel-logout {
+            padding: 12px 25px; border: none; border-radius: 10px;
+            font-size: 1rem; font-weight: 600; cursor: pointer;
+            transition: all 0.3s ease; min-width: 120px;
+        }
+        .confirm-logout { background: linear-gradient(135deg, #f44336, #d32f2f); color: white; }
+        .confirm-logout:hover {
+            background: linear-gradient(135deg, #d32f2f, #c62828);
+            transform: translateY(-2px); box-shadow: 0 8px 25px rgba(244, 67, 54, 0.4);
+        }
+        .cancel-logout { background: #f5f5f5; color: #333; border: 2px solid #e0e0e0; }
+        .cancel-logout:hover { background: #e8f5e8; border-color: #4CAF50; color: #2d5a27; }
+    </style>
+    <script src="api.js?v=3"></script>
+</head>
+<body>
+
+    <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M3,6H21V8H3V6M3,11H21V13H3V11M3,16H21V18H3V16Z"/>
+        </svg>
+    </button>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <div class="logo-icon">
+                    <img src="logo1.png" alt="">
+                </div>
+                <h1>OpalaVerde</h1>
+            </div>
+            <p class="tagline">Orgânicos de Pedro II</p>
+        </div>
+
+        <nav class="nav-menu">
+            <div class="nav-item">
+                <a href="painel_inicial_produtor.html" class="nav-link">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M10 20V14H14V20H19V12H22L12 3L2 12H5V20H10Z"/>
+                        </svg>
+                    </span>
+                    Painel Inicial
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="meus_produtos.html" class="nav-link active">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3ZM19 19H5V5H19V19Z"/>
+                        </svg>
+                    </span>
+                    Meus Produtos
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="pedidos_fornecedor.html" class="nav-link">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M7 18C5.9 18 5 18.9 5 20S5.9 22 7 22 9 21.1 9 20 8.1 18 7 18ZM1 2V4H3L6.6 11.59L5.25 14.04C5.09 14.32 5 14.65 5 15C5 16.1 5.9 17 7 17H19V15H7.42C7.28 15 7.17 14.89 7.17 14.75L7.2 14.63L8.1 13H15.55C16.3 13 16.96 12.59 17.3 11.97L20.88 5H5.21L4.27 3H1ZM17 18C15.9 18 15 18.9 15 20S15.9 22 17 22 19 21.1 19 20 18.1 18 17 18Z"/>
+                        </svg>
+                    </span>
+                    Pedidos
+                </a>
+            </div>
+
+            <div class="nav-item">
+                <a href="historico_de_vendas.html" class="nav-link">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9V7L15 1L13.5 2.5L16.17 5.33C15.09 5.77 13.87 6 12.5 6.5C11.66 7.08 11 7.83 10.5 8.67C9.5 8.29 8.42 8 7.31 8C5.34 8 3.61 8.93 2.5 10.36C3.36 11.45 4.64 12.22 6.11 12.41C6.04 12.6 6 12.8 6 13C6 14.66 7.34 16 9 16S12 14.66 12 13C12 12.8 11.96 12.6 11.89 12.41C13.36 12.22 14.64 11.45 15.5 10.36C14.39 8.93 12.66 8 10.69 8C11.5 7.5 12.3 7 13 7L21 9Z"/>
+                        </svg>
+                    </span>
+                    Vendas Concluídas
+                </a>
+            </div>
+
+            <div class="nav-item">
+                <a href="perfil_produtor.html" class="nav-link ">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z"/>
+                        </svg>
+                    </span>
+                    Meu Perfil
+                </a>
+            </div>
+
+            <div class="nav-item">
+                <a href="calendario_de_colheitas.html" class="nav-link ">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3ZM19 5V7H5V5H19ZM5 19V9H19V19H5Z"/>
+                        </svg>
+                    </span>
+                    Calendário de Colheitas
+                </a>
+            </div>
+
+            <div class="nav-item">
+                <a href="avaliacoes_dos_clientes.html" class="nav-link ">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.45,13.97L5.82,21L12,17.27Z"/>
+                        </svg>
+                    </span>
+                    Avaliações dos Clientes
+                </a>
+            </div>
+
+            <div class="nav-item">
+                <a href="relatorio_simples.html" class="nav-link">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M6 2C4.9 2 4 2.9 4 4V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V8L14 2H6ZM6 4H13V9H18V20H6V4ZM8 12V14H16V12H8ZM8 16V18H13V16H8Z"/>
+                        </svg>
+                    </span>
+                    Controle Financeiro
+                </a>
+            </div>
+
+            <div class="nav-item">
+                <a href="contate-nos_fornecedor.html" class="nav-link">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M20,8L12,13L4,8V6L12,11L20,6M20,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V6C22,4.89 21.1,4 20,4Z"/>
+                        </svg>
+                    </span>
+                    Contate-nos
+                </a>
+            </div>
+        </nav>
+
+        <div class="user-profile">
+    <div class="user-info">
+        <div class="user-avatar" id="userAvatar">U</div>
+        <div style="flex: 1;">
+            <div style="font-weight: 600;" id="userName">Usuário</div>
+            <div style="font-size: 0.8rem; color: #b8d4b8;">Produtor/Fornecedor</div>
+        </div>
+    </div>
+    <button class="logout-btn" onclick="showLogoutModal()" title="Sair da conta">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+            <path d="M17 7L15.59 8.41L18.17 11H8V13H18.17L15.59 15.58L17 17L22 12L17 7M4 5H12V3H4C2.9 3 2 3.9 2 5V19C2 20.1 2.9 21 4 21H12V19H4V5Z"/>
+        </svg>
+    </button>
+</div>
+
+    </aside>
+
+    <!-- Modal de Logout -->
+    <div class="logout-modal" id="logoutModal">
+        <div class="logout-modal-content">
+            <div class="logout-icon">
+                <svg viewBox="0 0 24 24">
+                    <path d="M17 7L15.59 8.41L18.17 11H8V13H18.17L15.59 15.59L17 17L22 12L17 7ZM4 5H12V3H4C2.9 3 2 3.9 2 5V19C2 20.1 2.9 21 4 21H12V19H4V5Z"/>
+                </svg>
+            </div>
+            <h3>Confirmar Saída</h3>
+            <p>Tem certeza de que deseja sair da sua conta? Você será redirecionado para a página de login.</p>
+            <div class="logout-modal-actions">
+                <button class="cancel-logout" onclick="closeLogoutModal()">Cancelar</button>
+                <button class="confirm-logout" onclick="confirmLogout()">Sair</button>
+            </div>
+        </div>
+    </div>
+
+
+    <main class="main-content">
+        <div class="top-bar">
+            <h1 class="page-title">Gerenciamento de Produtos</h1>
+            <div class="quick-actions">
+                <button class="btn-primary" onclick="openAddProductModal()">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                        <path d="M19 13H13V19H11V13H5V11H11V5H13V11H19V13Z"/>
+                    </svg>
+                    Adicionar Produto
+                </button>
+            </div>
+        </div>
+
+        <div class="content-section">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="totalProducts">0</div>
+                    <div class="stat-label">Total de Produtos</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="activeProducts">0</div>
+                    <div class="stat-label">Produtos Ativos</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="lowStockProducts">0</div>
+                    <div class="stat-label">Estoque Baixo</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="outOfStockProducts">0</div>
+                    <div class="stat-label">Sem Estoque</div>
+                </div>
+            </div>
+
+            <div class="products-section">
+                <div class="section-header">
+                    <h2 class="section-title">Meus Produtos</h2>
+                    <div class="search-container">
+                        <input type="text" class="search-input" id="searchInput" placeholder="Buscar produtos..." oninput="searchProducts()">
+                        <button class="search-btn">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                                <path d="M15.5 14H14.71L14.43 13.73C15.41 12.59 16 11.11 16 9.5C16 5.91 13.09 3 9.5 3C5.91 3 3 5.91 3 9.5C3 13.09 5.91 16 9.5 16C11.11 16 12.59 15.41 13.73 14.43L14 14.71V15.5L19 20.49L20.49 19L15.5 14ZM9.5 14C7.01 14 5 11.99 5 9.5C5 7.01 7.01 5 9.5 5C11.99 5 14 7.01 14 9.5C14 11.99 11.99 14 9.5 14Z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="filter-bar">
+                    <select class="filter-select" id="categoryFilter" onchange="filterProducts()">
+                        <option value="">Todas as Categorias</option>
+                        <option value="folhas">Folhas Verdes</option>
+                        <option value="legumes">Legumes</option>
+                        <option value="frutas">Frutas</option>
+                        <option value="ervas">Ervas Aromáticas</option>
+                        <option value="raizes">Raízes</option>
+                    </select>
+
+                    <select class="filter-select" id="statusFilter" onchange="filterProducts()">
+                        <option value="">Todos os Status</option>
+                        <option value="active">Ativo</option>
+                        <option value="inactive">Inativo</option>
+                    </select>
+
+                    <select class="filter-select" id="stockFilter" onchange="filterProducts()">
+                        <option value="">Todo Estoque</option>
+                        <option value="high">Alto (>20)</option>
+                        <option value="medium">Médio (10-20)</option>
+                        <option value="low">Baixo (1-9)</option>
+                        <option value="out">Sem Estoque</option>
+                    </select>
+                </div>
+
+                <div id="productsContainer">
+                    <div class="empty-state" id="emptyState">
+                        <div class="empty-icon">📦</div>
+                        <h3 class="empty-title">Nenhum produto cadastrado</h3>
+                        <p class="empty-text">Comece adicionando seu primeiro produto orgânico ao catálogo</p>
+                        <button class="btn-primary" onclick="openAddProductModal()">Adicionar Primeiro Produto</button>
+                    </div>
+
+                    <table class="products-table" id="productsTable" style="display: none;">
+                        <thead>
+                            <tr>
+                                <th>Produto</th>
+                                <th>Categoria</th>
+                                <th>Preço</th>
+                                <th>Estoque</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productsTableBody">
+                            <!-- Produtos serão inseridos aqui -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal Adicionar/Editar Produto -->
+    <div class="modal" id="productModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">Adicionar Produto</h3>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            
+            <form id="productForm">
+                <div class="modal-body">
+                    <div class="form-group full-width">
+                        <label class="form-label">Fotos do Produto</label>
+                        <div class="image-upload-area" id="imageUploadArea" onclick="document.getElementById('imageInput').click()">
+                            <div class="upload-icon">📷</div>
+                            <div class="upload-text">Clique para adicionar fotos</div>
+                            <div class="upload-hint">ou arraste e solte aqui (máx. 5 fotos)</div>
+                        </div>
+                        <input type="file" id="imageInput" multiple accept="image/*" style="display: none;" onchange="handleImageUpload(event)">
+                        <div class="image-preview" id="imagePreview">
+                            <div class="preview-container" id="previewContainer">
+                                <!-- Preview das imagens aqui -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label" for="productName">Nome do Produto *</label>
+                            <input type="text" class="form-input" id="productName" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="productCategory">Categoria *</label>
+                            <select class="form-select" id="productCategory" required>
+                                <option value="">Selecione uma categoria</option>
+                                <option value="folhas">Folhas Verdes</option>
+                                <option value="legumes">Legumes</option>
+                                <option value="frutas">Frutas</option>
+                                <option value="ervas">Ervas Aromáticas</option>
+                                <option value="raizes">Raízes</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="productPrice">Preço *</label>
+                            <input type="number" class="form-input" id="productPrice" step="0.01" min="0" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="productUnit">Unidade de Venda *</label>
+                            <select class="form-select" id="productUnit" required>
+                                <option value="">Selecione a unidade</option>
+                                <option value="kg">Quilograma (kg)</option>
+                                <option value="unidade">Unidade</option>
+                                <option value="maço">Maço</option>
+                                <option value="vaso">Vaso</option>
+                                <option value="bandeja">Bandeja</option>
+                                <option value="pacote">Pacote</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="productStock">Quantidade em Estoque *</label>
+                            <div class="stock-input-group">
+                                <input type="number" class="form-input stock-input" id="productStock" min="0" required>
+                                <div class="stock-buttons">
+                                    <button type="button" class="stock-btn stock-btn-minus" onclick="adjustStock(-1)">-</button>
+                                    <button type="button" class="stock-btn stock-btn-plus" onclick="adjustStock(1)">+</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="productProducer">Produtor/Fornecedor</label>
+                            <input type="text" class="form-input" id="productProducer" value="Seu Nome/Empresa">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="productDescription">Descrição do Produto *</label>
+                        <textarea class="form-textarea" id="productDescription" placeholder="Descreva seu produto, suas características, benefícios e forma de cultivo..." required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Certificações Orgânicas</label>
+                        <div class="certification-options">
+                            <div class="cert-option">
+                                <input type="checkbox" id="certOrganic" name="certifications" value="organic">
+                                <label class="cert-label" for="certOrganic">Orgânico Certificado</label>
+                            </div>
+                            <div class="cert-option">
+                                <input type="checkbox" id="certBio" name="certifications" value="bio">
+                                <label class="cert-label" for="certBio">Biodinâmico</label>
+                            </div>
+                            <div class="cert-option">
+                                <input type="checkbox" id="certSustainable" name="certifications" value="sustainable">
+                                <label class="cert-label" for="certSustainable">Agricultura Sustentável</label>
+                            </div>
+                            <div class="cert-option">
+                                <input type="checkbox" id="certFair" name="certifications" value="fair">
+                                <label class="cert-label" for="certFair">Comércio Justo</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label" for="harvestTime">Tempo de Colheita</label>
+                            <input type="text" class="form-input" id="harvestTime" placeholder="Ex: 60-90 dias">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="shelfLife">Tempo de Conservação</label>
+                            <input type="text" class="form-input" id="shelfLife" placeholder="Ex: 5-7 dias na geladeira">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="season">Época do Ano</label>
+                            <select class="form-select" id="season">
+                                <option value="">Selecione a época</option>
+                                <option value="year-round">Ano todo</option>
+                                <option value="spring">Primavera</option>
+                                <option value="summer">Verão</option>
+                                <option value="autumn">Outono</option>
+                                <option value="winter">Inverno</option>
+                                <option value="spring-summer">Primavera/Verão</option>
+                                <option value="autumn-winter">Outono/Inverno</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="nutritionalInfo">Informações Nutricionais</label>
+                            <input type="text" class="form-input" id="nutritionalInfo" placeholder="Ex: Rico em Vitamina C, Ferro">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn-cancel" onclick="closeModal()">Cancelar</button>
+                    <button type="submit" class="btn-primary" id="saveButton">Salvar Produto</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de Confirmação de Exclusão -->
+    <div class="modal" id="deleteModal">
+        <div class="modal-content" style="max-width: 400px;">
+            <div class="modal-header">
+                <h3 class="modal-title">Confirmar Exclusão</h3>
+                <button class="close-btn" onclick="closeDeleteModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Tem certeza que deseja excluir este produto?</p>
+                <p><strong id="deleteProductName"></strong></p>
+                <p style="color: #dc3545; font-size: 0.9rem;">Esta ação não pode ser desfeita.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-cancel" onclick="closeDeleteModal()">Cancelar</button>
+                <button type="button" class="btn-danger" onclick="confirmDelete()">Excluir</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <!-- Toast Messages -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // ========== SISTEMA DE AUTENTICAÇÃO DO PRODUTOR ==========
+
+// Verificar se o usuário está logado ao carregar a página
+document.addEventListener('DOMContentLoaded', function() {
+    checkProducerAuth();
+});
+
+/**
+ * Verifica se há um produtor logado e atualiza a interface
+ */
+let currentUserData = null;
+
+function checkProducerAuth() {
+    // Exige login válido (token JWT real) como produtor
+    const userData = requireAuth(['produtor']);
+    if (!userData) return;
+
+    currentUserData = userData;
+    try {
+        updateUserInterface(userData);
+    } catch (error) {
+        console.error('Erro ao atualizar a barra lateral:', error);
+    }
+}
+
+/**
+ * Atualiza a interface com os dados do usuário logado
+ */
+function updateUserInterface(userData) {
+    // Atualizar nome do usuário
+    const userNameElement = document.getElementById('userName');
+    if (userNameElement) {
+        userNameElement.textContent = userData.name || 'Produtor';
+    }
+    
+    // Atualizar avatar (foto real, se existir, senão a inicial do nome)
+    const userAvatarElement = document.getElementById('userAvatar');
+    renderAvatar(userAvatarElement, userData);
+}
+
+/**
+ * Realizar logout do produtor
+ */
+function showLogoutModal() {
+    const logoutModal = document.getElementById('logoutModal');
+    if (logoutModal) {
+        logoutModal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+function closeLogoutModal() {
+    const logoutModal = document.getElementById('logoutModal');
+    if (logoutModal) {
+        logoutModal.classList.remove('active');
+        document.body.style.overflow = 'auto';
+    }
+}
+
+function confirmLogout() {
+    apiLogout();
+    window.location.href = 'login.html';
+}
+
+/**
+ * Remove a sessão ativa do usuário (sincroniza com login.html)
+ */
+function removeActiveSession(email) {
+    try {
+        const activeSessions = JSON.parse(localStorage.getItem('activeSessions') || '[]');
+        const filteredSessions = activeSessions.filter(session => session.email !== email);
+        localStorage.setItem('activeSessions', JSON.stringify(filteredSessions));
+    } catch (error) {
+        console.error('Erro ao remover sessão ativa:', error);
+    }
+}
+
+// ========== FIM DO SISTEMA DE AUTENTICAÇÃO ==========
+
+        // Variáveis globais
+        let products = [];
+        let currentEditingId = null;
+        let uploadedImages = [];
+        let deleteProductId = null;
+        let categoriesMap = {};   // slug -> id (backend)
+        let categoriesReverse = {}; // id -> slug (backend)
+
+        // Busca categorias e produtos reais do backend
+        async function loadCategoriesAndProducts() {
+            try {
+                const catResponse = await apiFetch('/catalog/categories/');
+                if (catResponse.ok) {
+                    const catData = await catResponse.json();
+                    const categories = catData.results || catData;
+                    categories.forEach(c => {
+                        categoriesMap[c.slug] = c.id;
+                        categoriesReverse[c.id] = c.slug;
+                    });
+                }
+            } catch (error) {
+                console.error('Erro ao carregar categorias:', error);
+            }
+
+            try {
+                const response = await apiFetch('/catalog/products/mine/');
+                if (!response.ok) throw new Error('Falha ao buscar produtos');
+                const results = await response.json();
+
+                products = results.map(p => ({
+                    id: p.id,
+                    name: p.name,
+                    category: categoriesReverse[p.category] || '',
+                    price: parseFloat(p.price),
+                    unit: p.unit,
+                    stock: p.stock,
+                    producer: p.producer_name || '',
+                    description: p.description || '',
+                    images: (p.images || []).map(img => img.image),
+                    certifications: (p.specs && p.specs.certifications) || [],
+                    harvestTime: (p.specs && p.specs.harvestTime) || '',
+                    shelfLife: (p.specs && p.specs.shelfLife) || '',
+                    season: (p.specs && p.specs.season) || '',
+                    nutritionalInfo: (p.specs && p.specs.nutritionalInfo) || '',
+                    active: p.active,
+                    createdAt: p.created_at,
+                    updatedAt: p.created_at,
+                }));
+            } catch (error) {
+                console.error('Erro ao carregar produtos:', error);
+                products = [];
+            }
+        }
+
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', async function() {
+            await loadCategoriesAndProducts();
+            renderProducts();
+            updateStats();
+            setupEventListeners();
+        });
+
+        // Event Listeners
+        function setupEventListeners() {
+            // Drag and drop para upload de imagens
+            const uploadArea = document.getElementById('imageUploadArea');
+            
+            uploadArea.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                uploadArea.classList.add('dragover');
+            });
+
+            uploadArea.addEventListener('dragleave', function(e) {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
+            });
+
+            uploadArea.addEventListener('drop', function(e) {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
+                const files = e.dataTransfer.files;
+                handleImageFiles(files);
+            });
+
+            // Submit do formulário
+            document.getElementById('productForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                saveProduct();
+            });
+
+            // Fechar modal clicando fora
+            window.addEventListener('click', function(e) {
+                const productModal = document.getElementById('productModal');
+                const deleteModal = document.getElementById('deleteModal');
+                
+                if (e.target === productModal) {
+                    closeModal();
+                }
+                if (e.target === deleteModal) {
+                    closeDeleteModal();
+                }
+            });
+        }
+
+        // Gerenciamento de Produtos
+        function openAddProductModal() {
+            currentEditingId = null;
+            document.getElementById('modalTitle').textContent = 'Adicionar Produto';
+            document.getElementById('saveButton').textContent = 'Salvar Produto';
+            document.getElementById('productForm').reset();
+            uploadedImages = [];
+            uploadedImageFiles = [];
+            updateImagePreview();
+            document.getElementById('productModal').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function openEditProductModal(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+
+            currentEditingId = productId;
+            document.getElementById('modalTitle').textContent = 'Editar Produto';
+            document.getElementById('saveButton').textContent = 'Atualizar Produto';
+
+            // Preencher formulário
+            document.getElementById('productName').value = product.name;
+            document.getElementById('productCategory').value = product.category;
+            document.getElementById('productPrice').value = product.price;
+            document.getElementById('productUnit').value = product.unit;
+            document.getElementById('productStock').value = product.stock;
+            document.getElementById('productProducer').value = product.producer;
+            document.getElementById('productDescription').value = product.description;
+            document.getElementById('harvestTime').value = product.harvestTime || '';
+            document.getElementById('shelfLife').value = product.shelfLife || '';
+            document.getElementById('season').value = product.season || '';
+            document.getElementById('nutritionalInfo').value = product.nutritionalInfo || '';
+
+            // Certificações
+            const certCheckboxes = document.querySelectorAll('input[name="certifications"]');
+            certCheckboxes.forEach(checkbox => {
+                checkbox.checked = product.certifications && product.certifications.includes(checkbox.value);
+            });
+
+            // Imagens
+            uploadedImages = product.images || [];
+            uploadedImageFiles = []; // Só as NOVAS imagens adicionadas nesta edição serão enviadas
+            updateImagePreview();
+
+            document.getElementById('productModal').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('productModal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        async function saveProduct() {
+            showLoading();
+
+            // Validar formulário
+            const name = document.getElementById('productName').value.trim();
+            const category = document.getElementById('productCategory').value;
+            const price = parseFloat(document.getElementById('productPrice').value);
+            const unit = document.getElementById('productUnit').value;
+            const stock = parseInt(document.getElementById('productStock').value);
+            const description = document.getElementById('productDescription').value.trim();
+
+            if (!name || !category || !price || !unit || stock < 0 || !description) {
+                hideLoading();
+                showToast('Por favor, preencha todos os campos obrigatórios', 'error');
+                return;
+            }
+
+            const categoryId = categoriesMap[category];
+            if (!categoryId) {
+                hideLoading();
+                showToast('Categoria inválida. Recarregue a página e tente novamente.', 'error');
+                return;
+            }
+
+            // Coletar certificações
+            const certifications = [];
+            document.querySelectorAll('input[name="certifications"]:checked').forEach(checkbox => {
+                certifications.push(checkbox.value);
+            });
+
+            // NOTA: o upload real de imagens ainda não está conectado ao backend
+            // (precisa de um endpoint multipart dedicado). Por enquanto o produto
+            // é salvo sem foto e o catálogo mostra uma imagem padrão.
+            const payload = {
+                name: name,
+                category: categoryId,
+                price: price,
+                unit: unit,
+                stock: stock,
+                description: description,
+                specs: {
+                    certifications: certifications,
+                    harvestTime: document.getElementById('harvestTime').value.trim(),
+                    shelfLife: document.getElementById('shelfLife').value.trim(),
+                    season: document.getElementById('season').value,
+                    nutritionalInfo: document.getElementById('nutritionalInfo').value.trim(),
+                },
+            };
+
+            try {
+                let response;
+                if (currentEditingId) {
+                    response = await apiFetch(`/catalog/products/${currentEditingId}/`, {
+                        method: 'PATCH',
+                        body: JSON.stringify(payload),
+                    });
+                } else {
+                    response = await apiFetch('/catalog/products/', {
+                        method: 'POST',
+                        body: JSON.stringify(payload),
+                    });
+                }
+
+                if (!response.ok) {
+                    const errData = await response.json().catch(() => ({}));
+                    console.error('Erro ao salvar produto:', errData);
+                    showToast('Não foi possível salvar o produto. Verifique os campos.', 'error');
+                    hideLoading();
+                    return;
+                }
+
+                const savedProduct = await response.json();
+
+                // Enviar as fotos novas adicionadas nesta sessão (produto já existe/foi criado agora)
+                if (uploadedImageFiles.length > 0) {
+                    for (const file of uploadedImageFiles) {
+                        const imgFormData = new FormData();
+                        imgFormData.append('product', savedProduct.id);
+                        imgFormData.append('image', file);
+                        try {
+                            const imgResponse = await apiFetch('/catalog/product-images/', {
+                                method: 'POST',
+                                body: imgFormData,
+                            });
+                            if (!imgResponse.ok) {
+                                console.error('Falha ao enviar uma das imagens');
+                            }
+                        } catch (imgError) {
+                            console.error('Erro ao enviar imagem:', imgError);
+                        }
+                    }
+                }
+
+                showToast(currentEditingId ? 'Produto atualizado com sucesso!' : 'Produto adicionado com sucesso!', 'success');
+
+                await loadCategoriesAndProducts();
+                renderProducts();
+                updateStats();
+                closeModal();
+            } catch (error) {
+                console.error('Erro ao salvar produto:', error);
+                showToast('Não foi possível conectar ao servidor.', 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        function openDeleteModal(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+
+            deleteProductId = productId;
+            document.getElementById('deleteProductName').textContent = product.name;
+            document.getElementById('deleteModal').style.display = 'block';
+        }
+
+        function closeDeleteModal() {
+            document.getElementById('deleteModal').style.display = 'none';
+            deleteProductId = null;
+        }
+
+        async function confirmDelete() {
+            if (!deleteProductId) return;
+
+            showLoading();
+
+            try {
+                const response = await apiFetch(`/catalog/products/${deleteProductId}/`, {
+                    method: 'DELETE',
+                });
+                if (!response.ok && response.status !== 204) {
+                    throw new Error('Falha ao excluir produto');
+                }
+
+                products = products.filter(p => p.id !== deleteProductId);
+                renderProducts();
+                updateStats();
+                closeDeleteModal();
+                showToast('Produto excluído com sucesso!', 'success');
+            } catch (error) {
+                console.error('Erro ao excluir produto:', error);
+                showToast('Não foi possível excluir o produto.', 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        async function toggleProductStatus(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+
+            const newActive = !product.active;
+
+            try {
+                const response = await apiFetch(`/catalog/products/${productId}/`, {
+                    method: 'PATCH',
+                    body: JSON.stringify({ active: newActive }),
+                });
+                if (!response.ok) throw new Error('Falha ao atualizar status');
+
+                product.active = newActive;
+                renderProducts();
+                updateStats();
+
+                const statusMsg = product.active ? 'ativado' : 'desativado';
+                showToast(`Produto ${statusMsg} com sucesso!`, 'success');
+            } catch (error) {
+                console.error('Erro ao atualizar status do produto:', error);
+                showToast('Não foi possível atualizar o produto.', 'error');
+            }
+        }
+
+        async function updateStock(productId, newStock) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+
+            if (newStock < 0) {
+                showToast('Estoque não pode ser negativo', 'error');
+                return;
+            }
+
+            try {
+                const response = await apiFetch(`/catalog/products/${productId}/`, {
+                    method: 'PATCH',
+                    body: JSON.stringify({ stock: newStock }),
+                });
+                if (!response.ok) throw new Error('Falha ao atualizar estoque');
+
+                product.stock = newStock;
+                renderProducts();
+                updateStats();
+                showToast('Estoque atualizado!', 'success');
+            } catch (error) {
+                console.error('Erro ao atualizar estoque:', error);
+                showToast('Não foi possível atualizar o estoque.', 'error');
+            }
+        }
+
+        // Gerenciamento de Imagens
+        let uploadedImageFiles = []; // Arquivos reais (para upload), paralelo a uploadedImages (pré-visualização)
+
+        function handleImageUpload(event) {
+            const files = event.target.files;
+            handleImageFiles(files);
+        }
+
+        function handleImageFiles(files) {
+            if (uploadedImages.length >= 5) {
+                showToast('Máximo de 5 imagens permitido', 'error');
+                return;
+            }
+
+            Array.from(files).forEach(file => {
+                if (uploadedImages.length >= 5) return;
+                
+                if (!file.type.startsWith('image/')) {
+                    showToast('Apenas arquivos de imagem são permitidos', 'error');
+                    return;
+                }
+
+                if (file.size > 5 * 1024 * 1024) {
+                    showToast('Imagem muito grande. Máximo 5MB por imagem', 'error');
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    uploadedImages.push(e.target.result);
+                    uploadedImageFiles.push(file);
+                    updateImagePreview();
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function updateImagePreview() {
+            const preview = document.getElementById('imagePreview');
+            const container = document.getElementById('previewContainer');
+
+            if (uploadedImages.length === 0) {
+                preview.style.display = 'none';
+                return;
+            }
+
+            preview.style.display = 'block';
+            container.innerHTML = '';
+
+            uploadedImages.forEach((image, index) => {
+                const previewItem = document.createElement('div');
+                previewItem.className = 'preview-item';
+                previewItem.innerHTML = `
+                    <img src="${image}" alt="Preview ${index + 1}" class="preview-image">
+                    <button type="button" class="remove-image" onclick="removeImage(${index})">×</button>
+                `;
+                container.appendChild(previewItem);
+            });
+        }
+
+        function removeImage(index) {
+            uploadedImages.splice(index, 1);
+            uploadedImageFiles.splice(index, 1);
+            updateImagePreview();
+        }
+
+        // Renderização
+        function renderProducts() {
+            const container = document.getElementById('productsContainer');
+            const emptyState = document.getElementById('emptyState');
+            const table = document.getElementById('productsTable');
+            const tbody = document.getElementById('productsTableBody');
+
+            if (products.length === 0) {
+                emptyState.style.display = 'block';
+                table.style.display = 'none';
+                return;
+            }
+
+            emptyState.style.display = 'none';
+            table.style.display = 'table';
+
+            let filteredProducts = getFilteredProducts();
+
+            tbody.innerHTML = '';
+
+            filteredProducts.forEach(product => {
+                const row = document.createElement('tr');
+                
+                const stockClass = getStockClass(product.stock);
+                const stockText = getStockText(product.stock);
+                
+                row.innerHTML = `
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 15px;">
+                            <div class="product-image-cell" style="background-image: url('${product.images[0]}')"></div>
+                            <div>
+                                <div class="product-name">${product.name}</div>
+                                <div class="product-category">${getCategoryName(product.category)}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>${getCategoryName(product.category)}</td>
+                    <td>R$ ${product.price.toFixed(2)}/${product.unit}</td>
+                    <td>
+                        <span class="stock-badge ${stockClass}">${stockText}</span>
+                        <div style="margin-top: 8px;">
+                            <input type="number" value="${product.stock}" min="0" 
+                                   style="width: 80px; padding: 4px; border: 1px solid #ddd; border-radius: 4px;"
+                                   onchange="updateStock(${product.id}, parseInt(this.value))">
+                        </div>
+                    </td>
+                    <td>
+                        <label class="status-toggle">
+                            <input type="checkbox" ${product.active ? 'checked' : ''} 
+                                   onchange="toggleProductStatus(${product.id})">
+                            <span class="slider"></span>
+                        </label>
+                    </td>
+                    <td>
+                        <div class="actions-cell">
+                            <button class="btn-sm btn-edit" onclick="openEditProductModal(${product.id})">Editar</button>
+                            <button class="btn-sm btn-delete" onclick="openDeleteModal(${product.id})">Excluir</button>
+                        </div>
+                    </td>
+                `;
+                
+                tbody.appendChild(row);
+            });
+        }
+
+        function getFilteredProducts() {
+            let filtered = [...products];
+
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const categoryFilter = document.getElementById('categoryFilter').value;
+            const statusFilter = document.getElementById('statusFilter').value;
+            const stockFilter = document.getElementById('stockFilter').value;
+
+            if (searchTerm) {
+                filtered = filtered.filter(product => 
+                    product.name.toLowerCase().includes(searchTerm) ||
+                    product.description.toLowerCase().includes(searchTerm) ||
+                    product.producer.toLowerCase().includes(searchTerm)
+                );
+            }
+
+            if (categoryFilter) {
+                filtered = filtered.filter(product => product.category === categoryFilter);
+            }
+
+            if (statusFilter) {
+                const isActive = statusFilter === 'active';
+                filtered = filtered.filter(product => product.active === isActive);
+            }
+
+            if (stockFilter) {
+                filtered = filtered.filter(product => {
+                    switch (stockFilter) {
+                        case 'high': return product.stock > 20;
+                        case 'medium': return product.stock >= 10 && product.stock <= 20;
+                        case 'low': return product.stock >= 1 && product.stock <= 9;
+                        case 'out': return product.stock === 0;
+                        default: return true;
+                    }
+                });
+            }
+
+            return filtered;
+        }
+
+        function updateStats() {
+            const totalProducts = products.length;
+            const activeProducts = products.filter(p => p.active).length;
+            const lowStockProducts = products.filter(p => p.stock <= 9 && p.stock > 0).length;
+            const outOfStockProducts = products.filter(p => p.stock === 0).length;
+
+            document.getElementById('totalProducts').textContent = totalProducts;
+            document.getElementById('activeProducts').textContent = activeProducts;
+            document.getElementById('lowStockProducts').textContent = lowStockProducts;
+            document.getElementById('outOfStockProducts').textContent = outOfStockProducts;
+        }
+
+        // Funções de busca e filtro
+        function searchProducts() {
+            renderProducts();
+        }
+
+        function filterProducts() {
+            renderProducts();
+        }
+
+        // Funções auxiliares
+        function getStockClass(stock) {
+            if (stock === 0) return 'stock-out';
+            if (stock <= 9) return 'stock-low';
+            if (stock <= 20) return 'stock-medium';
+            return 'stock-high';
+        }
+
+        function getStockText(stock) {
+            if (stock === 0) return 'Sem estoque';
+            if (stock <= 9) return `${stock} restantes`;
+            return `${stock} disponíveis`;
+        }
+
+        function getCategoryName(category) {
+            const categories = {
+                'folhas': 'Folhas Verdes',
+                'legumes': 'Legumes',
+                'frutas': 'Frutas',
+                'ervas': 'Ervas Aromáticas',
+                'raizes': 'Raízes'
+            };
+            return categories[category] || category;
+        }
+
+        function adjustStock(delta) {
+            const stockInput = document.getElementById('productStock');
+            const currentValue = parseInt(stockInput.value) || 0;
+            const newValue = Math.max(0, currentValue + delta);
+            stockInput.value = newValue;
+        }
+
+        // Funções de UI
+        function showLoading() {
+            document.getElementById('loadingOverlay').style.display = 'flex';
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingOverlay').style.display = 'none';
+        }
+
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = `toast ${type}`;
+            toast.classList.add('show');
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        function toggleMobileMenu() {
+    const sidebar = document.getElementById('sidebar');
+    sidebar.classList.toggle('mobile-open');
+}
+
+// EVENT LISTENERS
+document.addEventListener('DOMContentLoaded', function() {
+    // Fecha o menu mobile quando clica fora
+    document.addEventListener('click', function(e) {
+        const sidebar = document.getElementById('sidebar');
+        const menuToggle = document.querySelector('.mobile-menu-toggle');
+        
+        if (window.innerWidth <= 768 && 
+            !sidebar.contains(e.target) && 
+            !menuToggle.contains(e.target) && 
+            sidebar.classList.contains('mobile-open')) {
+            sidebar.classList.remove('mobile-open');
+        }
+    });
+
+    // Fecha modal quando clica fora
+    document.addEventListener('click', function(e) {
+        const modal = document.getElementById('exportModal');
+        if (e.target === modal) {
+            closeExportModal();
+        }
+    });
+});
+    </script>
+</body>
+</html>

@@ -1,0 +1,2287 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controle Financeiro - OpalaVerde</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8faf8;
+        }
+
+        .sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 280px;
+    height: 100vh;
+    background: linear-gradient(180deg, #1a4a14, #2d5a27);
+    color: white;
+    z-index: 1000;
+    box-shadow: 3px 0 15px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;  /* ✅ ADICIONAR */
+}
+
+       .sidebar-header {
+    padding: 25px 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    text-align: center;
+    flex-shrink: 0;  /* ✅ CONFIRMAR */
+}
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+
+        .logo-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .logo-icon img{
+            width: 50px;
+            height: 50px;
+            position: absolute;
+        }
+
+        .tagline {
+            font-size: 0.85rem;
+            color: #b8d4b8;
+            margin-top: 5px;
+        }
+
+        .nav-menu {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;      /* ✅ Scroll SOMENTE aqui */
+    overflow-x: hidden;
+    padding: 20px 0;
+}
+
+        .nav-item {
+            margin: 3px 0;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 15px 25px;
+            color: #e8f5e8;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: rgba(255,255,255,0.1);
+            border-left-color: #4CAF50;
+            color: white;
+        }
+
+        .nav-icon {
+            width: 20px;
+            margin-right: 15px;
+            text-align: center;
+        }
+
+        .user-profile {
+    padding: 20px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    background: rgba(0,0,0,0.2);
+    flex-shrink: 0;  /* ✅ Garante que não encolhe */
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    /* ❌ NUNCA: position: absolute, bottom: 0 */
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;  /* ✅ Ocupa espaço disponível */
+}
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: #4CAF50;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .main-content {
+            margin-left: 280px;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #ffffff 0%, #f8faf8 100%);
+            padding: 20px 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border-bottom: 2px solid #e0e8e0;
+        }
+
+        .header-title {
+            font-size: 2rem;
+            color: #2d5a27;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .header-subtitle {
+            color: #666;
+            font-size: 1rem;
+            margin-bottom: 15px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+        }
+
+        .btn-secondary {
+            background: #f5f5f5;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+            transform: translateY(-2px);
+        }
+
+        .btn-export {
+            background: #333;
+            color: white;
+        }
+
+        .btn-export:hover {
+            background: #222;
+            transform: translateY(-2px);
+        }
+
+        .financial-content {
+            padding: 30px;
+        }
+
+        .period-selector {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .period-filters {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .period-btn {
+            padding: 8px 16px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .period-btn.active {
+            background: #4CAF50;
+            color: white;
+            border-color: #4CAF50;
+        }
+
+        .period-btn:hover {
+            border-color: #4CAF50;
+        }
+
+        .date-range {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .date-input {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .summary-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            border-left: 4px solid #4CAF50;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .summary-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+        }
+
+        .summary-card.revenue {
+            border-left-color: #4CAF50;
+        }
+
+        .summary-card.orders {
+            border-left-color: #2196F3;
+        }
+
+        .summary-card.average {
+            border-left-color: #ff9800;
+        }
+
+        .summary-card.profit {
+            border-left-color: #9C27B0;
+        }
+
+        .summary-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .summary-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .summary-icon.revenue {
+            background: rgba(76, 175, 80, 0.1);
+            color: #4CAF50;
+        }
+
+        .summary-icon.orders {
+            background: rgba(33, 150, 243, 0.1);
+            color: #2196F3;
+        }
+
+        .summary-icon.average {
+            background: rgba(255, 152, 0, 0.1);
+            color: #ff9800;
+        }
+
+        .summary-icon.profit {
+            background: rgba(156, 39, 176, 0.1);
+            color: #9C27B0;
+        }
+
+        .summary-value {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #2d5a27;
+            margin-bottom: 5px;
+        }
+
+        .summary-label {
+            color: #666;
+            font-size: 0.95rem;
+            margin-bottom: 10px;
+        }
+
+        .summary-change {
+            font-size: 0.85rem;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-weight: 600;
+        }
+
+        .summary-change.positive {
+            background: rgba(76, 175, 80, 0.1);
+            color: #4CAF50;
+        }
+
+        .summary-change.negative {
+            background: rgba(244, 67, 54, 0.1);
+            color: #f44336;
+        }
+
+        .financial-section {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .section-header {
+            padding: 25px 30px;
+            border-bottom: 1px solid #e0e8e0;
+            background: #fafbfa;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .section-title {
+            font-size: 1.4rem;
+            color: #2d5a27;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .section-subtitle {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .section-content {
+            padding: 30px;
+        }
+
+        .chart-container {
+            height: 400px;
+            background: #f8faf8;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .financial-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            border-spacing: 0;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 15px 12px;
+            text-align: left;
+            border-bottom: 1px solid #e0e8e0;
+        }
+
+        .data-table th {
+            background: #f8faf8;
+            font-weight: 600;
+            color: #2d5a27;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .data-table td {
+            color: #333;
+        }
+
+        .data-table tr:hover {
+            background: #fafbfa;
+        }
+
+        .product-rank {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 0;
+            border-bottom: 1px solid #e0e8e0;
+        }
+
+        .rank-number {
+            width: 35px;
+            height: 35px;
+            background: #4CAF50;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .rank-number.silver {
+            background: #9E9E9E;
+        }
+
+        .rank-number.bronze {
+            background: #FF9800;
+        }
+
+        .product-info {
+            flex: 1;
+        }
+
+        .product-name {
+            font-weight: 600;
+            color: #2d5a27;
+            margin-bottom: 5px;
+        }
+
+        .product-sales {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .product-revenue {
+            font-weight: 600;
+            color: #4CAF50;
+            font-size: 1.1rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e0e8e0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #4CAF50;
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .loading-overlay.active {
+            display: flex;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #e0e8e0;
+            border-top: 4px solid #4CAF50;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .loading-text {
+            color: #2d5a27;
+            font-weight: 600;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .notification-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 10000;
+            max-width: 400px;
+        }
+
+        .notification {
+            background: white;
+            border-left: 4px solid #4CAF50;
+            padding: 15px 20px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transform: translateX(100%);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            border-left-color: #4CAF50;
+        }
+
+        .notification.warning {
+            border-left-color: #ff9800;
+        }
+
+        .notification.error {
+            border-left-color: #f44336;
+        }
+
+        .notification.info {
+            border-left-color: #2196F3;
+        }
+
+        .notification-close {
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            color: #666;
+            margin-left: auto;
+        }
+
+        .export-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .export-menu {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 100%;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            z-index: 1000;
+            min-width: 200px;
+            margin-top: 5px;
+        }
+
+        .export-menu.show {
+            display: block;
+        }
+
+        .export-option {
+            padding: 12px 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .export-option:hover {
+            background: #f8faf8;
+        }
+
+        .export-option:last-child {
+            border-bottom: none;
+            border-radius: 0 0 8px 8px;
+        }
+
+        .export-option:first-child {
+            border-radius: 8px 8px 0 0;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .sidebar.mobile-open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .financial-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .period-selector {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .header-actions {
+                justify-content: flex-start;
+            }
+        }
+
+        .mobile-menu-toggle {
+    display: none;
+    background: #4CAF50;
+    border: none;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 2000;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+}
+
+.mobile-menu-toggle svg {
+    width: 20px;
+    height: 20px;
+}
+
+@media (max-width: 768px) {
+    .mobile-menu-toggle {
+        display: block;
+    }
+
+    .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+    }
+
+    .sidebar.mobile-open {
+        transform: translateX(0);
+    }
+
+    .main-content {
+        margin-left: 0;
+    }
+
+    .header {
+        margin-left: 0;
+        padding-left: 70px;
+    }
+
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .export-modal-content {
+        margin: 20px;
+        width: calc(100% - 40px);
+    }
+
+    .export-options {
+        grid-template-columns: 1fr;
+    }
+}
+
+.logout-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.logout-btn:hover {
+    background: rgba(244, 67, 54, 0.8);
+    border-color: #f44336;
+    transform: translateY(-2px);
+}
+
+.logout-btn svg {
+    display: block;
+}
+
+        /* Modal de confirmação de logout (igual ao das páginas do cliente) */
+        .logout-modal {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 3000; opacity: 0; visibility: hidden;
+            transition: all 0.3s ease; backdrop-filter: blur(3px);
+        }
+        .logout-modal.active { opacity: 1; visibility: visible; }
+        .logout-modal-content {
+            background: white; padding: 35px; border-radius: 20px;
+            max-width: 420px; width: 90%; text-align: center;
+            transform: scale(0.9); transition: transform 0.3s ease;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            border: 2px solid #e8f5e8;
+        }
+        .logout-modal.active .logout-modal-content { transform: scale(1); }
+        .logout-icon {
+            width: 70px; height: 70px;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 25px; box-shadow: 0 8px 25px rgba(255, 107, 107, 0.3);
+        }
+        .logout-icon svg { width: 35px; height: 35px; fill: white; }
+        .logout-modal h3 { color: #2d5a27; margin-bottom: 15px; font-size: 1.5rem; font-weight: 700; }
+        .logout-modal p { color: #666; margin-bottom: 30px; line-height: 1.6; font-size: 1rem; }
+        .logout-modal-actions { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; }
+        .confirm-logout, .cancel-logout {
+            padding: 12px 25px; border: none; border-radius: 10px;
+            font-size: 1rem; font-weight: 600; cursor: pointer;
+            transition: all 0.3s ease; min-width: 120px;
+        }
+        .confirm-logout { background: linear-gradient(135deg, #f44336, #d32f2f); color: white; }
+        .confirm-logout:hover {
+            background: linear-gradient(135deg, #d32f2f, #c62828);
+            transform: translateY(-2px); box-shadow: 0 8px 25px rgba(244, 67, 54, 0.4);
+        }
+        .cancel-logout { background: #f5f5f5; color: #333; border: 2px solid #e0e0e0; }
+        .cancel-logout:hover { background: #e8f5e8; border-color: #4CAF50; color: #2d5a27; }
+    </style>
+    <script src="api.js?v=3"></script>
+</head>
+<body>
+
+    <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M3,6H21V8H3V6M3,11H21V13H3V11M3,16H21V18H3V16Z"/>
+        </svg>
+    </button>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <div class="logo-icon">
+                    <img src="logo1.png" alt="">
+                </div>
+                <h1>OpalaVerde</h1>
+            </div>
+            <p class="tagline">Orgânicos de Pedro II</p>
+        </div>
+
+        <nav class="nav-menu">
+            <div class="nav-item">
+                <a href="painel_inicial_produtor.html" class="nav-link">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M10 20V14H14V20H19V12H22L12 3L2 12H5V20H10Z"/>
+                        </svg>
+                    </span>
+                    Painel Inicial
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="meus_produtos.html" class="nav-link">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3ZM19 19H5V5H19V19Z"/>
+                        </svg>
+                    </span>
+                    Meus Produtos
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="pedidos_fornecedor.html" class="nav-link">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M7 18C5.9 18 5 18.9 5 20S5.9 22 7 22 9 21.1 9 20 8.1 18 7 18ZM1 2V4H3L6.6 11.59L5.25 14.04C5.09 14.32 5 14.65 5 15C5 16.1 5.9 17 7 17H19V15H7.42C7.28 15 7.17 14.89 7.17 14.75L7.2 14.63L8.1 13H15.55C16.3 13 16.96 12.59 17.3 11.97L20.88 5H5.21L4.27 3H1ZM17 18C15.9 18 15 18.9 15 20S15.9 22 17 22 19 21.1 19 20 18.1 18 17 18Z"/>
+                        </svg>
+                    </span>
+                    Pedidos
+                </a>
+            </div>
+
+            <div class="nav-item">
+                <a href="historico_de_vendas.html" class="nav-link">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9V7L15 1L13.5 2.5L16.17 5.33C15.09 5.77 13.87 6 12.5 6.5C11.66 7.08 11 7.83 10.5 8.67C9.5 8.29 8.42 8 7.31 8C5.34 8 3.61 8.93 2.5 10.36C3.36 11.45 4.64 12.22 6.11 12.41C6.04 12.6 6 12.8 6 13C6 14.66 7.34 16 9 16S12 14.66 12 13C12 12.8 11.96 12.6 11.89 12.41C13.36 12.22 14.64 11.45 15.5 10.36C14.39 8.93 12.66 8 10.69 8C11.5 7.5 12.3 7 13 7L21 9Z"/>
+                        </svg>
+                    </span>
+                    Vendas Concluídas
+                </a>
+            </div>
+
+            <div class="nav-item">
+                <a href="perfil_produtor.html" class="nav-link">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z"/>
+                        </svg>
+                    </span>
+                    Meu Perfil
+                </a>
+            </div>
+
+            <div class="nav-item">
+                <a href="calendario_de_colheitas.html" class="nav-link ">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3ZM19 5V7H5V5H19ZM5 19V9H19V19H5Z"/>
+                        </svg>
+                    </span>
+                    Calendário de Colheitas
+                </a>
+            </div>
+
+            <div class="nav-item">
+                <a href="avaliacoes_dos_clientes.html" class="nav-link">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.45,13.97L5.82,21L12,17.27Z"/>
+                        </svg>
+                    </span>
+                    Avaliações dos Clientes
+                </a>
+            </div>
+
+            <div class="nav-item">
+                <a href="relatorio_simples.html" class="nav-link active">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M6 2C4.9 2 4 2.9 4 4V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V8L14 2H6ZM6 4H13V9H18V20H6V4ZM8 12V14H16V12H8ZM8 16V18H13V16H8Z"/>
+                        </svg>
+                    </span>
+                    Controle Financeiro
+                </a>
+            </div>
+
+            <div class="nav-item">
+                <a href="contate-nos_fornecedor.html" class="nav-link">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M20,8L12,13L4,8V6L12,11L20,6M20,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V6C22,4.89 21.1,4 20,4Z"/>
+                        </svg>
+                    </span>
+                    Contate-nos
+                </a>
+            </div>
+        </nav>
+
+        <div class="user-profile">
+    <div class="user-info">
+        <div class="user-avatar" id="userAvatar">U</div>
+        <div style="flex: 1;">
+            <div style="font-weight: 600;" id="userName">Usuário</div>
+            <div style="font-size: 0.8rem; color: #b8d4b8;">Produtor/Fornecedor</div>
+        </div>
+    </div>
+    <button class="logout-btn" onclick="showLogoutModal()" title="Sair da conta">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+            <path d="M17 7L15.59 8.41L18.17 11H8V13H18.17L15.59 15.58L17 17L22 12L17 7M4 5H12V3H4C2.9 3 2 3.9 2 5V19C2 20.1 2.9 21 4 21H12V19H4V5Z"/>
+        </svg>
+    </button>
+</div>
+    </aside>
+
+    <!-- Modal de Logout -->
+    <div class="logout-modal" id="logoutModal">
+        <div class="logout-modal-content">
+            <div class="logout-icon">
+                <svg viewBox="0 0 24 24">
+                    <path d="M17 7L15.59 8.41L18.17 11H8V13H18.17L15.59 15.59L17 17L22 12L17 7ZM4 5H12V3H4C2.9 3 2 3.9 2 5V19C2 20.1 2.9 21 4 21H12V19H4V5Z"/>
+                </svg>
+            </div>
+            <h3>Confirmar Saída</h3>
+            <p>Tem certeza de que deseja sair da sua conta? Você será redirecionado para a página de login.</p>
+            <div class="logout-modal-actions">
+                <button class="cancel-logout" onclick="closeLogoutModal()">Cancelar</button>
+                <button class="confirm-logout" onclick="confirmLogout()">Sair</button>
+            </div>
+        </div>
+    </div>
+
+
+    <main class="main-content">
+        <header class="header">
+            <div>
+                <h1 class="header-title">Controle Financeiro</h1>
+                <p class="header-subtitle">Relatórios detalhados de vendas e performance financeira</p>
+            </div>
+            
+            <div class="header-actions">
+                <button class="btn btn-primary" onclick="refreshFinancialData()">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                        <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4C7.58 4 4 7.58 4 12S7.58 20 12 20C15.73 20 18.84 17.45 19.73 14H17.65C16.83 16.33 14.61 18 12 18C8.69 18 6 15.31 6 12S8.69 6 12 6C13.66 6 15.14 6.69 16.22 7.78L13 11H20V4L17.65 6.35Z"/>
+                    </svg>
+                    Atualizar
+                </button>
+                <div class="export-dropdown">
+                    <button class="btn btn-export" onclick="toggleExportMenu()">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M14 2H6C4.9 2 4 2.9 4 4V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V8L14 2ZM18 20H6V4H13V9H18V20Z"/>
+                        </svg>
+                        Exportar
+                        <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor" style="margin-left: 5px;">
+                            <path d="M7 10L12 15L17 10H7Z"/>
+                        </svg>
+                    </button>
+                    <div class="export-menu" id="exportMenu">
+                        <div class="export-option" onclick="exportToPDF()">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                                <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
+                            </svg>
+                            Relatório em PDF
+                        </div>
+                        <div class="export-option" onclick="exportToExcel()">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                                <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
+                            </svg>
+                            Dados em Excel
+                        </div>
+                        <div class="export-option" onclick="exportSalesData()">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                                <path d="M5,20H19V18H5M19,9H15V3H9V9H5L12,16L19,9Z"/>
+                            </svg>
+                            Dados de Vendas (CSV)
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn-secondary" onclick="printReport()">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                        <path d="M18 3H6V7H18M19 12A1 1 0 0 1 18 11A1 1 0 0 1 19 10A1 1 0 0 1 20 11A1 1 0 0 1 19 12M16 19H8V14H16M19 8H5A3 3 0 0 0 2 11V17H6V21H18V17H22V11A3 3 0 0 0 19 8Z"/>
+                    </svg>
+                    Imprimir
+                </button>
+            </div>
+        </header>
+
+        <div class="financial-content">
+            <div class="notification-container" id="notificationContainer"></div>
+
+            <div class="period-selector">
+                <div>
+                    <h3 style="color: #2d5a27; margin-bottom: 10px;">Período de Análise</h3>
+                    <div class="period-filters">
+                        <button class="period-btn active" onclick="changePeriod('month', this)">Este Mês</button>
+                        <button class="period-btn" onclick="changePeriod('quarter', this)">Trimestre</button>
+                        <button class="period-btn" onclick="changePeriod('year', this)">Ano</button>
+                        <button class="period-btn" onclick="changePeriod('custom', this)">Personalizado</button>
+                    </div>
+                </div>
+                <div class="date-range" id="customDateRange" style="display: none;">
+                    <input type="date" class="date-input" id="startDate">
+                    <span>até</span>
+                    <input type="date" class="date-input" id="endDate">
+                    <button class="btn btn-primary" onclick="applyCustomRange()">Aplicar</button>
+                </div>
+            </div>
+
+            <div class="summary-grid">
+                <div class="summary-card revenue">
+                    <div class="summary-header">
+                        <div>
+                            <div class="summary-value" id="totalRevenue">R$ 0,00</div>
+                            <div class="summary-label">Receita Total</div>
+                            <div class="summary-change positive" id="revenueChange">+0%</div>
+                        </div>
+                        <div class="summary-icon revenue">$</div>
+                    </div>
+                </div>
+
+                <div class="summary-card orders">
+                    <div class="summary-header">
+                        <div>
+                            <div class="summary-value" id="totalOrders">0</div>
+                            <div class="summary-label">Pedidos Realizados</div>
+                            <div class="summary-change positive" id="ordersChange">+0</div>
+                        </div>
+                        <div class="summary-icon orders">#</div>
+                    </div>
+                </div>
+
+                <div class="summary-card average">
+                    <div class="summary-header">
+                        <div>
+                            <div class="summary-value" id="averageTicket">R$ 0,00</div>
+                            <div class="summary-label">Ticket Médio</div>
+                            <div class="summary-change positive" id="ticketChange">+R$ 0,00</div>
+                        </div>
+                        <div class="summary-icon average">∅</div>
+                    </div>
+                </div>
+
+                <div class="summary-card profit">
+                    <div class="summary-header">
+                        <div>
+                            <div class="summary-value" id="netProfit">R$ 0,00</div>
+                            <div class="summary-label">Lucro Líquido</div>
+                            <div class="summary-change positive" id="profitChange">+0%</div>
+                        </div>
+                        <div class="summary-icon profit">%</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="financial-grid">
+                <div class="financial-section">
+                    <div class="section-header">
+                        <div>
+                            <h2 class="section-title">Evolução de Vendas</h2>
+                            <p class="section-subtitle">Receita ao longo do período selecionado</p>
+                        </div>
+                    </div>
+                    <div class="section-content">
+                        <div class="chart-container">
+                            <canvas id="revenueChart" width="400" height="300"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="financial-section">
+                    <div class="section-header">
+                        <div>
+                            <h2 class="section-title">Produtos Mais Vendidos</h2>
+                            <p class="section-subtitle">Top 5 por receita no período</p>
+                        </div>
+                    </div>
+                    <div class="section-content">
+                        <div id="topProductsList">
+                            <!-- Produtos serão inseridos aqui -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="financial-grid">
+                <div class="financial-section">
+                    <div class="section-header">
+                        <div>
+                            <h2 class="section-title">Distribuição por Categoria</h2>
+                            <p class="section-subtitle">Vendas por tipo de produto</p>
+                        </div>
+                    </div>
+                    <div class="section-content">
+                        <div class="chart-container">
+                            <canvas id="categoryChart" width="400" height="300"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="financial-section">
+                    <div class="section-header">
+                        <div>
+                            <h2 class="section-title">Análise de Performance</h2>
+                            <p class="section-subtitle">Métricas de crescimento</p>
+                        </div>
+                    </div>
+                    <div class="section-content">
+                        <div style="display: flex; flex-direction: column; gap: 20px;">
+                            <div style="padding: 15px; background: #f8faf8; border-radius: 10px;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                                    <span style="color: #666;">Taxa de Crescimento</span>
+                                    <span style="font-weight: 600; color: #4CAF50;" id="growthRate">+0%</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="growthProgress" style="width: 0%;"></div>
+                                </div>
+                            </div>
+
+                            <div style="padding: 15px; background: #f8faf8; border-radius: 10px;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                                    <span style="color: #666;">Meta Mensal</span>
+                                    <span style="font-weight: 600; color: #4CAF50;" id="monthlyGoalProgress">0%</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="goalProgress" style="width: 0%;"></div>
+                                </div>
+                            </div>
+
+                            <div style="padding: 15px; background: #f8faf8; border-radius: 10px;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                                    <span style="color: #666;">Produtos Ativos</span>
+                                    <span style="font-weight: 600; color: #2196F3;" id="activeProductsCount">0</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="productsProgress" style="width: 0%; background: #2196F3;"></div>
+                                </div>
+                            </div>
+
+                            <div style="padding: 15px; background: #f8faf8; border-radius: 10px;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                                    <span style="color: #666;">Satisfação Cliente</span>
+                                    <span style="font-weight: 600; color: #ff9800;" id="customerSatisfaction">0.0</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="satisfactionProgress" style="width: 0%; background: #ff9800;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="financial-section">
+                <div class="section-header">
+                    <div>
+                        <h2 class="section-title">Detalhamento de Vendas</h2>
+                        <p class="section-subtitle">Histórico completo de transações no período</p>
+                    </div>
+                    <div>
+                        <button class="btn btn-secondary" onclick="exportTableData()">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                                <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
+                            </svg>
+                            Exportar Tabela
+                        </button>
+                    </div>
+                </div>
+                <div class="section-content">
+                    <div style="overflow-x: auto;">
+                        <table class="data-table" id="salesTable">
+                            <thead>
+                                <tr>
+                                    <th>Data</th>
+                                    <th>Produto</th>
+                                    <th>Quantidade</th>
+                                    <th>Valor Unit.</th>
+                                    <th>Total</th>
+                                    <th>Cliente</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="salesTableBody">
+                                <!-- Dados serão inseridos aqui -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Gerando relatório...</div>
+    </div>
+
+    <script>
+        // ========== SISTEMA DE AUTENTICAÇÃO DO PRODUTOR ==========
+
+// Verificar se o usuário está logado ao carregar a página
+document.addEventListener('DOMContentLoaded', function() {
+    checkProducerAuth();
+});
+
+/**
+ * Verifica se há um produtor logado e atualiza a interface
+ */
+let currentUserData = null;
+
+function checkProducerAuth() {
+    // Exige login válido (token JWT real) como produtor
+    const userData = requireAuth(['produtor']);
+    if (!userData) return;
+
+    currentUserData = userData;
+    try {
+        updateUserInterface(userData);
+    } catch (error) {
+        console.error('Erro ao atualizar a barra lateral:', error);
+    }
+}
+
+/**
+ * Atualiza a interface com os dados do usuário logado
+ */
+function updateUserInterface(userData) {
+    // Atualizar nome do usuário
+    const userNameElement = document.getElementById('userName');
+    if (userNameElement) {
+        userNameElement.textContent = userData.name || 'Produtor';
+    }
+    
+    // Atualizar avatar (foto real, se existir, senão a inicial do nome)
+    const userAvatarElement = document.getElementById('userAvatar');
+    renderAvatar(userAvatarElement, userData);
+}
+
+/**
+ * Realizar logout do produtor
+ */
+function showLogoutModal() {
+    const logoutModal = document.getElementById('logoutModal');
+    if (logoutModal) {
+        logoutModal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+function closeLogoutModal() {
+    const logoutModal = document.getElementById('logoutModal');
+    if (logoutModal) {
+        logoutModal.classList.remove('active');
+        document.body.style.overflow = 'auto';
+    }
+}
+
+function confirmLogout() {
+    apiLogout();
+    window.location.href = 'login.html';
+}
+
+/**
+ * Remove a sessão ativa do usuário (sincroniza com login.html)
+ */
+function removeActiveSession(email) {
+    try {
+        const activeSessions = JSON.parse(localStorage.getItem('activeSessions') || '[]');
+        const filteredSessions = activeSessions.filter(session => session.email !== email);
+        localStorage.setItem('activeSessions', JSON.stringify(filteredSessions));
+    } catch (error) {
+        console.error('Erro ao remover sessão ativa:', error);
+    }
+}
+
+// ========== FIM DO SISTEMA DE AUTENTICAÇÃO ==========
+
+
+
+        // SISTEMA DE CONTROLE FINANCEIRO INTEGRADO
+        class FinancialControlSystem {
+            constructor() {
+                this.currentPeriod = 'month';
+                this.charts = {};
+                this.financialData = [];
+                this.monthlyGoal = 10000; // Meta mensal em R$
+
+                this.loadRealFinancialData();
+            }
+
+            // Busca as transações reais (itens de pedidos) deste produtor no backend
+            async loadRealFinancialData() {
+                try {
+                    const [ordersRes, productsRes] = await Promise.all([
+                        apiFetch('/orders/orders/'),
+                        apiFetch('/catalog/products/mine/'),
+                    ]);
+
+                    if (productsRes.ok) {
+                        this.realProducts = await productsRes.json();
+                    }
+
+                    if (!ordersRes.ok) throw new Error('Falha ao buscar pedidos');
+                    const data = await ordersRes.json();
+                    const orders = data.results || data;
+
+                    const meuId = currentUserData ? currentUserData.id : null;
+                    const statusMap = { delivered: 'Concluído', cancelled: 'Cancelado' };
+
+                    const transactions = [];
+                    orders.forEach(order => {
+                        const meusItens = meuId
+                            ? order.items.filter(i => i.producer === meuId)
+                            : order.items;
+                        const itens = meusItens.length > 0 ? meusItens : order.items;
+
+                        itens.forEach(item => {
+                            transactions.push({
+                                id: `${order.id}-${item.id}`,
+                                date: new Date(order.created_at),
+                                product: item.product_name,
+                                category: 'Orgânicos',
+                                quantity: item.quantity,
+                                unitPrice: parseFloat(item.unit_price),
+                                total: parseFloat(item.subtotal),
+                                customer: order.customer_name || 'Cliente',
+                                status: statusMap[order.status] || 'Pendente'
+                            });
+                        });
+                    });
+
+                    this.financialData = transactions.sort((a, b) => b.date - a.date);
+                } catch (error) {
+                    console.error('Erro ao carregar dados financeiros reais:', error);
+                    this.financialData = [];
+                }
+
+                this.initializeSystem();
+            }
+
+            initializeSystem() {
+                this.syncWithProducts();
+                this.updateAllData();
+                this.initializeCharts();
+                this.showNotification('Sistema financeiro carregado com dados atualizados!', 'success');
+            }
+
+            // INTEGRAÇÃO COM PRODUTOS
+            syncWithProducts() {
+                window.addEventListener('storage', (e) => {
+                    if (e.key === 'producerProducts') {
+                        this.financialData = this.generateFinancialData();
+                        this.updateAllData();
+                    }
+                });
+            }
+
+            getProducts() {
+                return this.realProducts || [];
+            }
+
+            // CÁLCULOS FINANCEIROS
+            calculateFinancialMetrics(period = this.currentPeriod) {
+                const filteredData = this.filterDataByPeriod(period);
+                const completedTransactions = filteredData.filter(t => t.status === 'Concluído');
+                
+                const totalRevenue = completedTransactions.reduce((sum, t) => sum + t.total, 0);
+                const totalOrders = completedTransactions.length;
+                const averageTicket = totalOrders > 0 ? totalRevenue / totalOrders : 0;
+                
+                // Calcular período anterior para comparação
+                const previousPeriodData = this.getPreviousPeriodData(period);
+                const previousRevenue = previousPeriodData.reduce((sum, t) => sum + t.total, 0);
+                const previousOrders = previousPeriodData.length;
+                const previousTicket = previousOrders > 0 ? previousRevenue / previousOrders : 0;
+                
+                // Calcular mudanças percentuais
+                const revenueChange = previousRevenue > 0 ? ((totalRevenue - previousRevenue) / previousRevenue * 100) : 0;
+                const ordersChange = previousOrders > 0 ? ((totalOrders - previousOrders) / previousOrders * 100) : 0;
+                const ticketChange = previousTicket > 0 ? ((averageTicket - previousTicket) / previousTicket * 100) : 0;
+                
+                // Lucro líquido (simulado - 65% da receita)
+                const netProfit = totalRevenue * 0.65;
+                const previousProfit = previousRevenue * 0.65;
+                const profitChange = previousProfit > 0 ? ((netProfit - previousProfit) / previousProfit * 100) : 0;
+
+                return {
+                    totalRevenue,
+                    totalOrders,
+                    averageTicket,
+                    netProfit,
+                    revenueChange,
+                    ordersChange,
+                    ticketChange,
+                    profitChange
+                };
+            }
+
+            filterDataByPeriod(period) {
+                const now = new Date();
+                const currentYear = now.getFullYear();
+                const currentMonth = now.getMonth();
+                
+                return this.financialData.filter(transaction => {
+                    const transactionDate = new Date(transaction.date);
+                    
+                    switch (period) {
+                        case 'month':
+                            return transactionDate.getMonth() === currentMonth && 
+                                   transactionDate.getFullYear() === currentYear;
+                        case 'quarter':
+                            const quarterStart = Math.floor(currentMonth / 3) * 3;
+                            return transactionDate.getMonth() >= quarterStart && 
+                                   transactionDate.getMonth() < quarterStart + 3 &&
+                                   transactionDate.getFullYear() === currentYear;
+                        case 'year':
+                            return transactionDate.getFullYear() === currentYear;
+                        case 'custom':
+                            const startDate = new Date(document.getElementById('startDate').value);
+                            const endDate = new Date(document.getElementById('endDate').value);
+                            return transactionDate >= startDate && transactionDate <= endDate;
+                        default:
+                            return true;
+                    }
+                });
+            }
+
+            getPreviousPeriodData(period) {
+                const now = new Date();
+                const currentYear = now.getFullYear();
+                const currentMonth = now.getMonth();
+                
+                return this.financialData.filter(transaction => {
+                    const transactionDate = new Date(transaction.date);
+                    
+                    switch (period) {
+                        case 'month':
+                            const prevMonth = currentMonth === 0 ? 11 : currentMonth - 1;
+                            const prevYear = currentMonth === 0 ? currentYear - 1 : currentYear;
+                            return transactionDate.getMonth() === prevMonth && 
+                                   transactionDate.getFullYear() === prevYear;
+                        case 'quarter':
+                            const quarterStart = Math.floor(currentMonth / 3) * 3;
+                            const prevQuarterStart = quarterStart - 3;
+                            if (prevQuarterStart < 0) {
+                                return transactionDate.getMonth() >= (prevQuarterStart + 12) && 
+                                       transactionDate.getFullYear() === currentYear - 1;
+                            }
+                            return transactionDate.getMonth() >= prevQuarterStart && 
+                                   transactionDate.getMonth() < quarterStart &&
+                                   transactionDate.getFullYear() === currentYear;
+                        case 'year':
+                            return transactionDate.getFullYear() === currentYear - 1;
+                        default:
+                            return [];
+                    }
+                });
+            }
+
+            // ATUALIZAÇÃO DA INTERFACE
+            updateAllData() {
+                this.updateFinancialSummary();
+                this.updateCharts();
+                this.updateTopProducts();
+                this.updatePerformanceMetrics();
+                this.updateSalesTable();
+            }
+
+            updateFinancialSummary() {
+                const metrics = this.calculateFinancialMetrics();
+                
+                document.getElementById('totalRevenue').textContent = 
+                    `R$ ${metrics.totalRevenue.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+                document.getElementById('totalOrders').textContent = metrics.totalOrders;
+                document.getElementById('averageTicket').textContent = 
+                    `R$ ${metrics.averageTicket.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+                document.getElementById('netProfit').textContent = 
+                    `R$ ${metrics.netProfit.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+
+                // Atualizar mudanças
+                this.updateChangeIndicator('revenueChange', metrics.revenueChange);
+                this.updateChangeIndicator('ordersChange', metrics.ordersChange, '', ' pedidos');
+                this.updateChangeIndicator('ticketChange', metrics.ticketChange);
+                this.updateChangeIndicator('profitChange', metrics.profitChange);
+            }
+
+            updateChangeIndicator(elementId, value, prefix = '', suffix = '%') {
+                const element = document.getElementById(elementId);
+                const isPositive = value >= 0;
+                const displayValue = Math.abs(value).toFixed(1);
+                
+                element.textContent = `${isPositive ? '+' : '-'}${prefix}${displayValue}${suffix}`;
+                element.className = `summary-change ${isPositive ? 'positive' : 'negative'}`;
+            }
+
+            updateTopProducts() {
+                const filteredData = this.filterDataByPeriod();
+                const completedTransactions = filteredData.filter(t => t.status === 'Concluído');
+                
+                // Agrupar por produto
+                const productSales = {};
+                completedTransactions.forEach(transaction => {
+                    if (!productSales[transaction.product]) {
+                        productSales[transaction.product] = {
+                            name: transaction.product,
+                            totalRevenue: 0,
+                            totalQuantity: 0,
+                            transactionCount: 0
+                        };
+                    }
+                    productSales[transaction.product].totalRevenue += transaction.total;
+                    productSales[transaction.product].totalQuantity += transaction.quantity;
+                    productSales[transaction.product].transactionCount++;
+                });
+
+                // Ordenar por receita e pegar top 5
+                const topProducts = Object.values(productSales)
+                    .sort((a, b) => b.totalRevenue - a.totalRevenue)
+                    .slice(0, 5);
+
+                const container = document.getElementById('topProductsList');
+                container.innerHTML = '';
+
+                if (topProducts.length === 0) {
+                    container.innerHTML = `
+                        <div style="text-align: center; padding: 40px; color: #666;">
+                            <div style="font-size: 2rem; margin-bottom: 10px; color: #ccc;">💰</div>
+                            <p>Nenhuma venda registrada no período selecionado</p>
+                            <p style="font-size: 0.9rem;">Os produtos mais vendidos aparecerão aqui</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                const maxRevenue = topProducts[0].totalRevenue;
+
+                topProducts.forEach((product, index) => {
+                    const percentage = (product.totalRevenue / maxRevenue * 100);
+                    const rankColors = ['#4CAF50', '#9E9E9E', '#FF9800', '#2196F3', '#9C27B0'];
+                    
+                    const productDiv = document.createElement('div');
+                    productDiv.className = 'product-rank';
+                    productDiv.innerHTML = `
+                        <div class="rank-number" style="background: ${rankColors[index]};">
+                            ${index + 1}
+                        </div>
+                        <div class="product-info">
+                            <div class="product-name">${product.name}</div>
+                            <div class="product-sales">${product.totalQuantity} unidades vendidas</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: ${percentage}%; background: ${rankColors[index]};"></div>
+                            </div>
+                        </div>
+                        <div class="product-revenue">R$ ${product.totalRevenue.toFixed(2)}</div>
+                    `;
+                    
+                    container.appendChild(productDiv);
+                });
+            }
+
+            updatePerformanceMetrics() {
+                const metrics = this.calculateFinancialMetrics();
+                
+                // Taxa de crescimento
+                const growthRate = metrics.revenueChange;
+                document.getElementById('growthRate').textContent = 
+                    `${growthRate >= 0 ? '+' : ''}${growthRate.toFixed(1)}%`;
+                document.getElementById('growthProgress').style.width = 
+                    `${Math.min(Math.abs(growthRate), 100)}%`;
+
+                // Meta mensal
+                const goalProgress = (metrics.totalRevenue / this.monthlyGoal) * 100;
+                document.getElementById('monthlyGoalProgress').textContent = 
+                    `${Math.min(goalProgress, 100).toFixed(1)}%`;
+                document.getElementById('goalProgress').style.width = 
+                    `${Math.min(goalProgress, 100)}%`;
+
+                // Produtos ativos
+                const activeProducts = this.getProducts().filter(p => p.active !== false).length;
+                document.getElementById('activeProductsCount').textContent = activeProducts;
+                document.getElementById('productsProgress').style.width = 
+                    `${Math.min((activeProducts / 20) * 100, 100)}%`;
+
+                // Satisfação do cliente (simulado)
+                const satisfaction = (Math.random() * 1 + 4).toFixed(1);
+                document.getElementById('customerSatisfaction').textContent = satisfaction;
+                document.getElementById('satisfactionProgress').style.width = 
+                    `${(satisfaction / 5) * 100}%`;
+            }
+
+            updateSalesTable() {
+                const filteredData = this.filterDataByPeriod().slice(0, 50); // Mostrar apenas os últimos 50
+                const tbody = document.getElementById('salesTableBody');
+                tbody.innerHTML = '';
+
+                filteredData.forEach(transaction => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${transaction.date.toLocaleDateString('pt-BR')}</td>
+                        <td>${transaction.product}</td>
+                        <td>${transaction.quantity}</td>
+                        <td>R$ ${transaction.unitPrice.toFixed(2)}</td>
+                        <td>R$ ${transaction.total.toFixed(2)}</td>
+                        <td>${transaction.customer}</td>
+                        <td><span class="status-badge ${transaction.status === 'Concluído' ? 'status-delivered' : ''}">${transaction.status}</span></td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            }
+
+            // GRÁFICOS
+            initializeCharts() {
+                this.initRevenueChart();
+                this.initCategoryChart();
+            }
+
+            initRevenueChart() {
+                const ctx = document.getElementById('revenueChart').getContext('2d');
+                
+                if (this.charts.revenue) {
+                    this.charts.revenue.destroy();
+                }
+
+                const chartData = this.generateRevenueChartData();
+                
+                this.charts.revenue = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: chartData.labels,
+                        datasets: [{
+                            label: 'Receita (R$)',
+                            data: chartData.data,
+                            borderColor: '#4CAF50',
+                            backgroundColor: 'rgba(76, 175, 80, 0.1)',
+                            tension: 0.4,
+                            fill: true,
+                            pointBackgroundColor: '#4CAF50',
+                            pointBorderColor: '#ffffff',
+                            pointBorderWidth: 2,
+                            pointRadius: 6,
+                            pointHoverRadius: 8
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                backgroundColor: '#333',
+                                titleColor: '#fff',
+                                bodyColor: '#fff',
+                                borderColor: '#4CAF50',
+                                borderWidth: 1,
+                                callbacks: {
+                                    label: function(context) {
+                                        return `Receita: R$ ${context.parsed.y.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: function(value) {
+                                        return 'R$ ' + value.toLocaleString('pt-BR');
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            initCategoryChart() {
+                const ctx = document.getElementById('categoryChart').getContext('2d');
+                
+                if (this.charts.category) {
+                    this.charts.category.destroy();
+                }
+
+                const chartData = this.generateCategoryChartData();
+                
+                this.charts.category = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: chartData.labels,
+                        datasets: [{
+                            data: chartData.data,
+                            backgroundColor: [
+                                '#4CAF50',
+                                '#2196F3', 
+                                '#FF9800',
+                                '#9C27B0',
+                                '#F44336',
+                                '#00BCD4'
+                            ],
+                            borderColor: '#ffffff',
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    padding: 20,
+                                    usePointStyle: true
+                                }
+                            },
+                            tooltip: {
+                                backgroundColor: '#333',
+                                titleColor: '#fff',
+                                bodyColor: '#fff',
+                                callbacks: {
+                                    label: function(context) {
+                                        const percentage = ((context.parsed / chartData.total) * 100).toFixed(1);
+                                        return `${context.label}: R$ ${context.parsed.toFixed(2)} (${percentage}%)`;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            generateRevenueChartData() {
+    const filteredData = this.filterDataByPeriod();
+    const completedTransactions = filteredData.filter(t => t.status === 'Concluído');
+    
+    if (this.currentPeriod === 'month') {
+        // Dados diários do mês atual
+        const now = new Date();
+        const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+        const labels = [];
+        const data = [];
+        
+        for (let day = 1; day <= daysInMonth; day++) {
+            labels.push(day.toString());
+            const dayRevenue = completedTransactions
+                .filter(t => new Date(t.date).getDate() === day)
+                .reduce((sum, t) => sum + t.total, 0);
+            data.push(dayRevenue);
+        }
+        
+        return { labels, data };
+    } else if (this.currentPeriod === 'quarter') {
+        // Dados mensais do trimestre
+        const now = new Date();
+        const quarterStart = Math.floor(now.getMonth() / 3) * 3;
+        const monthNames = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 
+                          'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+        const labels = [];
+        const data = [];
+        
+        for (let i = 0; i < 3; i++) {
+            const month = quarterStart + i;
+            labels.push(monthNames[month]);
+            const monthRevenue = completedTransactions
+                .filter(t => new Date(t.date).getMonth() === month)
+                .reduce((sum, t) => sum + t.total, 0);
+            data.push(monthRevenue);
+        }
+        
+        return { labels, data };
+    } else {
+        // Dados mensais do ano
+        const monthNames = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 
+                          'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+        const labels = monthNames;
+        const data = [];
+        
+        for (let month = 0; month < 12; month++) {
+            const monthRevenue = completedTransactions
+                .filter(t => new Date(t.date).getMonth() === month)
+                .reduce((sum, t) => sum + t.total, 0);
+            data.push(monthRevenue);
+        }
+        
+        return { labels, data };
+    }
+}
+
+            generateCategoryChartData() {
+                const filteredData = this.filterDataByPeriod();
+                const completedTransactions = filteredData.filter(t => t.status === 'Concluído');
+                
+                const categorySales = {};
+                completedTransactions.forEach(transaction => {
+                    const category = transaction.category || 'Outros';
+                    if (!categorySales[category]) {
+                        categorySales[category] = 0;
+                    }
+                    categorySales[category] += transaction.total;
+                });
+
+                const labels = Object.keys(categorySales);
+                const data = Object.values(categorySales);
+                const total = data.reduce((sum, value) => sum + value, 0);
+
+                return { labels, data, total };
+            }
+
+            updateCharts() {
+                if (this.charts.revenue) {
+                    const revenueData = this.generateRevenueChartData();
+                    this.charts.revenue.data.labels = revenueData.labels;
+                    this.charts.revenue.data.datasets[0].data = revenueData.data;
+                    this.charts.revenue.update();
+                }
+
+                if (this.charts.category) {
+                    const categoryData = this.generateCategoryChartData();
+                    this.charts.category.data.labels = categoryData.labels;
+                    this.charts.category.data.datasets[0].data = categoryData.data;
+                    this.charts.category.update();
+                }
+            }
+
+            // EXPORTAÇÃO DE DADOS
+            exportToPDF() {
+                this.showLoading('Gerando relatório em PDF...');
+                
+                setTimeout(() => {
+                    const { jsPDF } = window.jspdf;
+                    const doc = new jsPDF();
+                    
+                    // Título
+                    doc.setFontSize(20);
+                    doc.text('Relatório Financeiro - OpalaVerde', 20, 20);
+                    
+                    // Período
+                    doc.setFontSize(12);
+                    doc.text(`Período: ${this.getPeriodLabel()}`, 20, 35);
+                    doc.text(`Gerado em: ${new Date().toLocaleString('pt-BR')}`, 20, 45);
+                    
+                    // Métricas principais
+                    const metrics = this.calculateFinancialMetrics();
+                    let y = 60;
+                    
+                    doc.setFontSize(14);
+                    doc.text('Resumo Financeiro', 20, y);
+                    y += 15;
+                    
+                    doc.setFontSize(10);
+                    doc.text(`Receita Total: R$ ${metrics.totalRevenue.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`, 20, y);
+                    y += 10;
+                    doc.text(`Total de Pedidos: ${metrics.totalOrders}`, 20, y);
+                    y += 10;
+                    doc.text(`Ticket Médio: R$ ${metrics.averageTicket.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`, 20, y);
+                    y += 10;
+                    doc.text(`Lucro Líquido: R$ ${metrics.netProfit.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`, 20, y);
+                    y += 20;
+                    
+                    // Top produtos
+                    const filteredData = this.filterDataByPeriod();
+                    const completedTransactions = filteredData.filter(t => t.status === 'Concluído');
+                    const productSales = {};
+                    
+                    completedTransactions.forEach(transaction => {
+                        if (!productSales[transaction.product]) {
+                            productSales[transaction.product] = { revenue: 0, quantity: 0 };
+                        }
+                        productSales[transaction.product].revenue += transaction.total;
+                        productSales[transaction.product].quantity += transaction.quantity;
+                    });
+                    
+                    const topProducts = Object.entries(productSales)
+                        .sort(([,a], [,b]) => b.revenue - a.revenue)
+                        .slice(0, 5);
+                    
+                    doc.setFontSize(14);
+                    doc.text('Top 5 Produtos por Receita', 20, y);
+                    y += 15;
+                    
+                    doc.setFontSize(10);
+                    topProducts.forEach(([product, data], index) => {
+                        doc.text(`${index + 1}. ${product}: R$ ${data.revenue.toFixed(2)} (${data.quantity} unidades)`, 20, y);
+                        y += 10;
+                    });
+                    
+                    doc.save('relatorio-financeiro-opalaverde.pdf');
+                    this.hideLoading();
+                    this.showNotification('Relatório PDF gerado com sucesso!', 'success');
+                }, 2000);
+            }
+
+            exportToExcel() {
+                this.showLoading('Preparando dados para Excel...');
+                
+                setTimeout(() => {
+                    const filteredData = this.filterDataByPeriod();
+                    const metrics = this.calculateFinancialMetrics();
+                    
+                    // Criar planilha com múltiplas abas
+                    const workbook = XLSX.utils.book_new();
+                    
+                    // Aba 1: Resumo
+                    const summaryData = [
+                        ['Relatório Financeiro - OpalaVerde'],
+                        ['Período:', this.getPeriodLabel()],
+                        ['Gerado em:', new Date().toLocaleString('pt-BR')],
+                        [''],
+                        ['RESUMO FINANCEIRO'],
+                        ['Receita Total', `R$ ${metrics.totalRevenue.toFixed(2)}`],
+                        ['Total de Pedidos', metrics.totalOrders],
+                        ['Ticket Médio', `R$ ${metrics.averageTicket.toFixed(2)}`],
+                        ['Lucro Líquido', `R$ ${metrics.netProfit.toFixed(2)}`],
+                        [''],
+                        ['VARIAÇÕES'],
+                        ['Mudança na Receita', `${metrics.revenueChange.toFixed(1)}%`],
+                        ['Mudança nos Pedidos', `${metrics.ordersChange.toFixed(1)}%`],
+                        ['Mudança no Ticket', `${metrics.ticketChange.toFixed(1)}%`],
+                        ['Mudança no Lucro', `${metrics.profitChange.toFixed(1)}%`]
+                    ];
+                    
+                    const summarySheet = XLSX.utils.aoa_to_sheet(summaryData);
+                    XLSX.utils.book_append_sheet(workbook, summarySheet, 'Resumo');
+                    
+                    // Aba 2: Transações detalhadas
+                    const transactionsData = [
+                        ['Data', 'Produto', 'Categoria', 'Quantidade', 'Valor Unitário', 'Total', 'Cliente', 'Status']
+                    ];
+                    
+                    filteredData.forEach(transaction => {
+                        transactionsData.push([
+                            transaction.date.toLocaleDateString('pt-BR'),
+                            transaction.product,
+                            transaction.category,
+                            transaction.quantity,
+                            `R$ ${transaction.unitPrice.toFixed(2)}`,
+                            `R$ ${transaction.total.toFixed(2)}`,
+                            transaction.customer,
+                            transaction.status
+                        ]);
+                    });
+                    
+                    const transactionsSheet = XLSX.utils.aoa_to_sheet(transactionsData);
+                    XLSX.utils.book_append_sheet(workbook, transactionsSheet, 'Transações');
+                    
+                    // Aba 3: Produtos mais vendidos
+                    const completedTransactions = filteredData.filter(t => t.status === 'Concluído');
+                    const productSales = {};
+                    
+                    completedTransactions.forEach(transaction => {
+                        if (!productSales[transaction.product]) {
+                            productSales[transaction.product] = { revenue: 0, quantity: 0, transactions: 0 };
+                        }
+                        productSales[transaction.product].revenue += transaction.total;
+                        productSales[transaction.product].quantity += transaction.quantity;
+                        productSales[transaction.product].transactions++;
+                    });
+                    
+                    const productsData = [
+                        ['Ranking', 'Produto', 'Receita Total', 'Quantidade Vendida', 'Número de Transações']
+                    ];
+                    
+                    Object.entries(productSales)
+                        .sort(([,a], [,b]) => b.revenue - a.revenue)
+                        .forEach(([product, data], index) => {
+                            productsData.push([
+                                index + 1,
+                                product,
+                                `R$ ${data.revenue.toFixed(2)}`,
+                                data.quantity,
+                                data.transactions
+                            ]);
+                        });
+                    
+                    const productsSheet = XLSX.utils.aoa_to_sheet(productsData);
+                    XLSX.utils.book_append_sheet(workbook, productsSheet, 'Top Produtos');
+                    
+                    // Salvar arquivo
+                    XLSX.writeFile(workbook, 'relatorio-financeiro-opalaverde.xlsx');
+                    this.hideLoading();
+                    this.showNotification('Dados exportados para Excel com sucesso!', 'success');
+                }, 1500);
+            }
+
+            exportSalesData() {
+                const filteredData = this.filterDataByPeriod();
+                const csvContent = "data:text/csv;charset=utf-8," 
+                    + "Data,Produto,Categoria,Quantidade,Valor Unitário,Total,Cliente,Status\n"
+                    + filteredData.map(t => 
+                        `${t.date.toLocaleDateString('pt-BR')},"${t.product}","${t.category}",${t.quantity},${t.unitPrice.toFixed(2)},${t.total.toFixed(2)},"${t.customer}","${t.status}"`
+                    ).join("\n");
+                
+                const encodedUri = encodeURI(csvContent);
+                const link = document.createElement("a");
+                link.setAttribute("href", encodedUri);
+                link.setAttribute("download", `vendas-${this.currentPeriod}-${new Date().toISOString().split('T')[0]}.csv`);
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                this.showNotification('Dados de vendas exportados em CSV!', 'success');
+            }
+
+            exportTableData() {
+                const table = document.getElementById('salesTable');
+                const workbook = XLSX.utils.table_to_book(table, { sheet: "Vendas" });
+                XLSX.writeFile(workbook, `tabela-vendas-${new Date().toISOString().split('T')[0]}.xlsx`);
+                this.showNotification('Tabela exportada com sucesso!', 'success');
+            }
+
+            // UTILITÁRIOS
+            getPeriodLabel() {
+                const labels = {
+                    'month': 'Este Mês',
+                    'quarter': 'Este Trimestre', 
+                    'year': 'Este Ano',
+                    'custom': 'Período Personalizado'
+                };
+                return labels[this.currentPeriod] || 'Período Selecionado';
+            }
+
+            showLoading(message = 'Carregando...') {
+                const overlay = document.getElementById('loadingOverlay');
+                const text = overlay.querySelector('.loading-text');
+                text.textContent = message;
+                overlay.classList.add('active');
+            }
+
+            hideLoading() {
+                document.getElementById('loadingOverlay').classList.remove('active');
+            }
+
+            showNotification(message, type = 'success', duration = 4000) {
+                const container = document.getElementById('notificationContainer');
+                const notification = document.createElement('div');
+                notification.className = `notification ${type}`;
+                
+                const icons = {
+                    success: '<path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>',
+                    warning: '<path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>',
+                    error: '<path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/>',
+                    info: '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>'
+                };
+                
+                notification.innerHTML = `
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                        ${icons[type] || icons.info}
+                    </svg>
+                    <span>${message}</span>
+                    <button class="notification-close" onclick="this.parentElement.remove()">&times;</button>
+                `;
+                
+                container.appendChild(notification);
+                setTimeout(() => notification.classList.add('show'), 100);
+                
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                    setTimeout(() => notification.remove(), 300);
+                }, duration);
+            }
+
+            refreshData() {
+                this.financialData = this.generateFinancialData();
+                this.updateAllData();
+                this.showNotification('Dados financeiros atualizados!', 'success');
+            }
+        }
+
+        // INSTÂNCIA GLOBAL
+        const financialSystem = new FinancialControlSystem();
+
+        // FUNÇÕES GLOBAIS
+        function changePeriod(period, button) {
+            document.querySelectorAll('.period-btn').forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+            
+            financialSystem.currentPeriod = period;
+            
+            const customRange = document.getElementById('customDateRange');
+            if (period === 'custom') {
+                customRange.style.display = 'flex';
+                // Definir datas padrão
+                const today = new Date();
+                const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+                document.getElementById('startDate').value = firstDay.toISOString().split('T')[0];
+                document.getElementById('endDate').value = today.toISOString().split('T')[0];
+            } else {
+                customRange.style.display = 'none';
+                financialSystem.updateAllData();
+            }
+            
+            const periodNames = {
+                'month': 'Este Mês',
+                'quarter': 'Este Trimestre',
+                'year': 'Este Ano',
+                'custom': 'Período Personalizado'
+            };
+            
+            financialSystem.showNotification(`Período alterado para: ${periodNames[period]}`, 'info');
+        }
+
+        function applyCustomRange() {
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+            
+            if (!startDate || !endDate) {
+                financialSystem.showNotification('Por favor, selecione as datas de início e fim', 'warning');
+                return;
+            }
+            
+            if (new Date(startDate) > new Date(endDate)) {
+                financialSystem.showNotification('A data de início deve ser anterior à data de fim', 'error');
+                return;
+            }
+            
+            financialSystem.updateAllData();
+            financialSystem.showNotification('Período personalizado aplicado com sucesso!', 'success');
+        }
+
+        function refreshFinancialData() {
+            const btn = event.target;
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<div style="width:16px;height:16px;border:2px solid #fff;border-top:2px solid transparent;border-radius:50%;animation:spin 1s linear infinite;"></div> Atualizando...';
+            btn.disabled = true;
+            
+            financialSystem.showLoading('Atualizando dados financeiros...');
+            
+            setTimeout(() => {
+                financialSystem.refreshData();
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+                financialSystem.hideLoading();
+            }, 2000);
+        }
+
+        function toggleExportMenu() {
+            const menu = document.getElementById('exportMenu');
+            menu.classList.toggle('show');
+            
+            // Fechar menu quando clicar fora
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('.export-dropdown')) {
+                    menu.classList.remove('show');
+                }
+            });
+        }
+
+        function exportToPDF() {
+            document.getElementById('exportMenu').classList.remove('show');
+            financialSystem.exportToPDF();
+        }
+
+        function exportToExcel() {
+            document.getElementById('exportMenu').classList.remove('show');
+            financialSystem.exportToExcel();
+        }
+
+        function exportSalesData() {
+            document.getElementById('exportMenu').classList.remove('show');
+            financialSystem.exportSalesData();
+        }
+
+        function exportTableData() {
+            financialSystem.exportTableData();
+        }
+
+        function printReport() {
+            financialSystem.showLoading('Preparando para impressão...');
+            setTimeout(() => {
+                window.print();
+                financialSystem.hideLoading();
+            }, 1000);
+        }
+
+        // INICIALIZAÇÃO
+        document.addEventListener('DOMContentLoaded', function() {
+            // Configurar datas padrão
+            const today = new Date();
+            const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+            document.getElementById('startDate').value = firstDay.toISOString().split('T')[0];
+            document.getElementById('endDate').value = today.toISOString().split('T')[0];
+            
+            // Fechar dropdown ao clicar fora
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('.export-dropdown')) {
+                    document.getElementById('exportMenu').classList.remove('show');
+                }
+            });
+        });
+
+        // Detectar mudanças nos produtos
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'producerProducts') {
+                financialSystem.showNotification('Produtos atualizados! Dados financeiros sincronizados.', 'info');
+            }
+        });
+
+        // Estilos para impressão
+        const printStyles = `
+            @media print {
+                .sidebar, .header-actions, .export-dropdown { display: none !important; }
+                .main-content { margin-left: 0 !important; }
+                .financial-section { break-inside: avoid; margin-bottom: 20px; }
+                .chart-container { height: 300px; }
+            }
+        `;
+        const styleSheet = document.createElement("style");
+        styleSheet.textContent = printStyles;
+        document.head.appendChild(styleSheet);
+
+        // FUNÇÕES PARA O MENU MOBILE
+function toggleMobileMenu() {
+    const sidebar = document.getElementById('sidebar');
+    sidebar.classList.toggle('mobile-open');
+}
+
+// EVENT LISTENERS
+document.addEventListener('DOMContentLoaded', function() {
+    // Fecha o menu mobile quando clica fora
+    document.addEventListener('click', function(e) {
+        const sidebar = document.getElementById('sidebar');
+        const menuToggle = document.querySelector('.mobile-menu-toggle');
+        
+        if (window.innerWidth <= 768 && 
+            !sidebar.contains(e.target) && 
+            !menuToggle.contains(e.target) && 
+            sidebar.classList.contains('mobile-open')) {
+            sidebar.classList.remove('mobile-open');
+        }
+    });
+
+    // Fecha modal quando clica fora
+    document.addEventListener('click', function(e) {
+        const modal = document.getElementById('exportModal');
+        if (e.target === modal) {
+            closeExportModal();
+        }
+    });
+});
+    </script>
+</body>
+</html>
+                    
+                    

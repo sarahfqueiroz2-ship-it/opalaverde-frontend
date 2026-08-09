@@ -1,0 +1,1478 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contate-nos - OpalaVerde</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8faf8;
+        }
+
+       .sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 280px;
+    height: 100vh;
+    background: linear-gradient(180deg, #1a4a14, #2d5a27);
+    color: white;
+    z-index: 1000;
+    box-shadow: 3px 0 15px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;  /* ✅ ADICIONAR */
+}
+
+        .sidebar-header {
+    padding: 25px 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    text-align: center;
+    flex-shrink: 0;  /* ✅ CONFIRMAR */
+}
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+
+        .logo-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .logo-icon img{
+            width: 50px;
+            height: 50px;
+            position: absolute;
+        }
+
+        .tagline {
+            font-size: 0.85rem;
+            color: #b8d4b8;
+            margin-top: 5px;
+        }
+
+        .nav-menu {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;      /* ✅ Scroll SOMENTE aqui */
+    overflow-x: hidden;
+    padding: 20px 0;
+}
+
+        .nav-item {
+            margin: 3px 0;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 15px 25px;
+            color: #e8f5e8;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: rgba(255,255,255,0.1);
+            border-left-color: #4CAF50;
+            color: white;
+        }
+
+        .nav-icon {
+            width: 20px;
+            margin-right: 15px;
+            text-align: center;
+        }
+
+        .user-profile {
+    padding: 20px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    background: rgba(0,0,0,0.2);
+    flex-shrink: 0;  /* ✅ Garante que não encolhe */
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    /* ❌ NUNCA: position: absolute, bottom: 0 */
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;  /* ✅ Ocupa espaço disponível */
+}
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: #4CAF50;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .main-content {
+            margin-left: 280px;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #ffffff 0%, #f8faf8 100%);
+            padding: 30px 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border-bottom: 2px solid #e0e8e0;
+        }
+
+        .header-title {
+            font-size: 2.2rem;
+            color: #2d5a27;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .header-subtitle {
+            color: #666;
+            font-size: 1.1rem;
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .breadcrumb a {
+            color: #4CAF50;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .breadcrumb a:hover {
+            color: #2d5a27;
+        }
+
+        .content-wrapper {
+            padding: 40px 60px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .contact-container {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 50px;
+            margin-bottom: 40px;
+            max-width: 1000px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .contact-form-section {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+
+        .form-header {
+            padding: 30px 35px;
+            border-bottom: 1px solid #e0e8e0;
+            background: #fafbfa;
+        }
+
+        .form-title {
+            font-size: 1.5rem;
+            color: #2d5a27;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .form-subtitle {
+            color: #666;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .form-content {
+            padding: 35px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: #2d5a27;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .required {
+            color: #f44336;
+        }
+
+        .form-input,
+        .form-select,
+        .form-textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e0e8e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+            font-family: inherit;
+        }
+
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: #4CAF50;
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 120px;
+            max-height: 300px;
+        }
+
+        .form-select {
+            cursor: pointer;
+        }
+
+        .char-counter {
+            font-size: 0.8rem;
+            color: #666;
+            text-align: right;
+            margin-top: 5px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .submit-btn:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(76, 175, 80, 0.3);
+        }
+
+        .submit-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .contact-info-section {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .info-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            border-left: 4px solid #4CAF50;
+        }
+
+        .info-card-title {
+            font-size: 1.2rem;
+            color: #2d5a27;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .info-card-content {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .info-card-content p {
+            margin-bottom: 10px;
+        }
+
+        .info-card-content p:last-child {
+            margin-bottom: 0;
+        }
+
+        .contact-method {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .contact-method:last-child {
+            border-bottom: none;
+        }
+
+        .contact-method-icon {
+            width: 35px;
+            height: 35px;
+            background: rgba(76, 175, 80, 0.1);
+            color: #4CAF50;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .contact-method-info {
+            flex: 1;
+        }
+
+        .contact-method-label {
+            font-weight: 600;
+            color: #2d5a27;
+            font-size: 0.9rem;
+        }
+
+        .contact-method-value {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .alert {
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            border-left: 4px solid;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .alert-success {
+            background: rgba(76, 175, 80, 0.1);
+            border-left-color: #4CAF50;
+            color: #2d5a27;
+        }
+
+        .alert-warning {
+            background: rgba(255, 152, 0, 0.1);
+            border-left-color: #ff9800;
+            color: #e65100;
+        }
+
+        .alert-info {
+            background: rgba(33, 150, 243, 0.1);
+            border-left-color: #2196F3;
+            color: #1565C0;
+        }
+
+        .alert-icon {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .faq-section {
+            grid-column: 1 / -1;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            overflow: hidden;
+            margin-top: 20px;
+            max-width: 10000px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .faq-header {
+            padding: 30px 35px;
+            border-bottom: 1px solid #e0e8e0;
+            background: #fafbfa;
+        }
+
+        .faq-title {
+            font-size: 1.4rem;
+            color: #2d5a27;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .faq-subtitle {
+            color: #666;
+            font-size: 0.95rem;
+        }
+
+        .faq-content {
+            padding: 35px;
+        }
+
+        .faq-item {
+            border-bottom: 1px solid #f0f0f0;
+            padding: 20px 0;
+        }
+
+        .faq-item:last-child {
+            border-bottom: none;
+        }
+
+        .faq-question {
+            font-weight: 600;
+            color: #2d5a27;
+            margin-bottom: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: color 0.3s ease;
+        }
+
+        .faq-question:hover {
+            color: #4CAF50;
+        }
+
+        .faq-toggle {
+            width: 20px;
+            height: 20px;
+            background: rgba(76, 175, 80, 0.1);
+            color: #4CAF50;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .faq-answer {
+            color: #666;
+            line-height: 1.6;
+            padding-left: 30px;
+            display: none;
+        }
+
+        .faq-item.active .faq-answer {
+            display: block;
+        }
+
+        .faq-item.active .faq-toggle {
+            transform: rotate(45deg);
+        }
+
+        .loading-spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top: 2px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .notification-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 10000;
+            max-width: 400px;
+        }
+
+        .notification {
+            background: white;
+            border-left: 4px solid #4CAF50;
+            padding: 15px 20px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transform: translateX(100%);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            border-left-color: #4CAF50;
+        }
+
+        .notification.error {
+            border-left-color: #f44336;
+        }
+
+        .notification-close {
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            color: #666;
+            margin-left: auto;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .content-wrapper {
+                padding: 20px 30px;
+            }
+
+            .contact-container {
+                grid-template-columns: 1fr;
+                gap: 25px;
+                max-width: none;
+            }
+
+            .header {
+                padding: 20px;
+            }
+
+            .header-title {
+                font-size: 1.8rem;
+            }
+
+            .faq-section {
+        max-width: none; /* Remove limitação no mobile */
+    }
+        }
+
+        .mobile-menu-toggle {
+    display: none;
+    background: #4CAF50;
+    border: none;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 2000;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+}
+
+.mobile-menu-toggle svg {
+    width: 20px;
+    height: 20px;
+}
+
+@media (max-width: 768px) {
+    .mobile-menu-toggle {
+        display: block;
+    }
+
+    .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+    }
+
+    .sidebar.mobile-open {
+        transform: translateX(0);
+    }
+
+    .main-content {
+        margin-left: 0;
+    }
+
+    .header {
+        margin-left: 0;
+        padding-left: 70px;
+    }
+
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .export-modal-content {
+        margin: 20px;
+        width: calc(100% - 40px);
+    }
+
+    .export-options {
+        grid-template-columns: 1fr;
+    }
+}
+
+.logout-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.logout-btn:hover {
+    background: rgba(244, 67, 54, 0.8);
+    border-color: #f44336;
+    transform: translateY(-2px);
+}
+
+.logout-btn svg {
+    display: block;
+}
+
+        /* Modal de confirmação de logout (igual ao das páginas do cliente) */
+        .logout-modal {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 3000; opacity: 0; visibility: hidden;
+            transition: all 0.3s ease; backdrop-filter: blur(3px);
+        }
+        .logout-modal.active { opacity: 1; visibility: visible; }
+        .logout-modal-content {
+            background: white; padding: 35px; border-radius: 20px;
+            max-width: 420px; width: 90%; text-align: center;
+            transform: scale(0.9); transition: transform 0.3s ease;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            border: 2px solid #e8f5e8;
+        }
+        .logout-modal.active .logout-modal-content { transform: scale(1); }
+        .logout-icon {
+            width: 70px; height: 70px;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 25px; box-shadow: 0 8px 25px rgba(255, 107, 107, 0.3);
+        }
+        .logout-icon svg { width: 35px; height: 35px; fill: white; }
+        .logout-modal h3 { color: #2d5a27; margin-bottom: 15px; font-size: 1.5rem; font-weight: 700; }
+        .logout-modal p { color: #666; margin-bottom: 30px; line-height: 1.6; font-size: 1rem; }
+        .logout-modal-actions { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; }
+        .confirm-logout, .cancel-logout {
+            padding: 12px 25px; border: none; border-radius: 10px;
+            font-size: 1rem; font-weight: 600; cursor: pointer;
+            transition: all 0.3s ease; min-width: 120px;
+        }
+        .confirm-logout { background: linear-gradient(135deg, #f44336, #d32f2f); color: white; }
+        .confirm-logout:hover {
+            background: linear-gradient(135deg, #d32f2f, #c62828);
+            transform: translateY(-2px); box-shadow: 0 8px 25px rgba(244, 67, 54, 0.4);
+        }
+        .cancel-logout { background: #f5f5f5; color: #333; border: 2px solid #e0e0e0; }
+        .cancel-logout:hover { background: #e8f5e8; border-color: #4CAF50; color: #2d5a27; }
+    </style>
+    <script src="api.js?v=3"></script>
+</head>
+<body>
+    <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M3,6H21V8H3V6M3,11H21V13H3V11M3,16H21V18H3V16Z"/>
+        </svg>
+    </button>
+
+    <div class="notification-container" id="notificationContainer"></div>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <div class="logo-icon">
+                    <img src="logo1.png" alt="">
+                </div>
+                <h1>OpalaVerde</h1>
+            </div>
+            <p class="tagline">Orgânicos de Pedro II</p>
+        </div>
+
+        <nav class="nav-menu">
+            <div class="nav-item">
+                <a href="painel_inicial_produtor.html" class="nav-link">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M10 20V14H14V20H19V12H22L12 3L2 12H5V20H10Z"/>
+                        </svg>
+                    </span>
+                    Painel Inicial
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="meus_produtos.html" class="nav-link">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3ZM19 19H5V5H19V19Z"/>
+                        </svg>
+                    </span>
+                    Meus Produtos
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="pedidos_fornecedor.html" class="nav-link">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M7 18C5.9 18 5 18.9 5 20S5.9 22 7 22 9 21.1 9 20 8.1 18 7 18ZM1 2V4H3L6.6 11.59L5.25 14.04C5.09 14.32 5 14.65 5 15C5 16.1 5.9 17 7 17H19V15H7.42C7.28 15 7.17 14.89 7.17 14.75L7.2 14.63L8.1 13H15.55C16.3 13 16.96 12.59 17.3 11.97L20.88 5H5.21L4.27 3H1ZM17 18C15.9 18 15 18.9 15 20S15.9 22 17 22 19 21.1 19 20 18.1 18 17 18Z"/>
+                        </svg>
+                    </span>
+                    Pedidos
+                </a>
+            </div>
+
+            <div class="nav-item">
+                <a href="historico_de_vendas.html" class="nav-link">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9V7L15 1L13.5 2.5L16.17 5.33C15.09 5.77 13.87 6 12.5 6.5C11.66 7.08 11 7.83 10.5 8.67C9.5 8.29 8.42 8 7.31 8C5.34 8 3.61 8.93 2.5 10.36C3.36 11.45 4.64 12.22 6.11 12.41C6.04 12.6 6 12.8 6 13C6 14.66 7.34 16 9 16S12 14.66 12 13C12 12.8 11.96 12.6 11.89 12.41C13.36 12.22 14.64 11.45 15.5 10.36C14.39 8.93 12.66 8 10.69 8C11.5 7.5 12.3 7 13 7L21 9Z"/>
+                        </svg>
+                    </span>
+                    Vendas Concluídas
+                </a>
+            </div>
+
+            <div class="nav-item">
+                <a href="perfil_produtor.html" class="nav-link">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z"/>
+                        </svg>
+                    </span>
+                    Meu Perfil
+                </a>
+            </div>
+
+            <div class="nav-item">
+                <a href="calendario_de_colheitas.html" class="nav-link ">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3ZM19 5V7H5V5H19ZM5 19V9H19V19H5Z"/>
+                        </svg>
+                    </span>
+                    Calendário de Colheitas
+                </a>
+            </div>
+
+            <div class="nav-item">
+                <a href="avaliacoes_dos_clientes.html" class="nav-link ">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.45,13.97L5.82,21L12,17.27Z"/>
+                        </svg>
+                    </span>
+                    Avaliações dos Clientes
+                </a>
+            </div>
+
+            <div class="nav-item">
+                <a href="relatorio_simples.html" class="nav-link">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M6 2C4.9 2 4 2.9 4 4V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V8L14 2H6ZM6 4H13V9H18V20H6V4ZM8 12V14H16V12H8ZM8 16V18H13V16H8Z"/>
+                        </svg>
+                    </span>
+                    Controle Financeiro
+                </a>
+            </div>
+
+            <div class="nav-item">
+                <a href="contate-nos_fornecedor.html" class="nav-link active">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M20,8L12,13L4,8V6L12,11L20,6M20,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V6C22,4.89 21.1,4 20,4Z"/>
+                        </svg>
+                    </span>
+                    Contate-nos
+                </a>
+            </div>
+        </nav>
+
+        <div class="user-profile">
+    <div class="user-info">
+        <div class="user-avatar" id="userAvatar">U</div>
+        <div style="flex: 1;">
+            <div style="font-weight: 600;" id="userName">Usuário</div>
+            <div style="font-size: 0.8rem; color: #b8d4b8;">Produtor/Fornecedor</div>
+        </div>
+    </div>
+    <button class="logout-btn" onclick="showLogoutModal()" title="Sair da conta">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+            <path d="M17 7L15.59 8.41L18.17 11H8V13H18.17L15.59 15.58L17 17L22 12L17 7M4 5H12V3H4C2.9 3 2 3.9 2 5V19C2 20.1 2.9 21 4 21H12V19H4V5Z"/>
+        </svg>
+    </button>
+</div>
+
+    </aside>
+
+    <!-- Modal de Logout -->
+    <div class="logout-modal" id="logoutModal">
+        <div class="logout-modal-content">
+            <div class="logout-icon">
+                <svg viewBox="0 0 24 24">
+                    <path d="M17 7L15.59 8.41L18.17 11H8V13H18.17L15.59 15.59L17 17L22 12L17 7ZM4 5H12V3H4C2.9 3 2 3.9 2 5V19C2 20.1 2.9 21 4 21H12V19H4V5Z"/>
+                </svg>
+            </div>
+            <h3>Confirmar Saída</h3>
+            <p>Tem certeza de que deseja sair da sua conta? Você será redirecionado para a página de login.</p>
+            <div class="logout-modal-actions">
+                <button class="cancel-logout" onclick="closeLogoutModal()">Cancelar</button>
+                <button class="confirm-logout" onclick="confirmLogout()">Sair</button>
+            </div>
+        </div>
+    </div>
+
+
+    <main class="main-content">
+        <header class="header">
+            
+            <h1 class="header-title">Fale com a Administração</h1>
+            <p class="header-subtitle">Entre em contato diretamente com os desenvolvedores e administradores da OpalaVerde. Estamos aqui para ajudá-lo com suporte técnico, sugestões e dúvidas sobre a plataforma.</p>
+        </header>
+
+        <div class="content-wrapper">
+            <div class="alert alert-info">
+                <svg class="alert-icon" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M13,9H11V7H13M13,17H11V11H13M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"/>
+                </svg>
+                <div>
+                    <strong>Tempo de Resposta:</strong> Nossa equipe retorna em até 2 dias úteis. Para urgências, utilize os canais alternativos ao lado.
+                </div>
+            </div>
+
+            <div class="contact-container">
+                <div class="contact-form-section">
+                    <div class="form-header">
+                        <h2 class="form-title">Formulário de Contato</h2>
+                        <p class="form-subtitle">Preencha todos os campos obrigatórios para que possamos ajudá-lo da melhor forma possível.</p>
+                    </div>
+                    <div class="form-content">
+                        <form id="contactForm">
+                            <div class="form-group">
+                                <label for="producerName" class="form-label">Nome do Produtor <span class="required">*</span></label>
+                                <input type="text" id="producerName" class="form-input" value="Lívia" readonly>
+                                <small style="color: #666; font-size: 0.8rem;">Este campo é preenchido automaticamente com seu perfil</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="email" class="form-label">E-mail para Resposta <span class="required">*</span></label>
+                                <input type="email" id="email" class="form-input" placeholder="seu.email@exemplo.com" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="subject" class="form-label">Assunto <span class="required">*</span></label>
+                                <select id="subject" class="form-select" required>
+                                    <option value="">Selecione o assunto...</option>
+                                    <option value="suporte-tecnico">Suporte Técnico</option>
+                                    <option value="problema-bug">Problema/Bug no Sistema</option>
+                                    <option value="sugestao">Sugestão de Melhoria</option>
+                                    <option value="duvida-funcionalidade">Dúvida sobre Funcionalidade</option>
+                                    <option value="problema-pagamento">Problema com Pagamentos</option>
+                                    <option value="problema-pedidos">Problema com Pedidos</option>
+                                    <option value="solicitacao-recurso">Solicitação de Novo Recurso</option>
+                                    <option value="feedback">Feedback Geral</option>
+                                    <option value="outro">Outro Assunto</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="priority" class="form-label">Prioridade</label>
+                                <select id="priority" class="form-select">
+                                    <option value="baixa">Baixa</option>
+                                    <option value="media" selected>Média</option>
+                                    <option value="alta">Alta</option>
+                                    <option value="urgente">Urgente</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="message" class="form-label">Mensagem Detalhada <span class="required">*</span></label>
+                                <textarea id="message" class="form-textarea" placeholder="Descreva detalhadamente sua solicitação, dúvida ou problema. Inclua informações específicas como passos realizados, mensagens de erro ou sugestões." required maxlength="1000"></textarea>
+                                <div class="char-counter">
+                                    <span id="charCount">0</span>/1000 caracteres
+                                </div>
+                            </div>
+
+                            <button type="submit" class="submit-btn" id="submitBtn">
+                                <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                                    <path d="M2,21L23,12L2,3V10L17,12L2,14V21Z"/>
+                                </svg>
+                                Enviar Mensagem
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="contact-info-section">
+                    <div class="info-card">
+                        <h3 class="info-card-title">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                                <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M7.07,18.28C7.5,17.38 10.12,16.5 12,16.5C13.88,16.5 16.5,17.38 16.93,18.28C15.57,19.36 13.86,20 12,20C10.14,20 8.43,19.36 7.07,18.28M18.36,16.83C16.93,15.09 13.46,14.5 12,14.5C10.54,14.5 7.07,15.09 5.64,16.83C4.62,15.5 4,13.82 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,13.82 19.38,15.5 18.36,16.83M12,6C10.06,6 8.5,7.56 8.5,9.5C8.5,11.44 10.06,13 12,13C13.94,13 15.5,11.44 15.5,9.5C15.5,7.56 13.94,6 12,6M12,11A1.5,1.5 0 0,1 10.5,9.5A1.5,1.5 0 0,1 12,8A1.5,1.5 0 0,1 13.5,9.5A1.5,1.5 0 0,1 12,11Z"/>
+                            </svg>
+                            Horário de Atendimento
+                        </h3>
+                        <div class="info-card-content">
+                            <p><strong>Segunda a Sexta:</strong> 8h às 18h</p>
+                            <p><strong>Sábado:</strong> 8h às 12h</p>
+                            <p><strong>Domingo:</strong> Não atendemos</p>
+                            <p style="color: #4CAF50; font-weight: 600; margin-top: 15px;">Respostas em até 2 dias úteis</p>
+                        </div>
+                    </div>
+
+                    <div class="info-card">
+                        <h3 class="info-card-title">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                                <path d="M6.62,10.79C8.06,13.62 10.38,15.94 13.21,17.38L15.41,15.18C15.69,14.9 16.08,14.82 16.43,14.93C17.55,15.3 18.75,15.5 20,15.5A1,1 0 0,1 21,16.5V20A1,1 0 0,1 20,21A17,17 0 0,1 3,4A1,1 0 0,1 4,3H7.5A1,1 0 0,1 8.5,4C8.5,5.25 8.7,6.45 9.07,7.57C9.18,7.92 9.1,8.31 8.82,8.59L6.62,10.79Z"/>
+                            </svg>
+                            Canais Alternativos
+                        </h3>
+                        <div class="info-card-content">
+                            <div class="contact-method">
+                                <div class="contact-method-icon">
+                                    <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                                        <path d="M20,8L12,13L4,8V6L12,11L20,6M20,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V6C22,4.89 21.1,4 20,4Z"/>
+                                    </svg>
+                                </div>
+                                <div class="contact-method-info">
+                                    <div class="contact-method-label">E-mail Direto</div>
+                                    <div class="contact-method-value">admin@opalaverde.com.br</div>
+                                </div>
+                            </div>
+                            
+                            <div class="contact-method">
+                                <div class="contact-method-icon">
+                                    <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                                        <path d="M6.62,10.79C8.06,13.62 10.38,15.94 13.21,17.38L15.41,15.18C15.69,14.9 16.08,14.82 16.43,14.93C17.55,15.3 18.75,15.5 20,15.5A1,1 0 0,1 21,16.5V20A1,1 0 0,1 20,21A17,17 0 0,1 3,4A1,1 0 0,1 4,3H7.5A1,1 0 0,1 8.5,4C8.5,5.25 8.7,6.45 9.07,7.57C9.18,7.92 9.1,8.31 8.82,8.59L6.62,10.79Z"/>
+                                    </svg>
+                                </div>
+                                <div class="contact-method-info">
+                                    <div class="contact-method-label">WhatsApp</div>
+                                    <div class="contact-method-value">(86) 9 9999-9999</div>
+                                </div>
+                            </div>
+                            
+                            <div class="contact-method">
+                                <div class="contact-method-icon">
+                                    <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                                        <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M7.07,18.28C7.5,17.38 10.12,16.5 12,16.5C13.88,16.5 16.5,17.38 16.93,18.28C15.57,19.36 13.86,20 12,20C10.14,20 8.43,19.36 7.07,18.28M18.36,16.83C16.93,15.09 13.46,14.5 12,14.5C10.54,14.5 7.07,15.09 5.64,16.83C4.62,15.5 4,13.82 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,13.82 19.38,15.5 18.36,16.83M12,6C10.06,6 8.5,7.56 8.5,9.5C8.5,11.44 10.06,13 12,13C13.94,13 15.5,11.44 15.5,9.5C15.5,7.56 13.94,6 12,6M12,11A1.5,1.5 0 0,1 10.5,9.5A1.5,1.5 0 0,1 12,8A1.5,1.5 0 0,1 13.5,9.5A1.5,1.5 0 0,1 12,11Z"/>
+                                    </svg>
+                                </div>
+                                <div class="contact-method-info">
+                                    <div class="contact-method-label">Suporte Online</div>
+                                    <div class="contact-method-value">Chat disponível no site</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="info-card">
+                        <h3 class="info-card-title">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                                <path d="M13,9H11V7H13M13,17H11V11H13M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"/>
+                            </svg>
+                            Dicas Importantes
+                        </h3>
+                        <div class="info-card-content">
+                            <p><strong>Para problemas técnicos:</strong> Inclua detalhes como navegador, sistema operacional e passos realizados.</p>
+                            <p><strong>Para sugestões:</strong> Seja específico sobre o que gostaria de ver na plataforma.</p>
+                            <p><strong>Para urgências:</strong> Utilize WhatsApp ou e-mail direto para resposta mais rápida.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="faq-section">
+                <div class="faq-header">
+                    <h2 class="faq-title">Perguntas Frequentes</h2>
+                    <p class="faq-subtitle">Confira as dúvidas mais comuns antes de entrar em contato</p>
+                </div>
+                <div class="faq-content">
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <div class="faq-toggle">+</div>
+                            <span>Como adiciono novos produtos ao meu catálogo?</span>
+                        </div>
+                        <div class="faq-answer">
+                            Acesse a seção "Meus Produtos" no menu lateral e clique em "Adicionar Produto". Preencha todas as informações obrigatórias, adicione fotos de qualidade e defina preços competitivos. Seus produtos ficam disponíveis imediatamente após o cadastro.
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <div class="faq-toggle">+</div>
+                            <span>Como funciona o sistema de pagamentos?</span>
+                        </div>
+                        <div class="faq-answer">
+                            Os pagamentos são processados automaticamente quando um cliente realiza uma compra. O valor é creditado em sua conta em até 2 dias úteis após a confirmação da entrega. Você pode acompanhar todos os pagamentos no dashboard financeiro.
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <div class="faq-toggle">+</div>
+                            <span>Como gerencio o estoque dos meus produtos?</span>
+                        </div>
+                        <div class="faq-answer">
+                            O sistema atualiza automaticamente o estoque conforme as vendas. Você pode ajustar manualmente as quantidades na seção "Meus Produtos" e recebe alertas quando o estoque está baixo. Recomendamos manter sempre informações atualizadas.
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <div class="faq-toggle">+</div>
+                            <span>Posso alterar preços depois de cadastrar um produto?</span>
+                        </div>
+                        <div class="faq-answer">
+                            Sim, você pode alterar preços a qualquer momento através da seção "Meus Produtos". As alterações são aplicadas imediatamente. Para produtos com pedidos em andamento, o preço permanece o mesmo até a conclusão da venda.
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <div class="faq-toggle">+</div>
+                            <span>Como acompanho as avaliações dos meus produtos?</span>
+                        </div>
+                        <div class="faq-answer">
+                            Todas as avaliações são exibidas no seu dashboard principal e você recebe notificações por e-mail. Responder às avaliações aumenta a confiança dos clientes e melhora seu posicionamento na plataforma.
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <div class="faq-toggle">+</div>
+                            <span>Qual o prazo para entrega dos produtos?</span>
+                        </div>
+                        <div class="faq-answer">
+                            Você define os prazos de entrega de cada produto no momento do cadastro. Recomendamos prazos realistas para manter a satisfação dos clientes. O sistema permite diferentes modalidades: retirada no local, entrega expressa ou entrega programada.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // ========== SISTEMA DE AUTENTICAÇÃO DO PRODUTOR ==========
+
+// Verificar se o usuário está logado ao carregar a página
+document.addEventListener('DOMContentLoaded', function() {
+    checkProducerAuth();
+});
+
+/**
+ * Verifica se há um produtor logado e atualiza a interface
+ */
+let currentUserData = null;
+
+function checkProducerAuth() {
+    // Exige login válido (token JWT real) como produtor
+    const userData = requireAuth(['produtor']);
+    if (!userData) return;
+
+    currentUserData = userData;
+    try {
+        updateUserInterface(userData);
+    } catch (error) {
+        console.error('Erro ao atualizar a barra lateral:', error);
+    }
+}
+
+/**
+ * Atualiza a interface com os dados do usuário logado
+ */
+function updateUserInterface(userData) {
+    // Atualizar nome do usuário
+    const userNameElement = document.getElementById('userName');
+    if (userNameElement) {
+        userNameElement.textContent = userData.name || 'Produtor';
+    }
+    
+    // Atualizar avatar (foto real, se existir, senão a inicial do nome)
+    const userAvatarElement = document.getElementById('userAvatar');
+    renderAvatar(userAvatarElement, userData);
+}
+
+/**
+ * Realizar logout do produtor
+ */
+function showLogoutModal() {
+    const logoutModal = document.getElementById('logoutModal');
+    if (logoutModal) {
+        logoutModal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+function closeLogoutModal() {
+    const logoutModal = document.getElementById('logoutModal');
+    if (logoutModal) {
+        logoutModal.classList.remove('active');
+        document.body.style.overflow = 'auto';
+    }
+}
+
+function confirmLogout() {
+    apiLogout();
+    window.location.href = 'login.html';
+}
+
+/**
+ * Remove a sessão ativa do usuário (sincroniza com login.html)
+ */
+function removeActiveSession(email) {
+    try {
+        const activeSessions = JSON.parse(localStorage.getItem('activeSessions') || '[]');
+        const filteredSessions = activeSessions.filter(session => session.email !== email);
+        localStorage.setItem('activeSessions', JSON.stringify(filteredSessions));
+    } catch (error) {
+        console.error('Erro ao remover sessão ativa:', error);
+    }
+}
+
+// ========== FIM DO SISTEMA DE AUTENTICAÇÃO ==========
+
+
+
+        // Sistema de contato
+        class ContactSystem {
+            constructor() {
+                this.initializeForm();
+                this.bindEvents();
+            }
+
+            initializeForm() {
+                // Preenche email automaticamente se disponível
+                const storedEmail = localStorage.getItem('producerEmail');
+                if (storedEmail) {
+                    document.getElementById('email').value = storedEmail;
+                }
+            }
+
+            bindEvents() {
+                const form = document.getElementById('contactForm');
+                const messageTextarea = document.getElementById('message');
+                const charCount = document.getElementById('charCount');
+
+                // Contador de caracteres
+                messageTextarea.addEventListener('input', () => {
+                    const currentLength = messageTextarea.value.length;
+                    charCount.textContent = currentLength;
+                    
+                    if (currentLength > 950) {
+                        charCount.style.color = '#f44336';
+                    } else if (currentLength > 800) {
+                        charCount.style.color = '#ff9800';
+                    } else {
+                        charCount.style.color = '#666';
+                    }
+                });
+
+                // Envio do formulário
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.submitForm();
+                });
+
+                // Validação em tempo real
+                form.querySelectorAll('input, select, textarea').forEach(field => {
+                    field.addEventListener('blur', () => this.validateField(field));
+                });
+            }
+
+            validateField(field) {
+                const value = field.value.trim();
+                let isValid = true;
+                
+                // Remove classes anteriores
+                field.classList.remove('error', 'success');
+                
+                if (field.hasAttribute('required') && !value) {
+                    isValid = false;
+                } else if (field.type === 'email' && value) {
+                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    isValid = emailRegex.test(value);
+                }
+                
+                // Adiciona classe visual
+                field.classList.add(isValid ? 'success' : 'error');
+                
+                return isValid;
+            }
+
+            async submitForm() {
+                const submitBtn = document.getElementById('submitBtn');
+                const form = document.getElementById('contactForm');
+                
+                // Validação completa
+                const formData = new FormData(form);
+                const data = Object.fromEntries(formData);
+                
+                // Campos obrigatórios
+                const requiredFields = ['email', 'subject', 'message'];
+                let hasErrors = false;
+                
+                requiredFields.forEach(fieldName => {
+                    const field = document.getElementById(fieldName);
+                    if (!this.validateField(field)) {
+                        hasErrors = true;
+                    }
+                });
+                
+                if (hasErrors) {
+                    this.showNotification('Por favor, preencha todos os campos obrigatórios corretamente.', 'error');
+                    return;
+                }
+                
+                // Simula envio
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = `
+                    <div class="loading-spinner"></div>
+                    Enviando...
+                `;
+                
+                try {
+                    // Simula delay de envio
+                    await new Promise(resolve => setTimeout(resolve, 2000));
+                    
+                    // Coleta dados do formulário
+                    const contactData = {
+                        producer: document.getElementById('producerName').value,
+                        email: document.getElementById('email').value,
+                        subject: document.getElementById('subject').value,
+                        priority: document.getElementById('priority').value,
+                        message: document.getElementById('message').value,
+                        timestamp: new Date().toISOString(),
+                        id: Date.now()
+                    };
+                    
+                    // Salva no localStorage (simulação)
+                    const existingMessages = JSON.parse(localStorage.getItem('contactMessages') || '[]');
+                    existingMessages.push(contactData);
+                    localStorage.setItem('contactMessages', JSON.stringify(existingMessages));
+                    
+                    // Salva email para próximas consultas
+                    localStorage.setItem('producerEmail', contactData.email);
+                    
+                    // Sucesso
+                    this.showSuccessMessage();
+                    form.reset();
+                    document.getElementById('producerName').value = 'Lívia';
+                    document.getElementById('email').value = contactData.email;
+                    document.getElementById('priority').value = 'media';
+                    document.getElementById('charCount').textContent = '0';
+                    
+                } catch (error) {
+                    this.showNotification('Erro ao enviar mensagem. Tente novamente.', 'error');
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = `
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                            <path d="M2,21L23,12L2,3V10L17,12L2,14V21Z"/>
+                        </svg>
+                        Enviar Mensagem
+                    `;
+                }
+            }
+
+            showSuccessMessage() {
+                // Remove alertas anteriores
+                const existingSuccess = document.querySelector('.alert-success');
+                if (existingSuccess) {
+                    existingSuccess.remove();
+                }
+                
+                // Cria alerta de sucesso
+                const successAlert = document.createElement('div');
+                successAlert.className = 'alert alert-success';
+                successAlert.innerHTML = `
+                    <svg class="alert-icon" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                    </svg>
+                    <div>
+                        <strong>Mensagem enviada com sucesso!</strong><br>
+                        Nossa equipe retornará o contato em até 2 dias úteis no e-mail fornecido. 
+                        Obrigado por entrar em contato conosco!
+                    </div>
+                `;
+                
+                // Insere no topo do formulário
+                const formSection = document.querySelector('.contact-form-section .form-content');
+                formSection.insertBefore(successAlert, formSection.firstChild);
+                
+                // Remove após 10 segundos
+                setTimeout(() => {
+                    successAlert.remove();
+                }, 10000);
+                
+                // Notificação adicional
+                this.showNotification('Mensagem enviada com sucesso!', 'success');
+                
+                // Scroll para o topo
+                successAlert.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+
+            showNotification(message, type = 'success', duration = 4000) {
+                const container = document.getElementById('notificationContainer');
+                const notification = document.createElement('div');
+                notification.className = `notification ${type}`;
+                
+                const icons = {
+                    success: '<path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>',
+                    error: '<path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/>',
+                    info: '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>'
+                };
+                
+                notification.innerHTML = `
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                        ${icons[type]}
+                    </svg>
+                    <span>${message}</span>
+                    <button class="notification-close" onclick="this.parentElement.remove()">&times;</button>
+                `;
+                
+                container.appendChild(notification);
+                
+                setTimeout(() => notification.classList.add('show'), 100);
+                
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                    setTimeout(() => notification.remove(), 300);
+                }, duration);
+            }
+        }
+
+        // FAQ System
+        function toggleFAQ(element) {
+            const faqItem = element.closest('.faq-item');
+            const isActive = faqItem.classList.contains('active');
+            
+            // Fecha todos os outros FAQs
+            document.querySelectorAll('.faq-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Toggle do item atual
+            if (!isActive) {
+                faqItem.classList.add('active');
+            }
+        }
+
+        // CSS Styles para validação
+        const style = document.createElement('style');
+        style.textContent = `
+            .form-input.error,
+            .form-select.error,
+            .form-textarea.error {
+                border-color: #f44336;
+                box-shadow: 0 0 0 3px rgba(244, 67, 54, 0.1);
+            }
+            
+            .form-input.success,
+            .form-select.success,
+            .form-textarea.success {
+                border-color: #4CAF50;
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', function() {
+            const contactSystem = new ContactSystem();
+            
+            // Mensagem de boas-vindas
+            setTimeout(() => {
+                contactSystem.showNotification('Página de contato carregada. Estamos prontos para ajudá-lo!', 'info');
+            }, 1000);
+        });
+
+        function toggleMobileMenu() {
+    const sidebar = document.getElementById('sidebar');
+    sidebar.classList.toggle('mobile-open');
+}
+
+// EVENT LISTENERS
+document.addEventListener('DOMContentLoaded', function() {
+    // Fecha o menu mobile quando clica fora
+    document.addEventListener('click', function(e) {
+        const sidebar = document.getElementById('sidebar');
+        const menuToggle = document.querySelector('.mobile-menu-toggle');
+        
+        if (window.innerWidth <= 768 && 
+            !sidebar.contains(e.target) && 
+            !menuToggle.contains(e.target) && 
+            sidebar.classList.contains('mobile-open')) {
+            sidebar.classList.remove('mobile-open');
+        }
+    });
+
+    // Fecha modal quando clica fora
+    document.addEventListener('click', function(e) {
+        const modal = document.getElementById('exportModal');
+        if (e.target === modal) {
+            closeExportModal();
+        }
+    });
+});
+    </script>
+</body>
+</html>

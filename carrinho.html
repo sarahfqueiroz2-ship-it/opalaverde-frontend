@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Carrinho - OpalaVerde</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8faf8;
+        }
+
+        /* ===== SIDEBAR ===== */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 280px;
+            height: 100vh;
+            background: linear-gradient(180deg, #1a4a14, #2d5a27);
+            color: white;
+            z-index: 1000;
+            box-shadow: 3px 0 15px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-header {
+            padding: 25px 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            text-align: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+
+        .logo-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            position: relative;
+        }
+
+        .logo-icon img {
+            width: 50px;
+            height: 50px;
+            position: absolute;
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .tagline {
+            font-size: 0.85rem;
+            color: #b8d4b8;
+            margin-top: 5px;
+        }
+
+        .nav-menu {
+            padding: 20px 0;
+            min-height: 0;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .nav-item {
+            margin: 3px 0;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 15px 25px;
+            color: #e8f5e8;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: rgba(255,255,255,0.1);
+            border-left-color: #4CAF50;
+            color: white;
+        }
+
+        .nav-icon {
+            width: 20px;
+            margin-right: 15px;
+            text-align: center;
+        }
+
+        .cart-badge {
+            margin-left: auto;
+            background: #ff6b6b;
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 700;
+            border-radius: 20px;
+            padding: 2px 8px;
+            min-width: 20px;
+            text-align: center;
+        }
+
+        .user-profile {
+            padding: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            background: rgba(0,0,0,0.2);
+            flex-shrink: 0;
+            margin-top: auto;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: #4CAF50;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin-top: 15px;
+            width: 100%;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .logout-btn svg {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+        }
+
+        /* ===== MAIN ===== */
+        .main-content {
+            margin-left: 280px;
+            min-height: 100vh;
+            padding: 40px 30px;
+        }
+
+        .page-header {
+            margin-bottom: 30px;
+        }
+
+        .page-title {
+            font-size: 2.2rem;
+            color: #1a4a14;
+            font-weight: 700;
+        }
+
+        .page-subtitle {
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .cart-layout {
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 30px;
+            align-items: start;
+        }
+
+        .cart-items {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .cart-item {
+            background: white;
+            border-radius: 14px;
+            padding: 18px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.06);
+            display: grid;
+            grid-template-columns: 90px 1fr auto auto;
+            gap: 18px;
+            align-items: center;
+        }
+
+        .cart-item-image {
+            width: 90px;
+            height: 90px;
+            border-radius: 10px;
+            background-size: cover;
+            background-position: center;
+            background-color: #e8f5e8;
+        }
+
+        .cart-item-name {
+            font-weight: 700;
+            color: #1a4a14;
+            font-size: 1.05rem;
+            margin-bottom: 4px;
+        }
+
+        .cart-item-producer {
+            color: #777;
+            font-size: 0.9rem;
+        }
+
+        .cart-item-unit-price {
+            color: #4CAF50;
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-top: 6px;
+        }
+
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #f5f9f5;
+            border-radius: 10px;
+            padding: 6px 8px;
+        }
+
+        .quantity-btn {
+            width: 30px;
+            height: 30px;
+            border: none;
+            background: #4CAF50;
+            color: white;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .quantity-btn:hover {
+            background: #3f8d40;
+        }
+
+        .quantity-value {
+            min-width: 24px;
+            text-align: center;
+            font-weight: 700;
+        }
+
+        .cart-item-total {
+            font-weight: 700;
+            color: #1a4a14;
+            font-size: 1.1rem;
+            text-align: right;
+            min-width: 90px;
+        }
+
+        .remove-item-btn {
+            background: none;
+            border: none;
+            color: #d32f2f;
+            cursor: pointer;
+            font-size: 0.85rem;
+            margin-top: 8px;
+            text-decoration: underline;
+        }
+
+        .cart-summary {
+            background: white;
+            border-radius: 16px;
+            padding: 28px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+            position: sticky;
+            top: 30px;
+        }
+
+        .cart-summary h3 {
+            color: #1a4a14;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            color: #555;
+            border-bottom: 1px solid #eef2ee;
+        }
+
+        .summary-row.total {
+            font-weight: 700;
+            color: #1a4a14;
+            font-size: 1.3rem;
+            border-bottom: none;
+            padding-top: 16px;
+        }
+
+        .checkout-btn {
+            width: 100%;
+            padding: 16px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background 0.3s ease;
+        }
+
+        .checkout-btn:hover {
+            background: #3f8d40;
+        }
+
+        .checkout-btn:disabled {
+            background: #b8d4b8;
+            cursor: not-allowed;
+        }
+
+        .continue-shopping {
+            display: block;
+            text-align: center;
+            margin-top: 14px;
+            color: #4CAF50;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .empty-cart {
+            background: white;
+            border-radius: 16px;
+            padding: 60px 30px;
+            text-align: center;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+            grid-column: 1 / -1;
+        }
+
+        .empty-cart h3 {
+            color: #1a4a14;
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .empty-cart p {
+            color: #777;
+            margin-bottom: 20px;
+        }
+
+        .empty-cart a {
+            display: inline-block;
+            padding: 12px 28px;
+            background: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+
+        /* ===== MOBILE MENU ===== */
+        .mobile-menu-toggle {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1001;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            font-size: 18px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+
+        .mobile-menu-toggle:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+        }
+
+        .mobile-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 998;
+        }
+
+        .mobile-overlay.show {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .mobile-menu-toggle {
+                display: block;
+            }
+
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .sidebar.mobile-open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0 !important;
+                padding: 90px 18px 40px;
+            }
+
+            .cart-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .cart-item {
+                grid-template-columns: 70px 1fr;
+                grid-template-rows: auto auto;
+            }
+
+            .cart-item-total {
+                text-align: left;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .sidebar {
+                transform: translateX(0) !important;
+            }
+
+            .mobile-overlay {
+                display: none !important;
+            }
+        }
+
+        /* ===== LOGOUT MODAL ===== */
+        .logout-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 3000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(3px);
+        }
+
+        .logout-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .logout-modal-content {
+            background: white;
+            padding: 35px;
+            border-radius: 20px;
+            max-width: 420px;
+            width: 90%;
+            text-align: center;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            border: 2px solid #e8f5e8;
+        }
+
+        .logout-modal.active .logout-modal-content {
+            transform: scale(1);
+        }
+
+        .logout-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px;
+            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.3);
+        }
+
+        .logout-icon svg {
+            width: 35px;
+            height: 35px;
+            fill: white;
+        }
+
+        .logout-modal h3 {
+            color: #2d5a27;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .logout-modal p {
+            color: #666;
+            margin-bottom: 30px;
+            line-height: 1.6;
+            font-size: 1rem;
+        }
+
+        .logout-modal-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .confirm-logout, .cancel-logout {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 120px;
+        }
+
+        .confirm-logout {
+            background: linear-gradient(135deg, #f44336, #d32f2f);
+            color: white;
+        }
+
+        .confirm-logout:hover {
+            background: linear-gradient(135deg, #d32f2f, #c62828);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(244, 67, 54, 0.4);
+        }
+
+        .cancel-logout {
+            background: #f5f5f5;
+            color: #333;
+            border: 2px solid #e0e0e0;
+        }
+
+        .cancel-logout:hover {
+            background: #e8f5e8;
+            border-color: #4CAF50;
+            color: #2d5a27;
+        }
+
+        @media (max-width: 480px) {
+            .logout-modal-content {
+                padding: 25px;
+                margin: 20px;
+            }
+
+            .logout-modal-actions {
+                flex-direction: column;
+            }
+
+            .confirm-logout, .cancel-logout {
+                width: 100%;
+            }
+        }
+
+        /* ===== TOAST ===== */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            z-index: 3000;
+            transform: translateX(300px);
+            transition: transform 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast.success {
+            background: #4CAF50;
+        }
+
+        .toast.error {
+            background: #f44336;
+        }
+
+        .toast.warning {
+            background: #ff9800;
+        }
+    </style>
+    <script src="api.js?v=3"></script>
+</head>
+<body>
+    <button class="mobile-menu-toggle" id="mobileToggle">☰</button>
+    <div class="mobile-overlay" id="mobileOverlay"></div>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <div class="logo-icon">
+                    <img src="logo1.png" alt="">
+                </div>
+                <h1>OpalaVerde</h1>
+            </div>
+            <p class="tagline">Orgânicos de Pedro II</p>
+        </div>
+
+        <nav class="nav-menu">
+            <div class="nav-item">
+                <a href="inicial_cliente.html" class="nav-link">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M10 20V14H14V20H19V12H22L12 3L2 12H5V20H10Z"/>
+                        </svg>
+                    </span>
+                    Home/Inicial
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="catalogo_de_produtos.html" class="nav-link">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3ZM19 19H5V5H19V19Z"/>
+                        </svg>
+                    </span>
+                    Catálogo de Produtos
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="carrinho.html" class="nav-link active">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M7 18C5.9 18 5.01 18.9 5.01 20S5.9 22 7 22 9 21.1 9 20 8.1 18 7 18ZM1 2V4H3L6.6 11.59L5.25 14.04C5.09 14.32 5 14.65 5 15C5 16.1 5.9 17 7 17H19V15H7.42C7.28 15 7.17 14.89 7.17 14.75L7.2 14.63L8.1 13H15.55C16.3 13 16.96 12.59 17.3 11.97L20.88 5.48C20.96 5.34 21 5.17 21 5C21 4.45 20.55 4 20 4H5.21L4.27 2H1ZM17 18C15.9 18 15.01 18.9 15.01 20S15.9 22 17 22 19 21.1 19 20 18.1 18 17 18Z"/>
+                        </svg>
+                    </span>
+                    Carrinho
+                    <span class="cart-badge" id="cartBadge" style="display:none;">0</span>
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="meu-perfil-cliente.html" class="nav-link">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M12 12C14.21 12 16 10.21 16 8C16 5.79 14.21 4 12 4C9.79 4 8 5.79 8 8C8 10.21 9.79 12 12 12ZM12 14C9.33 14 4 15.34 4 18V20H20V18C20 15.34 14.67 14 12 14Z"/>
+                        </svg>
+                    </span>
+                    Minha Conta
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="historico-pedidos.html" class="nav-link">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M19 7V4H5V7H19ZM21 2H3C1.9 2 1 2.9 1 4V7C1 8.1 1.9 9 3 9H4V19C4 20.1 4.9 21 6 21H18C19.1 21 20 20.1 20 19V9H21C22.1 9 23 8.1 23 7V4C23 2.9 22.1 2 21 2Z"/>
+                        </svg>
+                    </span>
+                    Histórico de Pedidos
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="lista_favoritos.html" class="nav-link">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M12 21.35L10.55 20.03C5.4 15.36 2 12.28 2 8.5C2 5.42 4.42 3 7.5 3C9.24 3 10.91 3.81 12 5.09C13.09 3.81 14.76 3 16.5 3C19.58 3 22 5.42 22 8.5C22 12.28 18.6 15.36 13.45 20.04L12 21.35Z"/>
+                        </svg>
+                    </span>
+                    Lista de Favoritos
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="sobre-nos.html" class="nav-link">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M11 7H13V9H11V7ZM11 11H13V17H11V11ZM12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20Z"/>
+                        </svg>
+                    </span>
+                    Sobre Nós
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="contate-nos.html" class="nav-link">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M20 4H4C2.9 4 2.01 4.9 2.01 6L2 18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V6C22 4.9 21.1 4 20 4ZM20 8L12 13L4 8V6L12 11L20 6V8Z"/>
+                        </svg>
+                    </span>
+                    Contato
+                </a>
+            </div>
+        </nav>
+
+        <div class="user-profile">
+            <div class="user-info">
+                <div class="user-avatar">M</div>
+                <div>
+                    <div style="font-weight: 600;">Maria Silva</div>
+                    <div style="font-size: 0.8rem; color: #b8d4b8;">Cliente</div>
+                </div>
+            </div>
+
+            <button class="logout-btn" onclick="showLogoutModal()">
+                <svg viewBox="0 0 24 24">
+                    <path d="M17 7L15.59 8.41L18.17 11H8V13H18.17L15.59 15.59L17 17L22 12L17 7ZM4 5H12V3H4C2.9 3 2 3.9 2 5V19C2 20.1 2.9 21 4 21H12V19H4V5Z"/>
+                </svg>
+                Sair
+            </button>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <div class="page-header">
+            <h1 class="page-title">Meu Carrinho</h1>
+            <p class="page-subtitle">Revise seus produtos antes de finalizar o pedido</p>
+        </div>
+
+        <div class="cart-layout" id="cartLayout">
+            <!-- Preenchido via JS -->
+        </div>
+    </main>
+
+    <!-- Modal de Logout -->
+    <div class="logout-modal" id="logoutModal">
+        <div class="logout-modal-content">
+            <div class="logout-icon">
+                <svg viewBox="0 0 24 24">
+                    <path d="M17 7L15.59 8.41L18.17 11H8V13H18.17L15.59 15.59L17 17L22 12L17 7ZM4 5H12V3H4C2.9 3 2 3.9 2 5V19C2 20.1 2.9 21 4 21H12V19H4V5Z"/>
+                </svg>
+            </div>
+            <h3>Confirmar Saída</h3>
+            <p>Tem certeza de que deseja sair da sua conta? Você será redirecionado para a página de login.</p>
+            <div class="logout-modal-actions">
+                <button class="cancel-logout" onclick="closeLogoutModal()">Cancelar</button>
+                <button class="confirm-logout" onclick="confirmLogout()">Sair</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentUserData = null;
+
+        // ===== SESSÃO / USUÁRIO =====
+        function initUserSystem() {
+            const user = requireAuth(['cliente']);
+            if (!user) return false;
+
+            currentUserData = user;
+            try {
+                updateUserInterface();
+            } catch (error) {
+                console.error('Erro ao atualizar a interface do usuário:', error);
+            }
+            return true;
+        }
+
+        function updateUserInterface() {
+            if (!currentUserData) return;
+
+            const userNameElement = document.querySelector('.user-info div:last-child div:first-child');
+            const userTypeElement = document.querySelector('.user-info div:last-child div:last-child');
+            const userAvatarElement = document.querySelector('.user-avatar');
+
+            if (userNameElement) userNameElement.textContent = currentUserData.name;
+            if (userTypeElement) userTypeElement.textContent = 'Cliente';
+            if (userAvatarElement) {
+                renderAvatar(userAvatarElement, currentUserData);
+                userAvatarElement.setAttribute('title', currentUserData.email);
+            }
+        }
+
+        // ===== CARRINHO =====
+        function getCart() {
+            try {
+                return JSON.parse(localStorage.getItem('cart') || '[]');
+            } catch (error) {
+                console.error('Erro ao ler carrinho:', error);
+                return [];
+            }
+        }
+
+        function saveCart(cart) {
+            localStorage.setItem('cart', JSON.stringify(cart));
+        }
+
+        function formatMoney(value) {
+            return 'R$ ' + value.toFixed(2).replace('.', ',');
+        }
+
+        function renderCart() {
+            const cart = getCart();
+            const layout = document.getElementById('cartLayout');
+            const badge = document.getElementById('cartBadge');
+
+            const totalItens = cart.reduce((acc, item) => acc + item.quantity, 0);
+            if (badge) {
+                if (totalItens > 0) {
+                    badge.style.display = 'inline-block';
+                    badge.textContent = totalItens;
+                } else {
+                    badge.style.display = 'none';
+                }
+            }
+
+            if (cart.length === 0) {
+                layout.innerHTML = `
+                    <div class="empty-cart">
+                        <h3>Seu carrinho está vazio</h3>
+                        <p>Que tal dar uma olhada nos produtos orgânicos frescos do nosso catálogo?</p>
+                        <a href="catalogo_de_produtos.html">Ver Catálogo</a>
+                    </div>
+                `;
+                return;
+            }
+
+            const itemsHtml = cart.map(item => `
+                <div class="cart-item" data-id="${item.id}">
+                    <div class="cart-item-image" style="background-image: url('${item.image}')"></div>
+                    <div>
+                        <div class="cart-item-name">${item.name}</div>
+                        <div class="cart-item-producer">${item.producer}</div>
+                        <div class="cart-item-unit-price">${formatMoney(item.price)} / ${item.unit}</div>
+                        <button class="remove-item-btn" onclick="removeFromCart(${item.id})">Remover</button>
+                    </div>
+                    <div class="quantity-controls">
+                        <button class="quantity-btn" onclick="updateQuantity(${item.id}, -1)">-</button>
+                        <span class="quantity-value">${item.quantity}</span>
+                        <button class="quantity-btn" onclick="updateQuantity(${item.id}, 1)">+</button>
+                    </div>
+                    <div class="cart-item-total">${formatMoney(item.price * item.quantity)}</div>
+                </div>
+            `).join('');
+
+            const subtotal = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
+            const taxaEntrega = cart.length > 0 ? 5.00 : 0;
+            const total = subtotal + taxaEntrega;
+
+            layout.innerHTML = `
+                <div class="cart-items">${itemsHtml}</div>
+                <div class="cart-summary">
+                    <h3>Resumo do Pedido</h3>
+                    <div class="summary-row">
+                        <span>Subtotal</span>
+                        <span>${formatMoney(subtotal)}</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Taxa de entrega</span>
+                        <span>${formatMoney(taxaEntrega)}</span>
+                    </div>
+                    <div class="summary-row total">
+                        <span>Total</span>
+                        <span>${formatMoney(total)}</span>
+                    </div>
+                    <button class="checkout-btn" onclick="finalizarPedido()">Finalizar Pedido</button>
+                    <a href="catalogo_de_produtos.html" class="continue-shopping">Continuar Comprando</a>
+                </div>
+            `;
+        }
+
+        function updateQuantity(productId, delta) {
+            const cart = getCart();
+            const item = cart.find(i => i.id === productId);
+            if (!item) return;
+
+            item.quantity += delta;
+            if (item.quantity <= 0) {
+                const filtered = cart.filter(i => i.id !== productId);
+                saveCart(filtered);
+            } else {
+                saveCart(cart);
+            }
+            renderCart();
+        }
+
+        function removeFromCart(productId) {
+            const cart = getCart().filter(i => i.id !== productId);
+            saveCart(cart);
+            renderCart();
+            showToast('Produto removido do carrinho', 'warning');
+        }
+
+        async function finalizarPedido() {
+            const cart = getCart();
+            if (cart.length === 0) return;
+
+            const checkoutBtn = document.querySelector('.checkout-btn');
+            if (checkoutBtn) {
+                checkoutBtn.disabled = true;
+                checkoutBtn.textContent = 'Finalizando...';
+            }
+
+            try {
+                const response = await apiFetch('/orders/orders/checkout/', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        items: cart.map(item => ({ product: item.id, quantity: item.quantity })),
+                        delivery_address: 'Combinar retirada/entrega com o cliente',
+                    }),
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    console.error('Erro no checkout:', data);
+                    const mensagem = (typeof data.detail === 'string' && data.detail)
+                        || 'Não foi possível finalizar o pedido. Verifique o estoque disponível.';
+                    showToast(mensagem, 'error');
+                    if (checkoutBtn) {
+                        checkoutBtn.disabled = false;
+                        checkoutBtn.textContent = 'Finalizar Pedido';
+                    }
+                    return;
+                }
+
+                // Esvaziar carrinho
+                saveCart([]);
+
+                showToast('Pedido realizado com sucesso!', 'success');
+
+                const whatsappLinks = buildWhatsappLinks(data);
+                if (whatsappLinks.length > 0) {
+                    showWhatsappStep(whatsappLinks);
+                } else {
+                    setTimeout(() => {
+                        window.location.href = 'historico-pedidos.html';
+                    }, 1200);
+                }
+            } catch (error) {
+                console.error('Erro ao finalizar pedido:', error);
+                showToast('Não foi possível conectar ao servidor. Tente novamente.', 'error');
+                if (checkoutBtn) {
+                    checkoutBtn.disabled = false;
+                    checkoutBtn.textContent = 'Finalizar Pedido';
+                }
+            }
+        }
+
+        // Monta uma mensagem de WhatsApp pronta para cada produtor do pedido
+        // (agrupando os itens, já que um pedido pode ter produtos de mais de um produtor)
+        function buildWhatsappLinks(order) {
+            const porProdutor = {};
+
+            order.items.forEach(item => {
+                const whats = (item.producer_whatsapp || '').replace(/\D/g, '');
+                if (!whats) return; // produtor sem WhatsApp cadastrado: pula
+
+                if (!porProdutor[whats]) {
+                    porProdutor[whats] = { nome: item.producer_name || 'Produtor', itens: [] };
+                }
+                porProdutor[whats].itens.push(item);
+            });
+
+            return Object.entries(porProdutor).map(([whats, info]) => {
+                let msg = `Olá, ${info.nome}! Acabei de fazer um pedido na OpalaVerde (pedido #${order.id}):\n\n`;
+                info.itens.forEach(item => {
+                    msg += `• ${item.quantity}x ${item.product_name} (${item.unit}) - R$ ${parseFloat(item.subtotal).toFixed(2).replace('.', ',')}\n`;
+                });
+                const totalProdutor = info.itens.reduce((acc, i) => acc + parseFloat(i.subtotal), 0);
+                msg += `\nSubtotal com você: R$ ${totalProdutor.toFixed(2).replace('.', ',')}`;
+                msg += `\n\nPodemos combinar a entrega/retirada?`;
+
+                const whatsFinal = whats.length <= 11 ? '55' + whats : whats; // adiciona DDI Brasil se faltar
+                const url = `https://wa.me/${whatsFinal}?text=${encodeURIComponent(msg)}`;
+                return { nome: info.nome, url };
+            });
+        }
+
+        // Mostra os links do WhatsApp (não abre automaticamente: navegador bloquearia
+        // várias abas ao mesmo tempo; o clique do próprio usuário sempre funciona)
+        function showWhatsappStep(links) {
+            const layout = document.getElementById('cartLayout');
+            layout.innerHTML = `
+                <div class="empty-cart" style="grid-column: 1 / -1;">
+                    <h3>Pedido realizado com sucesso! 🎉</h3>
+                    <p>Agora é só combinar a entrega direto com ${links.length > 1 ? 'os produtores' : 'o produtor'} pelo WhatsApp:</p>
+                    <div style="display:flex; flex-direction:column; gap:12px; align-items:center; margin: 20px 0;">
+                        ${links.map(l => `
+                            <a href="${l.url}" target="_blank" rel="noopener"
+                               style="display:inline-flex; align-items:center; gap:10px; background:#25D366; color:white; padding:14px 28px; border-radius:10px; text-decoration:none; font-weight:600;">
+                                Falar com ${l.nome} no WhatsApp
+                            </a>
+                        `).join('')}
+                    </div>
+                    <a href="historico-pedidos.html" style="color:#4CAF50; font-weight:600;">Ver meus pedidos</a>
+                </div>
+            `;
+        }
+
+        function showToast(message, type = 'success') {
+            let toast = document.getElementById('toast');
+            if (!toast) {
+                toast = document.createElement('div');
+                toast.id = 'toast';
+                toast.className = 'toast';
+                document.body.appendChild(toast);
+            }
+            toast.textContent = message;
+            toast.className = `toast ${type} show`;
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        // ===== LOGOUT (mesma lógica das demais páginas do cliente) =====
+        function showLogoutModal() {
+            const logoutModal = document.getElementById('logoutModal');
+            if (logoutModal) {
+                logoutModal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        function closeLogoutModal() {
+            const logoutModal = document.getElementById('logoutModal');
+            if (logoutModal) {
+                logoutModal.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+        }
+
+        function confirmLogout() {
+            apiLogout();
+            window.location.href = 'login.html';
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                const logoutModal = document.getElementById('logoutModal');
+                if (logoutModal && logoutModal.classList.contains('active')) {
+                    closeLogoutModal();
+                }
+            }
+        });
+
+        // ===== MENU MOBILE =====
+        function initMobileMenu() {
+            const toggleBtn = document.getElementById('mobileToggle');
+            const overlay = document.getElementById('mobileOverlay');
+            const sidebar = document.querySelector('.sidebar');
+
+            if (!toggleBtn || !sidebar) return;
+
+            function toggleMenu() {
+                const isOpen = sidebar.classList.contains('mobile-open');
+                if (isOpen) {
+                    sidebar.classList.remove('mobile-open');
+                    overlay.classList.remove('show');
+                    toggleBtn.innerHTML = '☰';
+                    document.body.style.overflow = '';
+                } else {
+                    sidebar.classList.add('mobile-open');
+                    overlay.classList.add('show');
+                    toggleBtn.innerHTML = '✕';
+                    document.body.style.overflow = 'hidden';
+                }
+            }
+
+            toggleBtn.addEventListener('click', toggleMenu);
+            if (overlay) overlay.addEventListener('click', toggleMenu);
+
+            const menuLinks = sidebar.querySelectorAll('.nav-link');
+            menuLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    if (window.innerWidth <= 768) {
+                        setTimeout(toggleMenu, 200);
+                    }
+                });
+            });
+
+            window.addEventListener('resize', () => {
+                if (window.innerWidth > 768) {
+                    sidebar.classList.remove('mobile-open');
+                    overlay.classList.remove('show');
+                    toggleBtn.innerHTML = '☰';
+                    document.body.style.overflow = '';
+                }
+            });
+        }
+
+        // ===== INICIALIZAÇÃO =====
+        document.addEventListener('DOMContentLoaded', function() {
+            if (!initUserSystem()) return;
+            renderCart();
+            initMobileMenu();
+        });
+    </script>
+</body>
+</html>

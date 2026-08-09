@@ -1,0 +1,2338 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpalaVerde - Histórico de Pedidos</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8faf8;
+        }
+
+       .sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 280px;
+    height: 100vh;
+    background: linear-gradient(180deg, #1a4a14, #2d5a27);
+    color: white;
+    z-index: 1000;
+    box-shadow: 3px 0 15px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+}
+
+        .sidebar-header {
+            padding: 25px 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            text-align: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+
+        .logo-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .logo-icon img{
+            width: 50px;
+            height: 50px;
+            position: absolute;
+        }
+
+        .tagline {
+            font-size: 0.85rem;
+            color: #b8d4b8;
+            margin-top: 5px;
+        }
+
+        .nav-menu {
+    padding: 20px 0;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+        .nav-item {
+            margin: 3px 0;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 15px 25px;
+            color: #e8f5e8;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: rgba(255,255,255,0.1);
+            border-left-color: #4CAF50;
+            color: white;
+        }
+
+        .nav-icon {
+            width: 20px;
+            margin-right: 15px;
+            text-align: center;
+        }
+
+        .user-profile {
+    padding: 20px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    background: rgba(0,0,0,0.2);
+    flex-shrink: 0;
+    margin-top: auto; /* ← ADICIONE ESTA LINHA */
+}
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: #4CAF50;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+
+        /* Mobile Menu Toggle */
+        .mobile-menu-toggle {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1001;
+            background: #2d5a27;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 18px;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            width: 48px;
+            height: 48px;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .mobile-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 280px;
+            min-height: 100vh;
+            padding: 30px;
+        }
+
+        .page-header {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            color: #2d5a27;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .page-subtitle {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        /* Dashboard Stats */
+        .dashboard-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .stat-number.green { color: #4CAF50; }
+        .stat-number.blue { color: #1976d2; }
+        .stat-number.orange { color: #f57c00; }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Filters Section */
+        .filters-section {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+        }
+
+        .filters-title {
+            font-size: 1.3rem;
+            color: #2d5a27;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .filter-label {
+            font-weight: 600;
+            color: #333;
+            font-size: 0.9rem;
+        }
+
+        .filter-input, .filter-select {
+            padding: 12px 15px;
+            border: 2px solid #e0e8e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+
+        .filter-input:focus, .filter-select:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
+
+        .filter-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #f5f5f5;
+            color: #333;
+            border: 2px solid #e0e0e0;
+        }
+
+        .btn-secondary:hover {
+            background: #e8e8e8;
+        }
+
+        .btn-small {
+            padding: 8px 15px;
+            font-size: 0.85rem;
+        }
+
+        /* Orders Container */
+        .orders-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .order-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .order-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+        }
+
+        .order-header {
+            padding: 25px;
+            border-bottom: 2px solid #f0f0f0;
+            display: grid;
+            grid-template-columns: 1fr auto auto;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .order-info {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .order-number {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #2d5a27;
+        }
+
+        .order-date {
+            color: #666;
+            font-size: 0.95rem;
+        }
+
+        .order-total {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #4CAF50;
+            text-align: center;
+        }
+
+        .order-status {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status-badge {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-entregue {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .status-andamento {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+
+        .status-cancelado {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .order-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .order-details {
+            display: none;
+            padding: 25px;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .order-details.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .products-list {
+            background: #f8faf8;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .products-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2d5a27;
+            margin-bottom: 15px;
+        }
+
+        .product-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 0;
+            border-bottom: 1px solid #e0e8e0;
+        }
+
+        .product-item:last-child {
+            border-bottom: none;
+        }
+
+        .product-image {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #e8f5e8, #f0f4f0);
+            border: 2px solid #e0e8e0;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: #4CAF50;
+            font-weight: 600;
+        }
+
+        .product-info {
+            flex: 1;
+        }
+
+        .product-name {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .product-quantity {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .product-price {
+            font-weight: 600;
+            color: #4CAF50;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 30px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        }
+
+        .empty-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .empty-title {
+            font-size: 1.5rem;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .empty-subtitle {
+            color: #999;
+            margin-bottom: 30px;
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+            z-index: 10000;
+            animation: slideInRight 0.3s ease;
+            max-width: 400px;
+            border-left: 4px solid #4CAF50;
+        }
+
+        .notification-content {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            gap: 10px;
+        }
+
+        .notification-icon {
+            background: #4CAF50;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .notification-message {
+            flex: 1;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .notification-close {
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            color: #666;
+            padding: 0;
+        }
+
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .mobile-menu-toggle {
+                display: flex;
+            }
+
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.mobile-open {
+                transform: translateX(0);
+            }
+
+            .mobile-overlay.show {
+                display: block;
+                opacity: 1;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 20px 15px;
+                padding-top: 80px;
+            }
+
+            .page-title {
+                font-size: 2rem;
+            }
+
+            .dashboard-stats {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
+            }
+
+            .stat-number {
+                font-size: 2rem;
+            }
+
+            .filters-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .order-header {
+                grid-template-columns: 1fr;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .filter-actions {
+                flex-direction: column;
+            }
+
+            .notification {
+                left: 20px;
+                right: 20px;
+                max-width: none;
+            }
+        }
+
+        /* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 10000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.modal-content {
+    background-color: white;
+    margin: 5% auto;
+    padding: 30px;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    position: relative;
+    animation: modalSlideIn 0.3s ease;
+}
+
+@keyframes modalSlideIn {
+    from { transform: translateY(-50px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.modal-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #2d5a27;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: #666;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.modal-close:hover {
+    color: #2d5a27;
+}
+
+.modal-body {
+    margin-bottom: 25px;
+}
+
+.modal-text {
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.cancel-reason {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #e0e8e0;
+    border-radius: 8px;
+    resize: vertical;
+    min-height: 80px;
+    font-family: inherit;
+}
+
+.cancel-reason:focus {
+    outline: none;
+    border-color: #4CAF50;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: flex-end;
+}
+
+.btn-danger {
+    background: #c62828;
+    color: white;
+}
+
+.btn-danger:hover {
+    background: #b71c1c;
+}
+
+.support-options {
+    display: grid;
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.support-option {
+    padding: 20px;
+    border: 2px solid #e0e8e0;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+.support-option:hover {
+    border-color: #4CAF50;
+    background: #f8faf8;
+    transform: translateY(-2px);
+}
+
+.support-option-title {
+    font-weight: 700;
+    color: #2d5a27;
+    margin-bottom: 8px;
+}
+
+.support-option-desc {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.receipt-content {
+    background: #f8faf8;
+    padding: 25px;
+    border-radius: 10px;
+    margin: 20px 0;
+    border: 2px solid #e0e8e0;
+}
+
+.receipt-header {
+    text-align: center;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #2d5a27;
+}
+
+.receipt-logo {
+    color: #2d5a27;
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.receipt-subtitle {
+    color: #4CAF50;
+    font-size: 0.9rem;
+}
+
+.receipt-info {
+    margin-bottom: 20px;
+}
+
+.receipt-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    padding: 5px 0;
+}
+
+.receipt-label {
+    font-weight: 600;
+    color: #333;
+}
+
+.receipt-value {
+    color: #666;
+}
+
+.receipt-products {
+    margin: 20px 0;
+}
+
+.receipt-product {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #e0e8e0;
+}
+
+.receipt-product:last-child {
+    border-bottom: none;
+}
+
+.receipt-product-info {
+    flex: 1;
+}
+
+.receipt-product-name {
+    font-weight: 600;
+    color: #333;
+}
+
+.receipt-product-qty {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.receipt-total {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 2px solid #2d5a27;
+    text-align: right;
+}
+
+.receipt-total-label {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #2d5a27;
+}
+
+.receipt-total-value {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #4CAF50;
+}
+
+@media (max-width: 768px) {
+    .modal-content {
+        margin: 10% auto;
+        padding: 20px;
+        width: 95%;
+        max-height: 80vh;
+        overflow-y: auto;
+    }
+    
+    .modal-actions {
+        flex-direction: column;
+    }
+    
+    .support-options {
+        gap: 10px;
+    }
+    
+    .support-option {
+        padding: 15px;
+    }
+    
+    .receipt-content {
+        padding: 15px;
+    }
+    
+    .receipt-row {
+        flex-direction: column;
+        gap: 5px;
+    }
+    
+    .receipt-product {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+}
+
+.logout-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 3000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(3px);
+}
+
+.logout-modal.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.logout-modal-content {
+    background: white;
+    padding: 35px;
+    border-radius: 20px;
+    max-width: 420px;
+    width: 90%;
+    text-align: center;
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    border: 2px solid #e8f5e8;
+}
+
+.logout-modal.active .logout-modal-content {
+    transform: scale(1);
+}
+
+.logout-icon {
+    width: 70px;
+    height: 70px;
+    background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 25px;
+    box-shadow: 0 8px 25px rgba(255, 107, 107, 0.3);
+}
+
+.logout-icon svg {
+    width: 35px;
+    height: 35px;
+    fill: white;
+}
+
+.logout-modal h3 {
+    color: #2d5a27;
+    margin-bottom: 15px;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.logout-modal p {
+    color: #666;
+    margin-bottom: 30px;
+    line-height: 1.6;
+    font-size: 1rem;
+}
+
+.logout-modal-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.confirm-logout, .cancel-logout {
+    padding: 12px 25px;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 120px;
+}
+
+.confirm-logout {
+    background: linear-gradient(135deg, #f44336, #d32f2f);
+    color: white;
+}
+
+.confirm-logout:hover {
+    background: linear-gradient(135deg, #d32f2f, #c62828);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(244, 67, 54, 0.4);
+}
+
+.cancel-logout {
+    background: #f5f5f5;
+    color: #333;
+    border: 2px solid #e0e0e0;
+}
+
+.cancel-logout:hover {
+    background: #e8f5e8;
+    border-color: #4CAF50;
+    color: #2d5a27;
+}
+
+.logout-btn {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 12px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    margin-top: 15px;
+    width: 100%;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.logout-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.4);
+}
+
+.logout-btn svg {
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
+}
+
+@media (max-width: 480px) {
+    .logout-modal-content {
+        padding: 25px;
+        margin: 20px;
+    }
+    
+    .logout-modal-actions {
+        flex-direction: column;
+    }
+    
+    .confirm-logout, .cancel-logout {
+        width: 100%;
+    }
+}
+
+    </style>
+    <script src="api.js?v=3"></script>
+</head>
+<body>
+    <!-- Mobile Menu Toggle -->
+    <button class="mobile-menu-toggle" id="mobileToggle">☰</button>
+    <div class="mobile-overlay" id="mobileOverlay"></div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <div class="logo-icon">
+                    <img src="logo1.png" alt="">
+                </div>
+                <h1>OpalaVerde</h1>
+            </div>
+            <p class="tagline">Orgânicos de Pedro II</p>
+        </div>
+
+        <nav class="nav-menu">
+            <div class="nav-item">
+                <a href="inicial_cliente.html" class="nav-link">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M10 20V14H14V20H19V12H22L12 3L2 12H5V20H10Z"/>
+                        </svg>
+                    </span>
+                    Home/Inicial
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="catalogo_de_produtos.html" class="nav-link">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3ZM19 19H5V5H19V19Z"/>
+                        </svg>
+                    </span>
+                    Catálogo de Produtos
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="carrinho.html" class="nav-link">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M7 18C5.9 18 5.01 18.9 5.01 20S5.9 22 7 22 9 21.1 9 20 8.1 18 7 18ZM1 2V4H3L6.6 11.59L5.25 14.04C5.09 14.32 5 14.65 5 15C5 16.1 5.9 17 7 17H19V15H7.42C7.28 15 7.17 14.89 7.17 14.75L7.2 14.63L8.1 13H15.55C16.3 13 16.96 12.59 17.3 11.97L20.88 5.48C20.96 5.34 21 5.17 21 5C21 4.45 20.55 4 20 4H5.21L4.27 2H1ZM17 18C15.9 18 15.01 18.9 15.01 20S15.9 22 17 22 19 21.1 19 20 18.1 18 17 18Z"/>
+                        </svg>
+                    </span>
+                    Carrinho
+                </a>
+            </div>
+            
+           
+            <div class="nav-item">
+                <a href="meu-perfil-cliente.html" class="nav-link">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M12 12C14.21 12 16 10.21 16 8C16 5.79 14.21 4 12 4C9.79 4 8 5.79 8 8C8 10.21 9.79 12 12 12ZM12 14C9.33 14 4 15.34 4 18V20H20V18C20 15.34 14.67 14 12 14Z"/>
+                        </svg>
+                    </span>
+                    Minha Conta
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="historico-pedidos.html" class="nav-link active">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M19 7V4H5V7H19ZM21 2H3C1.9 2 1 2.9 1 4V7C1 8.1 1.9 9 3 9H4V19C4 20.1 4.9 21 6 21H18C19.1 21 20 20.1 20 19V9H21C22.1 9 23 8.1 23 7V4C23 2.9 22.1 2 21 2Z"/>
+                        </svg>
+                    </span>
+                    Histórico de Pedidos
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="lista_favoritos.html" class="nav-link">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M12 21.35L10.55 20.03C5.4 15.36 2 12.28 2 8.5C2 5.42 4.42 3 7.5 3C9.24 3 10.91 3.81 12 5.09C13.09 3.81 14.76 3 16.5 3C19.58 3 22 5.42 22 8.5C22 12.28 18.6 15.36 13.45 20.04L12 21.35Z"/>
+                        </svg>
+                    </span>
+                    Lista de Favoritos
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="sobre-nos.html" class="nav-link">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M11 7H13V9H11V7ZM11 11H13V17H11V11ZM12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20Z"/>
+                        </svg>
+                    </span>
+                    Sobre Nós
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="#" class="nav-link">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M20 4H4C2.9 4 2.01 4.9 2.01 6L2 18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V6C22 4.9 21.1 4 20 4ZM20 8L12 13L4 8V6L12 11L20 6V8Z"/>
+                        </svg>
+                    </span>
+                    Contato
+                </a>
+            </div>
+         
+
+        <div class="user-profile">
+            <div class="user-info">
+                <div class="user-avatar">M</div>
+                <div>
+                    <div style="font-weight: 600;">Maria Silva</div>
+                    <div style="font-size: 0.8rem; color: #b8d4b8;">Cliente</div>
+                </div>
+            </div>
+            
+            <button class="logout-btn" onclick="showLogoutModal()">
+                <svg viewBox="0 0 24 24">
+                    <path d="M17 7L15.59 8.41L18.17 11H8V13H18.17L15.59 15.59L17 17L22 12L17 7ZM4 5H12V3H4C2.9 3 2 3.9 2 5V19C2 20.1 2.9 21 4 21H12V19H4V5Z"/>
+                </svg>
+                Sair
+            </button>
+        </div>
+        
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="page-header">
+            <h1 class="page-title">Histórico de Pedidos</h1>
+            <p class="page-subtitle">Acompanhe todos os seus pedidos anteriores e suas informações detalhadas</p>
+        </div>
+
+        <!-- Dashboard Stats -->
+        <div class="dashboard-stats">
+            <div class="stat-card">
+                <div class="stat-number green" id="statTotalOrders">0</div>
+                <div class="stat-label">Total de Pedidos</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number blue" id="statTotalSpent">R$ 0,00</div>
+                <div class="stat-label">Total Gasto</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number green" id="statDelivered">0</div>
+                <div class="stat-label">Pedidos Entregues</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number orange" id="statInProgress">0</div>
+                <div class="stat-label">Em Andamento</div>
+            </div>
+        </div>
+
+        <!-- Filters Section -->
+        <div class="filters-section">
+            <h3 class="filters-title">Filtros e Busca</h3>
+            <div class="filters-grid">
+                <div class="filter-group">
+                    <label class="filter-label">Buscar por número do pedido</label>
+                    <input type="text" class="filter-input" id="searchOrder" placeholder="Ex: #12345">
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Status</label>
+                    <select class="filter-select" id="statusFilter">
+                        <option value="all">Todos os status</option>
+                        <option value="entregue">Entregue</option>
+                        <option value="andamento">Em andamento</option>
+                        <option value="cancelado">Cancelado</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Período</label>
+                    <select class="filter-select" id="periodFilter">
+                        <option value="all">Todos os períodos</option>
+                        <option value="30days">Último mês</option>
+                        <option value="3months">Últimos 3 meses</option>
+                        <option value="6months">Últimos 6 meses</option>
+                    </select>
+                </div>
+            </div>
+            <div class="filter-actions">
+                <button class="btn btn-primary" onclick="applyFilters()">Buscar</button>
+                <button class="btn btn-secondary" onclick="clearFilters()">Limpar</button>
+            </div>
+        </div>
+
+        <!-- Orders Container -->
+        <div class="orders-container" id="ordersContainer">
+        </div>
+
+        <!-- Empty State -->
+        <div class="empty-state" id="emptyState" style="display: none;">
+            <div class="empty-icon">📦</div>
+            <h3 class="empty-title">Nenhum pedido encontrado</h3>
+            <p class="empty-subtitle">Tente ajustar os filtros ou fazer seu primeiro pedido conosco!</p>
+            <a href="catalogo_de_produtos.html" class="btn btn-primary">Explorar Produtos</a>
+        </div>
+
+        <div class="logout-modal" id="logoutModal">
+            <div class="logout-modal-content">
+                <div class="logout-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M17 7L15.59 8.41L18.17 11H8V13H18.17L15.59 15.59L17 17L22 12L17 7ZM4 5H12V3H4C2.9 3 2 3.9 2 5V19C2 20.1 2.9 21 4 21H12V19H4V5Z"/>
+                    </svg>
+                </div>
+                <h3>Confirmar Saida</h3>
+                <p>Tem certeza de que deseja sair da sua conta? Voce sera redirecionado para a pagina de login.</p>
+                <div class="logout-modal-actions">
+                    <button class="cancel-logout" onclick="closeLogoutModal()">Cancelar</button>
+                    <button class="confirm-logout" onclick="confirmLogout()">Sair</button>
+                </div>
+            </div>
+        </div>
+        
+    </main>
+
+
+    <!-- Modal de Cancelamento -->
+<div id="cancelModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title">Cancelar Pedido</h3>
+            <button class="modal-close" onclick="closeCancelModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p class="modal-text">Tem certeza que deseja cancelar este pedido? Esta ação não pode ser desfeita.</p>
+            <label for="cancelReason" class="filter-label">Motivo do cancelamento:</label>
+            <textarea id="cancelReason" class="cancel-reason" placeholder="Digite o motivo do cancelamento (opcional)"></textarea>
+        </div>
+        <div class="modal-actions">
+            <button class="btn btn-secondary" onclick="closeCancelModal()">Manter Pedido</button>
+            <button class="btn btn-danger" onclick="confirmCancel()">Confirmar Cancelamento</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Suporte -->
+<div id="supportModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title">Falar com Suporte</h3>
+            <button class="modal-close" onclick="closeSupportModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p class="modal-text">Com quem você gostaria de falar?</p>
+            <div class="support-options">
+                <div class="support-option" onclick="contactSupport('admin')">
+                    <div class="support-option-title">Administradores</div>
+                    <div class="support-option-desc">Para questões técnicas, problemas com pedidos e suporte geral</div>
+                </div>
+                <div class="support-option" onclick="contactSupport('owner')">
+                    <div class="support-option-title">Proprietário</div>
+                    <div class="support-option-desc">Para feedback, sugestões e questões sobre produtos</div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-actions">
+            <button class="btn btn-secondary" onclick="closeSupportModal()">Cancelar</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Comprovante -->
+<div id="receiptModal" class="modal">
+    <div class="modal-content" style="max-width: 600px;">
+        <div class="modal-header">
+            <h3 class="modal-title">Comprovante do Pedido</h3>
+            <button class="modal-close" onclick="closeReceiptModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="receipt-content" id="receiptContent">
+                <!-- Conteúdo do comprovante será gerado dinamicamente -->
+            </div>
+        </div>
+        <div class="modal-actions">
+            <button class="btn btn-secondary" onclick="closeReceiptModal()">Fechar</button>
+            <button class="btn btn-primary" onclick="downloadReceipt()">Baixar PDF</button>
+        </div>
+    </div>
+</div>
+
+    <script>
+
+let currentUserData = null;
+let userPersonalData = {};
+
+// Função principal para inicializar o sistema de usuário
+function initUserSystem() {
+    // Exige login válido (token JWT real) como cliente
+    const user = requireAuth(['cliente']);
+    if (!user) return false;
+
+    // A partir daqui o login JÁ é válido: um erro de exibição não deve
+    // mais mandar o usuário de volta para o login.
+    currentUserData = user;
+    try {
+        loadUserPersonalData();
+    } catch (error) {
+        console.error('Erro ao carregar dados pessoais:', error);
+    }
+    try {
+        updateUserInterface();
+    } catch (error) {
+        console.error('Erro ao atualizar a interface do usuário:', error);
+    }
+    return true;
+}
+
+// Carregar dados pessoais do usuário do localStorage
+function loadUserPersonalData() {
+    const storageKey = `userData_${currentUserData.email}`;
+    const savedData = localStorage.getItem(storageKey);
+    
+    if (savedData) {
+        try {
+            userPersonalData = JSON.parse(savedData);
+        } catch (error) {
+            console.error('Erro ao carregar dados pessoais:', error);
+            userPersonalData = {};
+        }
+    }
+    
+    // Inicializar estrutura de dados se não existir
+    userPersonalData = {
+        feedbacks: userPersonalData.feedbacks || [],
+        favorites: userPersonalData.favorites || [],
+        cart: userPersonalData.cart || [],
+        preferences: userPersonalData.preferences || {},
+        orders: userPersonalData.orders || [],
+        ...userPersonalData
+    };
+}
+
+// Salvar dados pessoais do usuário no localStorage
+function saveUserPersonalData() {
+    if (!currentUserData) return;
+    
+    const storageKey = `userData_${currentUserData.email}`;
+    localStorage.setItem(storageKey, JSON.stringify(userPersonalData));
+}
+
+// Atualizar interface do usuário com os dados
+function updateUserInterface() {
+    if (!currentUserData) return;
+    
+    // Atualizar informações do perfil na sidebar
+    const userNameElement = document.querySelector('.user-info div:last-child div:first-child');
+    const userTypeElement = document.querySelector('.user-info div:last-child div:last-child');
+    const userAvatarElement = document.querySelector('.user-avatar');
+    
+    if (userNameElement) {
+        userNameElement.textContent = currentUserData.name;
+    }
+    
+    if (userTypeElement) {
+        userTypeElement.textContent = currentUserData.user_type === 'cliente' ? 'Cliente' : 'Produtor';
+    }
+    
+    if (userAvatarElement) {
+        renderAvatar(userAvatarElement, currentUserData);
+    }
+    
+    // Verificar se existem outros elementos de usuário na página
+    updateOtherUserElements();
+}
+
+// Função para atualizar outros elementos que possam mostrar dados do usuário
+function updateOtherUserElements() {
+    // Atualizar nome em formulários ou outros locais
+    const userNameInputs = document.querySelectorAll('input[name*="name"], input[name*="nome"], input[id*="name"], input[id*="nome"]');
+    userNameInputs.forEach(input => {
+        if (input.value === '' || input.placeholder.toLowerCase().includes('nome')) {
+            input.value = currentUserData.name;
+        }
+    });
+    
+    // Atualizar email em formulários
+    const userEmailInputs = document.querySelectorAll('input[type="email"], input[name*="email"], input[id*="email"]');
+    userEmailInputs.forEach(input => {
+        if (input.value === '' || input.placeholder.toLowerCase().includes('email')) {
+            input.value = currentUserData.email;
+        }
+    });
+    
+    // Atualizar qualquer elemento com classe 'user-name'
+    const userNameElements = document.querySelectorAll('.user-name');
+    userNameElements.forEach(element => {
+        element.textContent = currentUserData.name;
+    });
+    
+    // Atualizar qualquer elemento com classe 'user-email'
+    const userEmailElements = document.querySelectorAll('.user-email');
+    userEmailElements.forEach(element => {
+        element.textContent = currentUserData.email;
+    });
+}
+
+// Sistema de Logout Universal
+function showLogoutModal() {
+    // Verificar se o modal já existe, se não, criar
+    let logoutModal = document.getElementById('logoutModal');
+    
+    if (!logoutModal) {
+        createLogoutModal();
+        logoutModal = document.getElementById('logoutModal');
+    }
+    
+    if (logoutModal) {
+        logoutModal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+function closeLogoutModal() {
+    const logoutModal = document.getElementById('logoutModal');
+    if (logoutModal) {
+        logoutModal.classList.remove('active');
+        document.body.style.overflow = 'auto';
+    }
+}
+
+// Criar modal de logout se não existir
+function createLogoutModal() {
+    const modalHTML = `
+    <!-- Modal de Logout -->
+    <div class="logout-modal" id="logoutModal">
+        <div class="logout-modal-content">
+            <div class="logout-icon">
+                <svg viewBox="0 0 24 24">
+                    <path d="M17 7L15.59 8.41L18.17 11H8V13H18.17L15.59 15.59L17 17L22 12L17 7ZM4 5H12V3H4C2.9 3 2 3.9 2 5V19C2 20.1 2.9 21 4 21H12V19H4V5Z"/>
+                </svg>
+            </div>
+            <h3>Confirmar Saída</h3>
+            <p>Tem certeza de que deseja sair da sua conta? Você será redirecionado para a página de login.</p>
+            <div class="logout-modal-actions">
+                <button class="cancel-logout" onclick="closeLogoutModal()">Cancelar</button>
+                <button class="confirm-logout" onclick="confirmLogout()">Sair</button>
+            </div>
+        </div>
+    </div>`;
+    
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+}
+
+// Função de inicialização principal que deve ser chamada em cada página
+function initializePage() {
+    // PRIMEIRO: Verificar e inicializar sistema de usuário
+    if (!initUserSystem()) {
+        return false; // Se falhou, para a execução
+    }
+    
+    // Salvar dados periodicamente
+    setInterval(saveUserPersonalData, 30000); // A cada 30 segundos
+    
+    // Salvar dados antes de fechar/sair da página
+    window.addEventListener('beforeunload', saveUserPersonalData);
+    
+    // Event listeners para logout
+    setupLogoutEventListeners();
+    
+    return true;
+}
+
+// Configurar event listeners para o sistema de logout
+function setupLogoutEventListeners() {
+    // Fechar modal com ESC
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            const logoutModal = document.getElementById('logoutModal');
+            if (logoutModal && logoutModal.classList.contains('active')) {
+                closeLogoutModal();
+            }
+        }
+    });
+    
+    // Fechar modal clicando fora
+    document.addEventListener('click', function(e) {
+        const logoutModal = document.getElementById('logoutModal');
+        if (e.target === logoutModal) {
+            closeLogoutModal();
+        }
+    });
+}
+
+// Função para verificar se usuário está logado (pode ser usada em qualquer lugar)
+function isUserLoggedIn() {
+    return currentUserData !== null && sessionStorage.getItem('currentUser') !== null;
+}
+
+// Função para obter dados do usuário atual
+function getCurrentUser() {
+    return currentUserData;
+}
+
+// Função para obter dados pessoais do usuário
+function getUserPersonalData() {
+    return userPersonalData;
+}
+
+// Função para atualizar dados pessoais do usuário
+function updateUserPersonalData(newData) {
+    userPersonalData = { ...userPersonalData, ...newData };
+    saveUserPersonalData();
+}
+
+        // Mobile menu functionality
+        function toggleMobileMenu() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('mobileOverlay');
+            const toggle = document.getElementById('mobileToggle');
+            
+            const isOpen = sidebar.classList.contains('mobile-open');
+            
+            if (isOpen) {
+                sidebar.classList.remove('mobile-open');
+                overlay.classList.remove('show');
+                toggle.innerHTML = '☰';
+                document.body.style.overflow = '';
+            } else {
+                sidebar.classList.add('mobile-open');
+                overlay.classList.add('show');
+                toggle.innerHTML = '✕';
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        // Event listeners for mobile menu
+        document.getElementById('mobileToggle').addEventListener('click', toggleMobileMenu);
+        document.getElementById('mobileOverlay').addEventListener('click', toggleMobileMenu);
+
+        // Close mobile menu when clicking on navigation links
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function() {
+                if (window.innerWidth <= 768) {
+                    setTimeout(toggleMobileMenu, 150);
+                }
+            });
+        });
+
+        // Close mobile menu on window resize
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 768) {
+                const sidebar = document.getElementById('sidebar');
+                const overlay = document.getElementById('mobileOverlay');
+                const toggle = document.getElementById('mobileToggle');
+                
+                sidebar.classList.remove('mobile-open');
+                overlay.classList.remove('show');
+                toggle.innerHTML = '☰';
+                document.body.style.overflow = '';
+            }
+        });
+
+        // Toggle order details
+        function toggleDetails(button) {
+            const orderCard = button.closest('.order-card');
+            const details = orderCard.querySelector('.order-details');
+            
+            if (details.classList.contains('active')) {
+                details.classList.remove('active');
+                button.textContent = 'Ver Detalhes';
+            } else {
+                details.classList.add('active');
+                button.textContent = 'Ocultar Detalhes';
+            }
+        }
+
+        // Filter functionality
+        function applyFilters() {
+            const searchOrder = document.getElementById('searchOrder').value.toLowerCase();
+            const statusFilter = document.getElementById('statusFilter').value;
+            const periodFilter = document.getElementById('periodFilter').value;
+            
+            const orderCards = document.querySelectorAll('.order-card');
+            let visibleCount = 0;
+            
+            orderCards.forEach(card => {
+                let shouldShow = true;
+                
+                // Filter by order number
+                if (searchOrder && !card.querySelector('.order-number').textContent.toLowerCase().includes(searchOrder)) {
+                    shouldShow = false;
+                }
+                
+                // Filter by status
+                if (statusFilter !== 'all' && card.dataset.status !== statusFilter) {
+                    shouldShow = false;
+                }
+                
+                // Filter by period
+                if (periodFilter !== 'all') {
+                    const orderDate = new Date(card.dataset.date);
+                    const now = new Date();
+                    const diffTime = now - orderDate;
+                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                    
+                    switch (periodFilter) {
+                        case '30days':
+                            if (diffDays > 30) shouldShow = false;
+                            break;
+                        case '3months':
+                            if (diffDays > 90) shouldShow = false;
+                            break;
+                        case '6months':
+                            if (diffDays > 180) shouldShow = false;
+                            break;
+                    }
+                }
+                
+                if (shouldShow) {
+                    card.style.display = 'block';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+            
+            // Show empty state if no orders visible
+            const emptyState = document.getElementById('emptyState');
+            if (visibleCount === 0) {
+                emptyState.style.display = 'block';
+            } else {
+                emptyState.style.display = 'none';
+            }
+            
+            showNotification(`${visibleCount} pedido(s) encontrado(s)`);
+        }
+
+        function clearFilters() {
+            document.getElementById('searchOrder').value = '';
+            document.getElementById('statusFilter').value = 'all';
+            document.getElementById('periodFilter').value = 'all';
+            
+            document.querySelectorAll('.order-card').forEach(card => {
+                card.style.display = 'block';
+            });
+            
+            document.getElementById('emptyState').style.display = 'none';
+            showNotification('Filtros limpos');
+        }
+
+        // Track order functionality
+        function trackOrder(orderNumber) {
+            showNotification(`Rastreando pedido ${orderNumber}...`);
+            
+            setTimeout(() => {
+                showNotification('Pedido em preparação - Saindo para entrega em 2 horas');
+            }, 1500);
+        }
+
+        // Show notification
+        function showNotification(message) {
+            // Remove existing notifications
+            document.querySelectorAll('.notification').forEach(n => n.remove());
+            
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.innerHTML = `
+                <div class="notification-content">
+                    <span class="notification-icon">✓</span>
+                    <span class="notification-message">${message}</span>
+                    <button class="notification-close" onclick="this.parentElement.parentElement.remove()">×</button>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                if (notification.parentElement) {
+                    notification.remove();
+                }
+            }, 4000);
+        }
+
+        // Allow search with Enter key
+        document.getElementById('searchOrder').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                applyFilters();
+            }
+        });
+
+        // Simulate button actions
+        document.addEventListener('click', function(e) {
+            const buttonText = e.target.textContent;
+            
+            if (buttonText.includes('Repetir Pedido') || buttonText.includes('Refazer Pedido')) {
+                showNotification('Pedido adicionado ao carrinho!');
+            } else if (buttonText.includes('Baixar Comprovante') || buttonText.includes('Ver Comprovante')) {
+                showNotification('Iniciando download do comprovante...');
+            } else if (buttonText.includes('Falar com Suporte')) {
+                showNotification('Redirecionando para o chat de suporte...');
+            }
+        });
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', async function() {
+
+            // PRIMEIRO: Inicializar sistema completo
+    if (!initializePage()) {
+        return; // Se falhou, para a execução
+    }
+    
+    // Resto do seu código específico da página...
+    await renderRealOrders(); // Insere pedidos reais do cliente, vindos do backend
+
+            // Add smooth entrance animation to cards
+            document.querySelectorAll('.stat-card').forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                
+                setTimeout(() => {
+                    card.style.transition = 'all 0.5s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+
+            document.querySelectorAll('.order-card').forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                
+                setTimeout(() => {
+                    card.style.transition = 'all 0.5s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, (index + 4) * 100);
+            });
+        });
+
+
+        // Variável global para armazenar o pedido sendo cancelado
+let currentOrderToCancel = null;
+// Mapeia "#123" (texto exibido) -> id real do pedido no backend, usado no cancelamento
+let realOrdersMap = {};
+
+// Insere no topo da lista os pedidos reais do cliente, vindos do backend
+async function renderRealOrders() {
+    const container = document.getElementById('ordersContainer');
+    if (!container) return;
+
+    let pedidos = [];
+    try {
+        const response = await apiFetch('/orders/orders/');
+        if (!response.ok) throw new Error('Falha ao buscar pedidos');
+        const data = await response.json();
+        pedidos = data.results || data;
+    } catch (error) {
+        console.error('Erro ao carregar pedidos reais:', error);
+        return;
+    }
+
+    // Estatísticas reais (topo da página)
+    const totalOrders = pedidos.length;
+    const totalSpent = pedidos
+        .filter(p => p.status !== 'cancelled')
+        .reduce((acc, p) => acc + parseFloat(p.total), 0);
+    const delivered = pedidos.filter(p => p.status === 'delivered').length;
+    const inProgress = pedidos.filter(p => !['delivered', 'cancelled'].includes(p.status)).length;
+
+    const elTotal = document.getElementById('statTotalOrders');
+    const elSpent = document.getElementById('statTotalSpent');
+    const elDelivered = document.getElementById('statDelivered');
+    const elProgress = document.getElementById('statInProgress');
+    if (elTotal) elTotal.textContent = totalOrders;
+    if (elSpent) elSpent.textContent = 'R$ ' + totalSpent.toFixed(2).replace('.', ',');
+    if (elDelivered) elDelivered.textContent = delivered;
+    if (elProgress) elProgress.textContent = inProgress;
+
+    if (pedidos.length === 0) {
+        const emptyState = document.getElementById('emptyState');
+        if (emptyState) emptyState.style.display = 'block';
+        return;
+    }
+
+    const statusInfo = {
+        received: { cssClass: 'andamento', label: 'Recebido' },
+        preparing: { cssClass: 'andamento', label: 'Preparando' },
+        ready: { cssClass: 'andamento', label: 'Pronto para retirada' },
+        delivered: { cssClass: 'entregue', label: 'Entregue' },
+        cancelled: { cssClass: 'cancelado', label: 'Cancelado' },
+    };
+
+    const html = pedidos.map(pedido => {
+        const orderNumber = '#' + pedido.id;
+        realOrdersMap[orderNumber] = pedido.id;
+
+        const dataObj = new Date(pedido.created_at);
+        const dataFormatada = dataObj.toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' }) +
+            ' - ' + dataObj.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+
+        const info = statusInfo[pedido.status] || { cssClass: 'andamento', label: pedido.status };
+
+        const itensHtml = pedido.items.map(item => `
+                        <div class="product-item">
+                            <div class="product-image">IMG</div>
+                            <div class="product-info">
+                                <div class="product-name">${item.product_name}</div>
+                                <div class="product-quantity">Quantidade: ${item.quantity} ${item.unit || ''} (vendido por ${item.producer_name || 'produtor'})</div>
+                            </div>
+                            <div class="product-price">R$ ${parseFloat(item.subtotal).toFixed(2).replace('.', ',')}</div>
+                        </div>`).join('');
+
+        const actionsHtml = pedido.status === 'cancelled'
+            ? `<button class="btn btn-secondary btn-small" onclick="showReceipt('${orderNumber}')">Ver Comprovante</button>
+               <button class="btn btn-secondary btn-small" onclick="showSupportModal()">Falar com Suporte</button>`
+            : `<button class="btn btn-secondary btn-small" onclick="showReceipt('${orderNumber}')">Ver Comprovante</button>
+               <button class="btn btn-danger btn-small" onclick="showCancelModal('${orderNumber}')">Cancelar Pedido</button>
+               <button class="btn btn-secondary btn-small" onclick="showSupportModal()">Falar com Suporte</button>`;
+
+        return `
+            <div class="order-card" data-status="${info.cssClass}" data-date="${dataObj.toISOString().split('T')[0]}">
+                <div class="order-header">
+                    <div class="order-info">
+                        <div class="order-number">${orderNumber}</div>
+                        <div class="order-date">${dataFormatada}</div>
+                    </div>
+                    <div class="order-total">R$ ${parseFloat(pedido.total).toFixed(2).replace('.', ',')}</div>
+                    <div class="order-status">
+                        <span class="status-badge status-${info.cssClass}">${info.label}</span>
+                        <div class="order-actions">
+                            <button class="btn btn-primary btn-small" onclick="toggleDetails(this)">Ver Detalhes</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="order-details">
+                    <div class="products-list">
+                        <h4 class="products-title">Produtos do Pedido</h4>${itensHtml}
+                    </div>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        ${actionsHtml}
+                    </div>
+                </div>
+            </div>`;
+    }).join('');
+
+    container.insertAdjacentHTML('afterbegin', html);
+}
+
+// Função para mostrar modal de cancelamento
+function showCancelModal(orderNumber) {
+    currentOrderToCancel = orderNumber;
+    document.getElementById('cancelModal').style.display = 'block';
+    document.body.style.overflow = 'hidden';
+}
+
+// Função para fechar modal de cancelamento
+function closeCancelModal() {
+    document.getElementById('cancelModal').style.display = 'none';
+    document.getElementById('cancelReason').value = '';
+    document.body.style.overflow = '';
+    currentOrderToCancel = null;
+}
+
+// Função para confirmar cancelamento
+async function confirmCancel() {
+    const reason = document.getElementById('cancelReason').value;
+    
+    if (currentOrderToCancel) {
+        // Se for um pedido real (veio do backend), cancela de verdade via API
+        const realOrderId = realOrdersMap[currentOrderToCancel];
+        if (realOrderId) {
+            try {
+                const response = await apiFetch(`/orders/orders/${realOrderId}/update_status/`, {
+                    method: 'PATCH',
+                    body: JSON.stringify({ status: 'cancelled' }),
+                });
+                if (!response.ok) {
+                    const data = await response.json().catch(() => ({}));
+                    showNotification(data.detail || 'Não foi possível cancelar o pedido.');
+                    closeCancelModal();
+                    return;
+                }
+            } catch (error) {
+                console.error('Erro ao cancelar pedido:', error);
+                showNotification('Não foi possível conectar ao servidor.');
+                closeCancelModal();
+                return;
+            }
+        }
+
+        showNotification(`Pedido ${currentOrderToCancel} cancelado com sucesso`);
+        
+        // Atualizar o status do pedido na interface
+        const orderCard = Array.from(document.querySelectorAll('.order-card')).find(card => 
+            card.querySelector('.order-number').textContent === currentOrderToCancel
+        );
+        
+        if (orderCard) {
+            const statusBadge = orderCard.querySelector('.status-badge');
+            statusBadge.className = 'status-badge status-cancelado';
+            statusBadge.textContent = 'Cancelado';
+            
+            // Atualizar dataset
+            orderCard.dataset.status = 'cancelado';
+            
+            // Atualizar ações disponíveis
+            const actionsDiv = orderCard.querySelector('.order-details').lastElementChild;
+            actionsDiv.innerHTML = `
+                <button class="btn btn-primary btn-small">Refazer Pedido</button>
+                <button class="btn btn-secondary btn-small" onclick="showReceipt('${currentOrderToCancel}')">Baixar Comprovante</button>
+                <button class="btn btn-secondary btn-small" onclick="showSupportModal()">Falar com Suporte</button>
+            `;
+            
+            // Adicionar motivo do cancelamento se fornecido
+            if (reason.trim()) {
+                const existingCancelDiv = orderCard.querySelector('.order-details').children[1];
+                if (existingCancelDiv && existingCancelDiv.style.background === 'rgb(255, 235, 238)') {
+                    existingCancelDiv.querySelector('span').textContent = `Cancelado pelo cliente - ${reason.trim()}`;
+                } else {
+                    const cancelDiv = document.createElement('div');
+                    cancelDiv.style.cssText = 'background: #ffebee; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #c62828;';
+                    cancelDiv.innerHTML = `
+                        <strong style="color: #c62828;">Motivo do cancelamento:</strong><br>
+                        <span style="color: #666;">Cancelado pelo cliente - ${reason.trim()}</span>
+                    `;
+                    orderCard.querySelector('.order-details').insertBefore(cancelDiv, actionsDiv);
+                }
+            }
+        }
+    }
+    
+    closeCancelModal();
+}
+
+// Função para mostrar modal de suporte
+function showSupportModal() {
+    document.getElementById('supportModal').style.display = 'block';
+    document.body.style.overflow = 'hidden';
+}
+
+// Função para fechar modal de suporte
+function closeSupportModal() {
+    document.getElementById('supportModal').style.display = 'none';
+    document.body.style.overflow = '';
+}
+
+// Função para contatar suporte
+function contactSupport(type) {
+    let message = '';
+    
+    if (type === 'admin') {
+        message = 'Redirecionando para chat com administradores...';
+        // Aqui você pode adicionar a lógica para redirecionar para o chat dos admins
+    } else if (type === 'owner') {
+        message = 'Redirecionando para chat com o proprietário...';
+        // Aqui você pode adicionar a lógica para redirecionar para o chat do proprietário
+    }
+    
+    showNotification(message);
+    closeSupportModal();
+}
+
+// Função para mostrar comprovante
+function showReceipt(orderNumber) {
+    // Buscar dados do pedido
+    const orderCard = Array.from(document.querySelectorAll('.order-card')).find(card => 
+        card.querySelector('.order-number').textContent === orderNumber
+    );
+    
+    if (!orderCard) {
+        showNotification('Erro: Pedido não encontrado');
+        return;
+    }
+    
+    const orderDate = orderCard.querySelector('.order-date').textContent;
+    const orderTotal = orderCard.querySelector('.order-total').textContent;
+    const orderStatus = orderCard.querySelector('.status-badge').textContent;
+    const products = orderCard.querySelectorAll('.product-item');
+    
+    // Gerar conteúdo do comprovante
+    let productsHTML = '';
+    products.forEach(product => {
+        const name = product.querySelector('.product-name').textContent;
+        const quantity = product.querySelector('.product-quantity').textContent;
+        const price = product.querySelector('.product-price').textContent;
+        
+        productsHTML += `
+            <div class="receipt-product">
+                <div class="receipt-product-info">
+                    <div class="receipt-product-name">${name}</div>
+                    <div class="receipt-product-qty">${quantity}</div>
+                </div>
+                <div>${price}</div>
+            </div>
+        `;
+    });
+    
+    const receiptHTML = `
+        <div class="receipt-header">
+            <div class="receipt-logo">OpalaVerde</div>
+            <div class="receipt-subtitle">Orgânicos de Pedro II</div>
+        </div>
+        
+        <div class="receipt-info">
+            <div class="receipt-row">
+                <span class="receipt-label">Número do Pedido:</span>
+                <span class="receipt-value">${orderNumber}</span>
+            </div>
+            <div class="receipt-row">
+                <span class="receipt-label">Data:</span>
+                <span class="receipt-value">${orderDate}</span>
+            </div>
+            <div class="receipt-row">
+                <span class="receipt-label">Status:</span>
+                <span class="receipt-value">${orderStatus}</span>
+            </div>
+            <div class="receipt-row">
+                <span class="receipt-label">Cliente:</span>
+                <span class="receipt-value">Maria Silva</span>
+            </div>
+        </div>
+        
+        <div class="receipt-products">
+            <h4 style="color: #2d5a27; margin-bottom: 15px; font-weight: 700;">Produtos:</h4>
+            ${productsHTML}
+        </div>
+        
+        <div class="receipt-total">
+            <div class="receipt-row">
+                <span class="receipt-total-label">Total:</span>
+                <span class="receipt-total-value">${orderTotal}</span>
+            </div>
+        </div>
+    `;
+    
+    document.getElementById('receiptContent').innerHTML = receiptHTML;
+    document.getElementById('receiptModal').style.display = 'block';
+    document.body.style.overflow = 'hidden';
+}
+// Função para fechar modal de comprovante
+function closeReceiptModal() {
+    document.getElementById('receiptModal').style.display = 'none';
+    document.body.style.overflow = '';
+}
+
+// Função para baixar comprovante como PDF
+function downloadReceipt() {
+    showNotification('Gerando comprovante em PDF...');
+    
+    // Obter dados do comprovante atual
+    const receiptContent = document.getElementById('receiptContent');
+    const orderNumber = receiptContent.querySelector('.receipt-value').textContent;
+    
+    // Buscar dados do pedido
+    const orderCard = Array.from(document.querySelectorAll('.order-card')).find(card => 
+        card.querySelector('.order-number').textContent === orderNumber
+    );
+    
+    if (!orderCard) {
+        showNotification('Erro ao gerar PDF');
+        return;
+    }
+    
+    const orderDate = orderCard.querySelector('.order-date').textContent;
+    const orderTotal = orderCard.querySelector('.order-total').textContent;
+    const orderStatus = orderCard.querySelector('.status-badge').textContent;
+    const products = orderCard.querySelectorAll('.product-item');
+    
+    // Criar instância do jsPDF
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    
+    // Configurar cores (RGB)
+    const primaryColor = [45, 90, 39]; // #2d5a27
+    const secondaryColor = [76, 175, 80]; // #4CAF50
+    const textColor = [51, 51, 51]; // #333
+    const grayColor = [102, 102, 102]; // #666
+    
+    let yPosition = 30;
+    
+    // Header do PDF
+    doc.setFillColor(...primaryColor);
+    doc.rect(0, 0, 210, 40, 'F');
+    
+    // Logo e título
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(24);
+    doc.setFont('helvetica', 'bold');
+    doc.text('OpalaVerde', 105, 20, { align: 'center' });
+    
+    doc.setFontSize(12);
+    doc.setFont('helvetica', 'normal');
+    doc.text('Orgânicos de Pedro II', 105, 30, { align: 'center' });
+    
+    yPosition = 60;
+    
+    // Título do comprovante
+    doc.setTextColor(...primaryColor);
+    doc.setFontSize(18);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Comprovante de Pedido', 105, yPosition, { align: 'center' });
+    
+    yPosition += 20;
+    
+    // Linha separadora
+    doc.setDrawColor(...secondaryColor);
+    doc.setLineWidth(2);
+    doc.line(20, yPosition, 190, yPosition);
+    
+    yPosition += 15;
+    
+    // Informações do pedido
+    doc.setTextColor(...textColor);
+    doc.setFontSize(12);
+    doc.setFont('helvetica', 'bold');
+    
+    // Função helper para adicionar linha de informação
+    function addInfoLine(label, value, y) {
+        doc.setFont('helvetica', 'bold');
+        doc.text(label + ':', 20, y);
+        doc.setFont('helvetica', 'normal');
+        doc.text(value, 70, y);
+        return y + 8;
+    }
+    
+    yPosition = addInfoLine('Número do Pedido', orderNumber, yPosition);
+    yPosition = addInfoLine('Data', orderDate, yPosition);
+    yPosition = addInfoLine('Status', orderStatus, yPosition);
+    yPosition = addInfoLine('Cliente', 'Maria Silva', yPosition);
+    
+    yPosition += 10;
+    
+    // Linha separadora
+    doc.setDrawColor(...grayColor);
+    doc.setLineWidth(1);
+    doc.line(20, yPosition, 190, yPosition);
+    
+    yPosition += 15;
+    
+    // Seção de produtos
+    doc.setTextColor(...primaryColor);
+    doc.setFontSize(14);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Produtos:', 20, yPosition);
+    
+    yPosition += 12;
+    
+    // Cabeçalho da tabela de produtos
+    doc.setFillColor(248, 250, 248); // #f8faf8
+    doc.rect(20, yPosition - 5, 170, 10, 'F');
+    
+    doc.setTextColor(...textColor);
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Produto', 25, yPosition);
+    doc.text('Quantidade', 120, yPosition);
+    doc.text('Preço', 160, yPosition);
+    
+    yPosition += 8;
+    
+    // Produtos
+    doc.setFont('helvetica', 'normal');
+    products.forEach((product, index) => {
+        const name = product.querySelector('.product-name').textContent;
+        const quantity = product.querySelector('.product-quantity').textContent.replace('Quantidade: ', '');
+        const price = product.querySelector('.product-price').textContent;
+        
+        // Verificar se precisa de nova página
+        if (yPosition > 250) {
+            doc.addPage();
+            yPosition = 30;
+        }
+        
+        // Alternar cor de fundo das linhas
+        if (index % 2 === 0) {
+            doc.setFillColor(250, 250, 250);
+            doc.rect(20, yPosition - 5, 170, 10, 'F');
+        }
+        
+        doc.setTextColor(...textColor);
+        
+        // Quebrar texto longo do produto
+        const splitName = doc.splitTextToSize(name, 90);
+        doc.text(splitName, 25, yPosition);
+        
+        doc.text(quantity, 120, yPosition);
+        doc.text(price, 160, yPosition);
+        
+        yPosition += Math.max(10, splitName.length * 5);
+    });
+    
+    yPosition += 10;
+    
+    // Linha separadora antes do total
+    doc.setDrawColor(...primaryColor);
+    doc.setLineWidth(2);
+    doc.line(20, yPosition, 190, yPosition);
+    
+    yPosition += 15;
+    
+    // Total
+    doc.setFillColor(...primaryColor);
+    doc.rect(120, yPosition - 10, 70, 20, 'F');
+    
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(14);
+    doc.setFont('helvetica', 'bold');
+    doc.text('TOTAL:', 125, yPosition);
+    doc.setFontSize(16);
+    doc.text(orderTotal, 185, yPosition, { align: 'right' });
+    
+    yPosition += 25;
+    
+    // Rodapé
+    if (yPosition > 230) {
+        doc.addPage();
+        yPosition = 30;
+    }
+    
+    doc.setTextColor(...grayColor);
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'normal');
+    doc.text('Este é um comprovante gerado automaticamente.', 105, yPosition, { align: 'center' });
+    doc.text('OpalaVerde - Orgânicos de Pedro II', 105, yPosition + 8, { align: 'center' });
+    doc.text(`Gerado em: ${new Date().toLocaleString('pt-BR')}`, 105, yPosition + 16, { align: 'center' });
+    
+    // Salvar PDF
+    const fileName = `Comprovante_${orderNumber.replace('#', '')}_OpalaVerde.pdf`;
+    doc.save(fileName);
+    
+    setTimeout(() => {
+        showNotification('Comprovante baixado com sucesso!');
+        closeReceiptModal();
+    }, 1000);
+}
+
+// Fechar modais ao clicar fora deles
+window.addEventListener('click', function(event) {
+    const cancelModal = document.getElementById('cancelModal');
+    const supportModal = document.getElementById('supportModal');
+    const receiptModal = document.getElementById('receiptModal');
+    
+    if (event.target === cancelModal) {
+        closeCancelModal();
+    } else if (event.target === supportModal) {
+        closeSupportModal();
+    } else if (event.target === receiptModal) {
+        closeReceiptModal();
+    }
+});
+
+function showLogoutModal() {
+    const logoutModal = document.getElementById('logoutModal');
+    if (logoutModal) {
+        logoutModal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+function closeLogoutModal() {
+    const logoutModal = document.getElementById('logoutModal');
+    if (logoutModal) {
+        logoutModal.classList.remove('active');
+        document.body.style.overflow = 'auto';
+    }
+}
+
+function confirmLogout() {
+    // Salvar dados se necessário
+    if (typeof saveUserPersonalData === 'function') {
+        saveUserPersonalData();
+    }
+
+    // Logout real: limpa os tokens JWT e os dados do usuário
+    apiLogout();
+
+    // Redirecionar para login
+    window.location.href = 'login.html';
+}
+
+// Fechar modal com ESC
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        const logoutModal = document.getElementById('logoutModal');
+        if (logoutModal && logoutModal.classList.contains('active')) {
+            closeLogoutModal();
+        }
+    }
+});
+
+// Fechar modal clicando fora
+document.addEventListener('click', function(e) {
+    const logoutModal = document.getElementById('logoutModal');
+    if (e.target === logoutModal) {
+        closeLogoutModal();
+    }
+});
+
+    </script>
+</body>
+</html>

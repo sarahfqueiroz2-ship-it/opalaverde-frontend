@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contato - OpalaVerde</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #eef6ee;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            position: fixed;
+            width: 280px;
+            height: 100vh;
+            top: 0;
+            left: 0;
+            background: linear-gradient(180deg, #1a4a14, #2d5a27);
+            color: white;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-header {
+            padding: 30px 20px 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.15);
+        }
+
+        .logo {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon img {
+            width: 48px;
+            height: 48px;
+        }
+
+        .tagline {
+            margin-top: 5px;
+            font-size: 0.85rem;
+            color: #cfe6cf;
+        }
+
+        .nav-menu {
+            flex: 1;
+            margin-top: 10px;
+            overflow-y: auto;
+            padding-bottom: 20px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 14px 30px;
+            color: #e6f3e6;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .nav-link.active,
+        .nav-link:hover {
+            background: rgba(255,255,255,0.1);
+            border-left: 3px solid #4CAF50;
+        }
+
+        .nav-icon {
+            margin-right: 15px;
+        }
+
+        .user-profile {
+            padding: 20px;
+            background: rgba(255,255,255,0.08);
+            border-top: 1px solid rgba(255,255,255,0.12);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: #4CAF50;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+        }
+
+        /* MAIN CONTENT */
+        .main-content {
+            margin-left: 280px;
+            padding: 45px 60px;
+        }
+
+        .page-title {
+            font-size: 2.4rem;
+            color: #1a4a14;
+            margin-bottom: 10px;
+        }
+
+        .page-subtitle {
+            font-size: 1.2rem;
+            color: #4e6d4e;
+            margin-bottom: 35px;
+        }
+
+        /* FORM SECTION */
+        .content-section {
+            background: #fff;
+            padding: 40px 45px;
+            border-radius: 16px;
+            box-shadow: 0 8px 28px rgba(0,0,0,0.12);
+        }
+
+        .section-title {
+            font-size: 1.9rem;
+            color: #1a4a14;
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 35px;
+            align-items: start;
+        }
+
+        .contact-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            font-size: 1.05rem;
+            margin-bottom: 8px;
+            color: #1a4a14;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            padding: 14px;
+            border: 2px solid #cde6cd;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            border-color: #4CAF50;
+        }
+
+        .contact-btn {
+            background: #4CAF50;
+            color: white;
+            padding: 16px;
+            font-size: 1.2rem;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .contact-btn:hover {
+            background: #3f8d40;
+        }
+
+        /* INFO BOX */
+        .info-box {
+            background: #f7fbf7;
+            padding: 25px;
+            border-radius: 14px;
+            border-left: 5px solid #4CAF50;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+        }
+
+        .info-box h3 {
+            font-size: 1.5rem;
+            margin-bottom: 12px;
+            color: #1a4a14;
+        }
+
+        .info-box p {
+            margin-bottom: 8px;
+            font-size: 1.05rem;
+        }
+
+        iframe {
+            width: 100%;
+            height: 260px;
+            border-radius: 12px;
+            border: none;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 900px) {
+            .main-content {
+                margin-left: 0;
+                padding: 30px;
+            }
+
+            .contact-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ===== MENU MOBILE (faltava por completo nesta página) ===== */
+        .mobile-menu-toggle {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1001;
+            background: #1a4a14;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .mobile-menu-toggle.hidden {
+            opacity: 0;
+            transform: scale(0.8);
+            pointer-events: none;
+        }
+
+        .mobile-menu-toggle svg {
+            width: 24px;
+            height: 24px;
+            fill: white;
+        }
+
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 998;
+        }
+
+        @media (max-width: 768px) {
+            .mobile-menu-toggle {
+                display: block;
+            }
+
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .sidebar-overlay.active {
+                display: block;
+            }
+
+            .main-content {
+                margin-left: 0 !important;
+                padding: 90px 20px 30px !important;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .sidebar {
+                transform: translateX(0) !important;
+            }
+        }
+
+        /* Botão de Sair */
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin-top: 15px;
+            width: 100%;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .logout-btn svg {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+        }
+
+        /* Modal de confirmação de logout */
+        .logout-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 3000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(3px);
+        }
+
+        .logout-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .logout-modal-content {
+            background: white;
+            padding: 35px;
+            border-radius: 20px;
+            max-width: 420px;
+            width: 90%;
+            text-align: center;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            border: 2px solid #e8f5e8;
+        }
+
+        .logout-modal.active .logout-modal-content {
+            transform: scale(1);
+        }
+
+        .logout-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px;
+            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.3);
+        }
+
+        .logout-icon svg {
+            width: 35px;
+            height: 35px;
+            fill: white;
+        }
+
+        .logout-modal h3 {
+            color: #2d5a27;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .logout-modal p {
+            color: #666;
+            margin-bottom: 30px;
+            line-height: 1.6;
+            font-size: 1rem;
+        }
+
+        .logout-modal-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .confirm-logout, .cancel-logout {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 120px;
+        }
+
+        .confirm-logout {
+            background: linear-gradient(135deg, #f44336, #d32f2f);
+            color: white;
+        }
+
+        .confirm-logout:hover {
+            background: linear-gradient(135deg, #d32f2f, #c62828);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(244, 67, 54, 0.4);
+        }
+
+        .cancel-logout {
+            background: #f5f5f5;
+            color: #333;
+            border: 2px solid #e0e0e0;
+        }
+
+        .cancel-logout:hover {
+            background: #e8f5e8;
+            border-color: #4CAF50;
+            color: #2d5a27;
+        }
+
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            z-index: 3000;
+            transform: translateX(300px);
+            transition: transform 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .toast.show { transform: translateX(0); }
+        .toast.success { background: #4CAF50; }
+        .toast.error { background: #f44336; }
+        .toast.warning { background: #ff9800; }
+    </style>
+    <script src="api.js?v=3"></script>
+</head>
+
+<body>
+
+<!-- Botão do menu mobile (faltava) -->
+<button class="mobile-menu-toggle" id="mobileMenuToggle">
+    <svg viewBox="0 0 24 24">
+        <path d="M3 18H21V16H3V18ZM3 13H21V11H3V13ZM3 6V8H21V6H3Z"/>
+    </svg>
+</button>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- SIDEBAR -->
+
+ <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <div class="logo-icon">
+                    <img src="logo1.png" alt="">
+                </div>
+                <h1>OpalaVerde</h1>
+            </div>
+            <p class="tagline">Orgânicos de Pedro II</p>
+        </div>
+
+        <nav class="nav-menu">
+            <div class="nav-item">
+                <a href="inicial_cliente.html" class="nav-link">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M10 20V14H14V20H19V12H22L12 3L2 12H5V20H10Z"/>
+                        </svg>
+                    </span>
+                    Home/Inicial
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="catalogo_de_produtos.html" class="nav-link">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3ZM19 19H5V5H19V19Z"/>
+                        </svg>
+                    </span>
+                    Catálogo de Produtos
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="carrinho.html" class="nav-link">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M7 18C5.9 18 5.01 18.9 5.01 20S5.9 22 7 22 9 21.1 9 20 8.1 18 7 18ZM1 2V4H3L6.6 11.59L5.25 14.04C5.09 14.32 5 14.65 5 15C5 16.1 5.9 17 7 17H19V15H7.42C7.28 15 7.17 14.89 7.17 14.75L7.2 14.63L8.1 13H15.55C16.3 13 16.96 12.59 17.3 11.97L20.88 5.48C20.96 5.34 21 5.17 21 5C21 4.45 20.55 4 20 4H5.21L4.27 2H1ZM17 18C15.9 18 15.01 18.9 15.01 20S15.9 22 17 22 19 21.1 19 20 18.1 18 17 18Z"/>
+                        </svg>
+                    </span>
+                    Carrinho
+                </a>
+            </div>
+           
+            <div class="nav-item">
+                <a href="meu-perfil-cliente.html" class="nav-link">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M12 12C14.21 12 16 10.21 16 8C16 5.79 14.21 4 12 4C9.79 4 8 5.79 8 8C8 10.21 9.79 12 12 12ZM12 14C9.33 14 4 15.34 4 18V20H20V18C20 15.34 14.67 14 12 14Z"/>
+                        </svg>
+                    </span>
+                    Minha Conta
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="historico-pedidos.html" class="nav-link">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M19 7V4H5V7H19ZM21 2H3C1.9 2 1 2.9 1 4V7C1 8.1 1.9 9 3 9H4V19C4 20.1 4.9 21 6 21H18C19.1 21 20 20.1 20 19V9H21C22.1 9 23 8.1 23 7V4C23 2.9 22.1 2 21 2Z"/>
+                        </svg>
+                    </span>
+                    Histórico de Pedidos
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="lista_favoritos.html" class="nav-link">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M12 21.35L10.55 20.03C5.4 15.36 2 12.28 2 8.5C2 5.42 4.42 3 7.5 3C9.24 3 10.91 3.81 12 5.09C13.09 3.81 14.76 3 16.5 3C19.58 3 22 5.42 22 8.5C22 12.28 18.6 15.36 13.45 20.04L12 21.35Z"/>
+                        </svg>
+                    </span>
+                    Lista de Favoritos
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="sobre-nos.html" class="nav-link">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M11 7H13V9H11V7ZM11 11H13V17H11V11ZM12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20Z"/>
+                        </svg>
+                    </span>
+                    Sobre Nós
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="contate-nos.html" class="nav-link active">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M20 4H4C2.9 4 2.01 4.9 2.01 6L2 18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V6C22 4.9 21.1 4 20 4ZM20 8L12 13L4 8V6L12 11L20 6V8Z"/>
+                        </svg>
+                    </span>
+                    Contato
+                </a>
+            </div>
+          
+    
+
+        <div class="user-profile">
+            <div class="user-info">
+                <div class="user-avatar">M</div>
+                <div>
+                    <div style="font-weight: 600;">Maria Silva</div>
+                    <div style="font-size: 0.8rem; color: #b8d4b8;">Cliente</div>
+                </div>
+            </div>
+
+            <button class="logout-btn" onclick="showLogoutModal()">
+                <svg viewBox="0 0 24 24">
+                    <path d="M17 7L15.59 8.41L18.17 11H8V13H18.17L15.59 15.59L17 17L22 12L17 7ZM4 5H12V3H4C2.9 3 2 3.9 2 5V19C2 20.1 2.9 21 4 21H12V19H4V5Z"/>
+                </svg>
+                Sair
+            </button>
+        </div>
+    </aside>
+
+    <!-- Modal de Logout -->
+    <div class="logout-modal" id="logoutModal">
+        <div class="logout-modal-content">
+            <div class="logout-icon">
+                <svg viewBox="0 0 24 24">
+                    <path d="M17 7L15.59 8.41L18.17 11H8V13H18.17L15.59 15.59L17 17L22 12L17 7ZM4 5H12V3H4C2.9 3 2 3.9 2 5V19C2 20.1 2.9 21 4 21H12V19H4V5Z"/>
+                </svg>
+            </div>
+            <h3>Confirmar Saída</h3>
+            <p>Tem certeza de que deseja sair da sua conta? Você será redirecionado para a página de login.</p>
+            <div class="logout-modal-actions">
+                <button class="cancel-logout" onclick="closeLogoutModal()">Cancelar</button>
+                <button class="confirm-logout" onclick="confirmLogout()">Sair</button>
+            </div>
+        </div>
+    </div>
+
+<!-- MAIN -->
+<main class="main-content">
+
+    <h1 class="page-title">Fale Conosco</h1>
+    <p class="page-subtitle">Entre em contato com nossa equipe</p>
+
+    <section class="content-section">
+        <h2 class="section-title">Envie uma Mensagem</h2>
+
+        <div class="contact-grid">
+
+            <!-- FORMULÁRIO -->
+            <form class="contact-form" action="#" method="POST">
+
+                <div class="form-group">
+                    <label>Seu Nome</label>
+                    <input type="text" required>
+                </div>
+
+                <div class="form-group">
+                    <label>E-mail    </label>
+                    <input type="email" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Mensagem</label>
+                    <textarea rows="7" required></textarea>
+                </div>
+
+                <button class="contact-btn">Enviar Mensagem</button>
+
+            </form>
+
+            <!-- INFORMAÇÕES -->
+            <div class="info-box">
+                <h3>Outros Contatos</h3>
+
+                <p><b> Telefone:</b> (86) 9 94090-6183</p>
+                <p><b> E-mail:</b> Opalaverde@gmail.com</p>
+                <p><b> Localização:</b> Pedro II — Piauí</p>
+
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18..."></iframe>
+            </div>
+
+        </div>
+    </section>
+
+</main>
+
+<script>
+    let currentUserData = null;
+
+    // Exige login real (token JWT) como cliente, e preenche a sidebar com os dados reais
+    function initUserSystem() {
+        const user = requireAuth(['cliente']);
+        if (!user) return false;
+
+        currentUserData = user;
+
+        const userNameElement = document.querySelector('.user-info div:last-child div:first-child');
+        const userAvatarElement = document.querySelector('.user-avatar');
+        try {
+            if (userNameElement) userNameElement.textContent = currentUserData.name;
+            if (userAvatarElement) renderAvatar(userAvatarElement, currentUserData);
+        } catch (error) {
+            console.error('Erro ao atualizar a interface do usuário:', error);
+        }
+        return true;
+    }
+
+    initUserSystem();
+
+    // ===== LOGOUT =====
+    function showLogoutModal() {
+        const logoutModal = document.getElementById('logoutModal');
+        if (logoutModal) {
+            logoutModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+    }
+
+    function closeLogoutModal() {
+        const logoutModal = document.getElementById('logoutModal');
+        if (logoutModal) {
+            logoutModal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+    }
+
+    function confirmLogout() {
+        apiLogout();
+        window.location.href = 'login.html';
+    }
+
+    // ===== MENU MOBILE (faltava por completo) =====
+    const mobileToggle = document.getElementById('mobileMenuToggle');
+    const sidebarEl = document.getElementById('sidebar');
+    const overlayEl = document.getElementById('sidebarOverlay');
+
+    function openSidebar() {
+        sidebarEl.classList.add('open');
+        overlayEl.classList.add('active');
+        mobileToggle.classList.add('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeSidebar() {
+        sidebarEl.classList.remove('open');
+        overlayEl.classList.remove('active');
+        mobileToggle.classList.remove('hidden');
+        document.body.style.overflow = '';
+    }
+
+    mobileToggle.addEventListener('click', openSidebar);
+    overlayEl.addEventListener('click', closeSidebar);
+
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', () => {
+            if (window.innerWidth <= 768) closeSidebar();
+        });
+    });
+
+    window.addEventListener('resize', () => {
+        if (window.innerWidth > 768) closeSidebar();
+    });
+</script>
+
+</body>
+</html>

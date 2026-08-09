@@ -1,0 +1,1906 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avaliações - OpalaVerde</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8faf8;
+        }
+
+       .sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 280px;
+    height: 100vh;
+    background: linear-gradient(180deg, #1a4a14, #2d5a27);
+    color: white;
+    z-index: 1000;
+    box-shadow: 3px 0 15px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;  /* ✅ ADICIONAR */
+}
+
+        .sidebar-header {
+    padding: 25px 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    text-align: center;
+    flex-shrink: 0;  /* ✅ CONFIRMAR */
+}
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+
+        .logo-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .logo-icon img{
+            width: 50px;
+            height: 50px;
+            position: absolute;
+        }
+
+        .tagline {
+            font-size: 0.85rem;
+            color: #b8d4b8;
+            margin-top: 5px;
+        }
+
+        .nav-menu {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;      /* ✅ Scroll SOMENTE aqui */
+    overflow-x: hidden;
+    padding: 20px 0;
+}
+
+        .nav-item {
+            margin: 3px 0;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 15px 25px;
+            color: #e8f5e8;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: rgba(255,255,255,0.1);
+            border-left-color: #4CAF50;
+            color: white;
+        }
+
+        .nav-icon {
+            width: 20px;
+            margin-right: 15px;
+            text-align: center;
+        }
+
+        .user-profile {
+    padding: 20px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    background: rgba(0,0,0,0.2);
+    flex-shrink: 0;  /* ✅ Garante que não encolhe */
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    /* ❌ NUNCA: position: absolute, bottom: 0 */
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;  /* ✅ Ocupa espaço disponível */
+}
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: #4CAF50;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .main-content {
+            margin-left: 280px;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #ffffff 0%, #f8faf8 100%);
+            padding: 20px 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border-bottom: 2px solid #e0e8e0;
+        }
+
+        .header-title {
+            font-size: 2rem;
+            color: #2d5a27;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .header-subtitle {
+            color: #666;
+            font-size: 1rem;
+        }
+
+        .header-stats {
+            display: flex;
+            gap: 30px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #2d5a27;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: #666;
+            margin-top: 2px;
+        }
+
+        .reviews-content {
+            padding: 30px;
+        }
+
+        .view-toggle {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .toggle-btn {
+            padding: 12px 24px;
+            border: 2px solid #e0e8e0;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            color: #666;
+        }
+
+        .toggle-btn.active {
+            background: #4CAF50;
+            color: white;
+            border-color: #4CAF50;
+        }
+
+        .toggle-btn:hover:not(.active) {
+            border-color: #4CAF50;
+            color: #4CAF50;
+        }
+
+        .filters-section {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+        }
+
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            align-items: end;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .filter-label {
+            font-weight: 600;
+            color: #2d5a27;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+
+        .filter-select {
+            padding: 12px 15px;
+            border: 2px solid #e0e8e0;
+            border-radius: 8px;
+            background: white;
+            color: #333;
+            font-size: 0.95rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
+
+        /* VISUALIZAÇÃO POR LISTA */
+        .reviews-list-view {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+
+        .reviews-list-header {
+            background: #fafbfa;
+            padding: 20px 25px;
+            border-bottom: 1px solid #e0e8e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .list-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2d5a27;
+        }
+
+        .review-item {
+            padding: 25px;
+            border-bottom: 1px solid #f0f0f0;
+            transition: background-color 0.3s ease;
+        }
+
+        .review-item:hover {
+            background: #fafbfa;
+        }
+
+        .review-item:last-child {
+            border-bottom: none;
+        }
+
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .review-main-info {
+            display: flex;
+            gap: 15px;
+        }
+
+        .reviewer-avatar {
+            width: 45px;
+            height: 45px;
+            background: #4CAF50;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+
+        .reviewer-details h4 {
+            font-size: 1rem;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .product-name {
+            font-size: 0.9rem;
+            color: #4CAF50;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .review-date {
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        .review-rating {
+            display: flex;
+            gap: 3px;
+        }
+
+        .star {
+            width: 18px;
+            height: 18px;
+            fill: #ddd;
+        }
+
+        .star.filled {
+            fill: #4CAF50;
+        }
+
+        .review-content {
+            margin: 15px 0;
+        }
+
+        .review-text {
+            color: #333;
+            line-height: 1.6;
+            font-size: 0.95rem;
+            background: #f8faf8;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 3px solid #e0e8e0;
+        }
+
+        .review-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: none;
+            border: 1px solid #e0e8e0;
+            color: #666;
+            cursor: pointer;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+
+        .action-btn:hover {
+            background: #f0f0f0;
+            color: #333;
+            border-color: #ccc;
+        }
+
+        .action-btn.liked {
+            color: #4CAF50;
+            background: rgba(76, 175, 80, 0.1);
+            border-color: #4CAF50;
+        }
+
+        .action-btn.danger {
+            color: #f44336;
+            border-color: #f44336;
+        }
+
+        .action-btn.danger:hover {
+            background: rgba(244, 67, 54, 0.1);
+        }
+
+        .action-btn svg {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+        }
+
+        .producer-response {
+            background: #f0f8f0;
+            border: 1px solid #c8e6c9;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+
+        .response-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .response-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #4CAF50;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .response-text {
+            color: #333;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .response-actions {
+            margin-top: 10px;
+            display: flex;
+            gap: 8px;
+        }
+
+        .response-form {
+            margin-top: 15px;
+            padding: 20px;
+            background: #f8faf8;
+            border-radius: 8px;
+            border: 1px solid #e0e8e0;
+        }
+
+        .response-textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 15px;
+            border: 2px solid #e0e8e0;
+            border-radius: 8px;
+            resize: vertical;
+            font-family: inherit;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            transition: border-color 0.3s ease;
+        }
+
+        .response-textarea:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 15px;
+            justify-content: flex-end;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #45a049;
+        }
+
+        .btn-secondary {
+            background: #f5f5f5;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+
+        /* VISUALIZAÇÃO POR PRODUTOS */
+        .products-view {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 30px;
+        }
+
+        .products-sidebar {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+
+        .products-sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid #e0e8e0;
+            background: #fafbfa;
+            border-radius: 15px 15px 0 0;
+        }
+
+        .sidebar-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2d5a27;
+        }
+
+        .products-list {
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        .product-item {
+            padding: 15px 20px;
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .product-item:hover {
+            background: #f8faf8;
+        }
+
+        .product-item.active {
+            background: #f0f8f0;
+            border-left: 3px solid #4CAF50;
+        }
+
+        .product-item:last-child {
+            border-bottom: none;
+        }
+
+        .product-item-name {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .product-item-stats {
+            display: flex;
+            gap: 15px;
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        .product-detail {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        }
+
+        .product-detail-header {
+            padding: 25px;
+            border-bottom: 1px solid #e0e8e0;
+            background: #fafbfa;
+            border-radius: 15px 15px 0 0;
+        }
+
+        .product-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #2d5a27;
+            margin-bottom: 10px;
+        }
+
+        .product-stats {
+            display: flex;
+            gap: 25px;
+            align-items: center;
+        }
+
+        .product-rating {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .rating-number {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2d5a27;
+        }
+
+        .product-reviews {
+            padding: 0;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+
+        .empty-state svg {
+            width: 64px;
+            height: 64px;
+            fill: #ccc;
+            margin-bottom: 20px;
+        }
+
+        .empty-state h3 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .notification-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 10000;
+            max-width: 400px;
+        }
+
+        .notification {
+            background: white;
+            border-left: 4px solid #4CAF50;
+            padding: 15px 20px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transform: translateX(100%);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            border-left-color: #4CAF50;
+        }
+
+        .notification.error {
+            border-left-color: #f44336;
+        }
+
+        .notification-close {
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            color: #666;
+            margin-left: auto;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            padding: 25px;
+            border-bottom: 1px solid #e0e8e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2d5a27;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .modal-content {
+            padding: 25px;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .products-view {
+                grid-template-columns: 1fr;
+            }
+
+            .products-sidebar {
+                position: relative;
+                top: 0;
+            }
+
+            .filters-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .mobile-menu-toggle {
+    display: none;
+    background: #4CAF50;
+    border: none;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 2000;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+}
+
+.mobile-menu-toggle svg {
+    width: 20px;
+    height: 20px;
+}
+
+@media (max-width: 768px) {
+    .mobile-menu-toggle {
+        display: block;
+    }
+
+    .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+    }
+
+    .sidebar.mobile-open {
+        transform: translateX(0);
+    }
+
+    .main-content {
+        margin-left: 0;
+    }
+
+    .header {
+        margin-left: 0;
+        padding-left: 70px;
+    }
+
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .export-modal-content {
+        margin: 20px;
+        width: calc(100% - 40px);
+    }
+
+    .export-options {
+        grid-template-columns: 1fr;
+    }
+}
+
+.rating-with-icon {
+    display: inline-flex;
+    align-items: center;
+    color: #666;
+}
+
+.rating-with-icon svg {
+    flex-shrink: 0;
+}
+
+.logout-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.logout-btn:hover {
+    background: rgba(244, 67, 54, 0.8);
+    border-color: #f44336;
+    transform: translateY(-2px);
+}
+
+.logout-btn svg {
+    display: block;
+}
+
+        /* Modal de confirmação de logout (igual ao das páginas do cliente) */
+        .logout-modal {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 3000; opacity: 0; visibility: hidden;
+            transition: all 0.3s ease; backdrop-filter: blur(3px);
+        }
+        .logout-modal.active { opacity: 1; visibility: visible; }
+        .logout-modal-content {
+            background: white; padding: 35px; border-radius: 20px;
+            max-width: 420px; width: 90%; text-align: center;
+            transform: scale(0.9); transition: transform 0.3s ease;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            border: 2px solid #e8f5e8;
+        }
+        .logout-modal.active .logout-modal-content { transform: scale(1); }
+        .logout-icon {
+            width: 70px; height: 70px;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 25px; box-shadow: 0 8px 25px rgba(255, 107, 107, 0.3);
+        }
+        .logout-icon svg { width: 35px; height: 35px; fill: white; }
+        .logout-modal h3 { color: #2d5a27; margin-bottom: 15px; font-size: 1.5rem; font-weight: 700; }
+        .logout-modal p { color: #666; margin-bottom: 30px; line-height: 1.6; font-size: 1rem; }
+        .logout-modal-actions { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; }
+        .confirm-logout, .cancel-logout {
+            padding: 12px 25px; border: none; border-radius: 10px;
+            font-size: 1rem; font-weight: 600; cursor: pointer;
+            transition: all 0.3s ease; min-width: 120px;
+        }
+        .confirm-logout { background: linear-gradient(135deg, #f44336, #d32f2f); color: white; }
+        .confirm-logout:hover {
+            background: linear-gradient(135deg, #d32f2f, #c62828);
+            transform: translateY(-2px); box-shadow: 0 8px 25px rgba(244, 67, 54, 0.4);
+        }
+        .cancel-logout { background: #f5f5f5; color: #333; border: 2px solid #e0e0e0; }
+        .cancel-logout:hover { background: #e8f5e8; border-color: #4CAF50; color: #2d5a27; }
+    </style>
+    <script src="api.js?v=3"></script>
+</head>
+<body>
+    <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M3,6H21V8H3V6M3,11H21V13H3V11M3,16H21V18H3V16Z"/>
+        </svg>
+    </button>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <div class="logo-icon">
+                    <img src="logo1.png" alt="">
+                </div>
+                <h1>OpalaVerde</h1>
+            </div>
+            <p class="tagline">Orgânicos de Pedro II</p>
+        </div>
+
+        <nav class="nav-menu">
+            <div class="nav-item">
+                <a href="painel_inicial_produtor.html" class="nav-link">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M10 20V14H14V20H19V12H22L12 3L2 12H5V20H10Z"/>
+                        </svg>
+                    </span>
+                    Painel Inicial
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="meus_produtos.html" class="nav-link">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3ZM19 19H5V5H19V19Z"/>
+                        </svg>
+                    </span>
+                    Meus Produtos
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="pedidos_fornecedor.html" class="nav-link">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M7 18C5.9 18 5 18.9 5 20S5.9 22 7 22 9 21.1 9 20 8.1 18 7 18ZM1 2V4H3L6.6 11.59L5.25 14.04C5.09 14.32 5 14.65 5 15C5 16.1 5.9 17 7 17H19V15H7.42C7.28 15 7.17 14.89 7.17 14.75L7.2 14.63L8.1 13H15.55C16.3 13 16.96 12.59 17.3 11.97L20.88 5H5.21L4.27 3H1ZM17 18C15.9 18 15 18.9 15 20S15.9 22 17 22 19 21.1 19 20 18.1 18 17 18Z"/>
+                        </svg>
+                    </span>
+                    Pedidos
+                </a>
+            </div>
+
+            <div class="nav-item">
+                <a href="historico_de_vendas.html" class="nav-link">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9V7L15 1L13.5 2.5L16.17 5.33C15.09 5.77 13.87 6 12.5 6.5C11.66 7.08 11 7.83 10.5 8.67C9.5 8.29 8.42 8 7.31 8C5.34 8 3.61 8.93 2.5 10.36C3.36 11.45 4.64 12.22 6.11 12.41C6.04 12.6 6 12.8 6 13C6 14.66 7.34 16 9 16S12 14.66 12 13C12 12.8 11.96 12.6 11.89 12.41C13.36 12.22 14.64 11.45 15.5 10.36C14.39 8.93 12.66 8 10.69 8C11.5 7.5 12.3 7 13 7L21 9Z"/>
+                        </svg>
+                    </span>
+                    Vendas Concluídas
+                </a>
+            </div>
+
+            <div class="nav-item">
+                <a href="perfil_produtor.html" class="nav-link">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z"/>
+                        </svg>
+                    </span>
+                    Meu Perfil
+                </a>
+            </div>
+
+            <div class="nav-item">
+                <a href="calendario_de_colheitas.html" class="nav-link ">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3ZM19 5V7H5V5H19ZM5 19V9H19V19H5Z"/>
+                        </svg>
+                    </span>
+                    Calendário de Colheitas
+                </a>
+            </div>
+
+            <div class="nav-item">
+                <a href="avaliacoes_dos_clientes.html" class="nav-link active">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.45,13.97L5.82,21L12,17.27Z"/>
+                        </svg>
+                    </span>
+                    Avaliações dos Clientes
+                </a>
+            </div>
+
+            <div class="nav-item">
+                <a href="relatorio_simples.html" class="nav-link">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M6 2C4.9 2 4 2.9 4 4V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V8L14 2H6ZM6 4H13V9H18V20H6V4ZM8 12V14H16V12H8ZM8 16V18H13V16H8Z"/>
+                        </svg>
+                    </span>
+                    Controle Financeiro
+                </a>
+            </div>
+
+            <div class="nav-item">
+                <a href="contate-nos_fornecedor.html" class="nav-link">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M20,8L12,13L4,8V6L12,11L20,6M20,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V6C22,4.89 21.1,4 20,4Z"/>
+                        </svg>
+                    </span>
+                    Contate-nos
+                </a>
+            </div>
+        </nav>
+
+        <div class="user-profile">
+    <div class="user-info">
+        <div class="user-avatar" id="userAvatar">U</div>
+        <div style="flex: 1;">
+            <div style="font-weight: 600;" id="userName">Usuário</div>
+            <div style="font-size: 0.8rem; color: #b8d4b8;">Produtor/Fornecedor</div>
+        </div>
+    </div>
+    <button class="logout-btn" onclick="showLogoutModal()" title="Sair da conta">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+            <path d="M17 7L15.59 8.41L18.17 11H8V13H18.17L15.59 15.58L17 17L22 12L17 7M4 5H12V3H4C2.9 3 2 3.9 2 5V19C2 20.1 2.9 21 4 21H12V19H4V5Z"/>
+        </svg>
+    </button>
+</div>
+    </aside>
+
+    <!-- Modal de Logout -->
+    <div class="logout-modal" id="logoutModal">
+        <div class="logout-modal-content">
+            <div class="logout-icon">
+                <svg viewBox="0 0 24 24">
+                    <path d="M17 7L15.59 8.41L18.17 11H8V13H18.17L15.59 15.59L17 17L22 12L17 7ZM4 5H12V3H4C2.9 3 2 3.9 2 5V19C2 20.1 2.9 21 4 21H12V19H4V5Z"/>
+                </svg>
+            </div>
+            <h3>Confirmar Saída</h3>
+            <p>Tem certeza de que deseja sair da sua conta? Você será redirecionado para a página de login.</p>
+            <div class="logout-modal-actions">
+                <button class="cancel-logout" onclick="closeLogoutModal()">Cancelar</button>
+                <button class="confirm-logout" onclick="confirmLogout()">Sair</button>
+            </div>
+        </div>
+    </div>
+
+
+    <main class="main-content">
+        <header class="header">
+            <h1 class="header-title">Avaliações dos Clientes</h1>
+            <p class="header-subtitle">Gerencie o feedback dos seus produtos de forma organizada</p>
+            
+            <div class="header-stats">
+                <div class="stat-item">
+                    <div class="stat-value" id="avgRating">4.7</div>
+                    <div class="stat-label">Média Geral</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="totalReviews">247</div>
+                    <div class="stat-label">Total de Avaliações</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="responseRate">92%</div>
+                    <div class="stat-label">Taxa de Resposta</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="pendingResponses">8</div>
+                    <div class="stat-label">Não respondidas</div>
+                </div>
+            </div>
+        </header>
+
+        <div class="reviews-content">
+            <div class="notification-container" id="notificationContainer"></div>
+
+            <!-- Toggle de visualização -->
+            <div class="view-toggle">
+                <span style="font-weight: 600; color: #333;">Visualizar por:</span>
+                <button class="toggle-btn active" onclick="switchView('list')">Lista Completa</button>
+                <button class="toggle-btn" onclick="switchView('products')">Por Produto</button>
+            </div>
+
+            <!-- Filtros -->
+            <div class="filters-section">
+                <div class="filters-grid">
+                    <div class="filter-group">
+                        <label class="filter-label">Filtrar por Produto</label>
+                        <select class="filter-select" id="productFilter" onchange="applyFilters()">
+                            <option value="">Todos os Produtos</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">Filtrar por Avaliação</label>
+                        <select class="filter-select" id="ratingFilter" onchange="applyFilters()">
+                            <option value="">Todas as Notas</option>
+                            <option value="5">5 Estrelas</option>
+                            <option value="4">4 Estrelas</option>
+                            <option value="3">3 Estrelas</option>
+                            <option value="2">2 Estrelas</option>
+                            <option value="1">1 Estrela</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">Status da Resposta</label>
+                        <select class="filter-select" id="responseFilter" onchange="applyFilters()">
+                            <option value="">Todas</option>
+                            <option value="responded">Respondidas</option>
+                            <option value="pending">Não Respondida</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">Ordenar por</label>
+                        <select class="filter-select" id="sortFilter" onchange="applySorting()">
+                            <option value="recent">Mais Recentes</option>
+                            <option value="oldest">Mais Antigas</option>
+                            <option value="rating_high">Maior Nota</option>
+                            <option value="rating_low">Menor Nota</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Visualização em Lista -->
+            <div class="reviews-list-view" id="listView">
+                <div class="reviews-list-header">
+                    <h2 class="list-title">Todas as Avaliações</h2>
+                    <span id="reviewsCount">0 avaliações</span>
+                </div>
+                <div id="reviewsList">
+                    <!-- Avaliações serão inseridas aqui -->
+                </div>
+            </div>
+
+            <!-- Visualização por Produtos -->
+            <div class="products-view" id="productsView" style="display: none;">
+                <div class="products-sidebar">
+                    <div class="products-sidebar-header">
+                        <h3 class="sidebar-title">Meus Produtos</h3>
+                    </div>
+                    <div class="products-list" id="productsSidebar">
+                        <!-- Lista de produtos será inserida aqui -->
+                    </div>
+                </div>
+                <div class="product-detail" id="productDetail">
+                    <div class="empty-state">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3ZM19 19H5V5H19V19Z"/>
+                        </svg>
+                        <h3>Selecione um produto</h3>
+                        <p>Escolha um produto na lista ao lado para ver suas avaliações</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal para confirmar exclusão -->
+    <div class="modal-overlay" id="deleteModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Confirmar Exclusão</h3>
+                <button class="modal-close" onclick="closeDeleteModal()">&times;</button>
+            </div>
+            <div class="modal-content">
+                <p>Tem certeza que deseja excluir esta avaliação? Esta ação não pode ser desfeita.</p>
+                <div class="form-actions" style="margin-top: 20px;">
+                    <button class="btn btn-secondary" onclick="closeDeleteModal()">Cancelar</button>
+                    <button class="btn btn-primary" style="background: #f44336;" onclick="confirmDelete()">Excluir</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para editar resposta -->
+    <div class="modal-overlay" id="editModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Editar Resposta</h3>
+                <button class="modal-close" onclick="closeEditModal()">&times;</button>
+            </div>
+            <div class="modal-content">
+                <textarea class="response-textarea" id="editResponseText" placeholder="Digite sua resposta..."></textarea>
+                <div class="form-actions" style="margin-top: 15px;">
+                    <button class="btn btn-secondary" onclick="closeEditModal()">Cancelar</button>
+                    <button class="btn btn-primary" onclick="saveEditedResponse()">Salvar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ========== SISTEMA DE AUTENTICAÇÃO DO PRODUTOR ==========
+
+// Verificar se o usuário está logado ao carregar a página
+document.addEventListener('DOMContentLoaded', function() {
+    checkProducerAuth();
+});
+
+/**
+ * Verifica se há um produtor logado e atualiza a interface
+ */
+let currentUserData = null;
+
+function checkProducerAuth() {
+    // Exige login válido (token JWT real) como produtor
+    const userData = requireAuth(['produtor']);
+    if (!userData) return;
+
+    currentUserData = userData;
+    try {
+        updateUserInterface(userData);
+    } catch (error) {
+        console.error('Erro ao atualizar a barra lateral:', error);
+    }
+}
+
+/**
+ * Atualiza a interface com os dados do usuário logado
+ */
+function updateUserInterface(userData) {
+    // Atualizar nome do usuário
+    const userNameElement = document.getElementById('userName');
+    if (userNameElement) {
+        userNameElement.textContent = userData.name || 'Produtor';
+    }
+    
+    // Atualizar avatar (foto real, se existir, senão a inicial do nome)
+    const userAvatarElement = document.getElementById('userAvatar');
+    renderAvatar(userAvatarElement, userData);
+}
+
+/**
+ * Realizar logout do produtor
+ */
+function showLogoutModal() {
+    const logoutModal = document.getElementById('logoutModal');
+    if (logoutModal) {
+        logoutModal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+function closeLogoutModal() {
+    const logoutModal = document.getElementById('logoutModal');
+    if (logoutModal) {
+        logoutModal.classList.remove('active');
+        document.body.style.overflow = 'auto';
+    }
+}
+
+function confirmLogout() {
+    apiLogout();
+    window.location.href = 'login.html';
+}
+
+/**
+ * Remove a sessão ativa do usuário (sincroniza com login.html)
+ */
+function removeActiveSession(email) {
+    try {
+        const activeSessions = JSON.parse(localStorage.getItem('activeSessions') || '[]');
+        const filteredSessions = activeSessions.filter(session => session.email !== email);
+        localStorage.setItem('activeSessions', JSON.stringify(filteredSessions));
+    } catch (error) {
+        console.error('Erro ao remover sessão ativa:', error);
+    }
+}
+
+// ========== FIM DO SISTEMA DE AUTENTICAÇÃO ==========
+
+
+
+        class ReviewsSystem {
+            constructor() {
+                this.currentView = 'list';
+                this.selectedProduct = null;
+                this.reviewToDelete = null;
+                this.reviewToEdit = null;
+                this.allReviews = [];
+                this.filteredReviews = [];
+                this.products = [];
+
+                this.loadRealReviewsData();
+            }
+
+            // Busca as avaliações reais dos produtos deste produtor
+            async loadRealReviewsData() {
+                try {
+                    const response = await apiFetch('/reviews/reviews/mine/');
+                    if (!response.ok) throw new Error('Falha ao buscar avaliações');
+                    const results = await response.json();
+
+                    this.allReviews = results.map(r => ({
+                        id: r.id,
+                        productId: r.product,
+                        productName: r.product_name,
+                        customerName: r.customer_name || 'Cliente',
+                        customerInitial: (r.customer_name || 'C').charAt(0),
+                        rating: r.rating,
+                        comment: r.comment,
+                        date: r.created_at,
+                        dateFormatted: new Date(r.created_at).toLocaleDateString('pt-BR'),
+                        hasResponse: !!r.producer_reply,
+                        response: r.producer_reply || '',
+                        isLiked: false,
+                        likes: 0,
+                        showResponseForm: false
+                    }));
+
+                    this.allReviews.sort((a, b) => new Date(b.date) - new Date(a.date));
+                    this.filteredReviews = [...this.allReviews];
+
+                    // Agrupar por produto
+                    const productMap = new Map();
+                    this.allReviews.forEach(r => {
+                        if (!productMap.has(r.productId)) {
+                            productMap.set(r.productId, { id: r.productId, name: r.productName, reviews: [] });
+                        }
+                        productMap.get(r.productId).reviews.push(r);
+                    });
+
+                    this.products = Array.from(productMap.values()).map(p => {
+                        const avgRating = p.reviews.length > 0
+                            ? (p.reviews.reduce((sum, r) => sum + r.rating, 0) / p.reviews.length)
+                            : 0;
+                        return { ...p, avgRating: Number(avgRating.toFixed(1)), totalReviews: p.reviews.length };
+                    });
+                } catch (error) {
+                    console.error('Erro ao carregar avaliações:', error);
+                    this.allReviews = [];
+                    this.filteredReviews = [];
+                    this.products = [];
+                }
+
+                this.init();
+            }
+
+            init() {
+                this.populateFilters();
+                this.renderCurrentView();
+                this.updateStats();
+                this.showNotification('Sistema de avaliações carregado com sucesso!', 'success');
+            }
+
+            populateFilters() {
+                const productFilter = document.getElementById('productFilter');
+                productFilter.innerHTML = '<option value="">Todos os Produtos</option>';
+                
+                this.products.forEach(product => {
+                    const option = document.createElement('option');
+                    option.value = product.id;
+                    option.textContent = product.name;
+                    productFilter.appendChild(option);
+                });
+            }
+
+            switchView(viewType) {
+    this.currentView = viewType;
+    
+    // Atualizar botões
+    document.querySelectorAll('.toggle-btn').forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
+    
+    // Mostrar/ocultar filtro de produto baseado na visualização
+    const productFilterGroup = document.querySelector('.filter-group:first-child'); // Primeiro grupo de filtro (produto)
+    
+    if (viewType === 'products') {
+        // Esconder filtro de produto na visualização por produto
+        productFilterGroup.style.display = 'none';
+    } else {
+        // Mostrar filtro de produto na visualização em lista
+        productFilterGroup.style.display = 'flex';
+    }
+    
+    this.renderCurrentView();
+}
+
+            renderCurrentView() {
+                const listView = document.getElementById('listView');
+                const productsView = document.getElementById('productsView');
+                
+                if (this.currentView === 'list') {
+                    listView.style.display = 'block';
+                    productsView.style.display = 'none';
+                    this.renderListView();
+                } else {
+                    listView.style.display = 'none';
+                    productsView.style.display = 'grid';
+                    this.renderProductsView();
+                }
+            }
+
+            renderListView() {
+                const container = document.getElementById('reviewsList');
+                const countElement = document.getElementById('reviewsCount');
+                
+                countElement.textContent = `${this.filteredReviews.length} avaliações`;
+                
+                if (this.filteredReviews.length === 0) {
+                    container.innerHTML = this.getEmptyState();
+                    return;
+                }
+                
+                container.innerHTML = '';
+                this.filteredReviews.forEach(review => {
+                    container.appendChild(this.createReviewElement(review));
+                });
+            }
+
+            renderProductsView() {
+                this.renderProductsSidebar();
+                if (this.selectedProduct) {
+                    this.renderProductDetail(this.selectedProduct);
+                }
+            }
+
+            renderProductsSidebar() {
+    const container = document.getElementById('productsSidebar');
+    container.innerHTML = '';
+    
+    this.products.forEach(product => {
+        const element = document.createElement('div');
+        element.className = `product-item ${this.selectedProduct?.id === product.id ? 'active' : ''}`;
+        element.onclick = () => this.selectProduct(product);
+        
+        element.innerHTML = `
+            <div class="product-item-name">${product.name}</div>
+            <div class="product-item-stats">
+                <span class="rating-with-icon">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="#4CAF50" style="margin-right: 4px;">
+                        <path d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.45,13.97L5.82,21L12,17.27Z"/>
+                    </svg>
+                    ${product.avgRating}
+                </span>
+                <span>${product.totalReviews} avaliações</span>
+            </div>
+        `;
+        
+        container.appendChild(element);
+    });
+}
+
+            selectProduct(product) {
+                this.selectedProduct = product;
+                this.renderProductsSidebar();
+                this.renderProductDetail(product);
+            }
+
+            renderProductDetail(product) {
+                const container = document.getElementById('productDetail');
+                
+                const filteredProductReviews = product.reviews.filter(review => {
+                    return this.matchesFilters(review);
+                });
+                
+                container.innerHTML = `
+                    <div class="product-detail-header">
+                        <div class="product-title">${product.name}</div>
+                        <div class="product-stats">
+                            <div class="product-rating">
+                                ${this.generateStarsHTML(product.avgRating)}
+                                <span class="rating-number">${product.avgRating}</span>
+                            </div>
+                            <span style="color: #666;">${filteredProductReviews.length} de ${product.totalReviews} avaliações</span>
+                        </div>
+                    </div>
+                    <div class="product-reviews">
+                        ${filteredProductReviews.length === 0 ? 
+                            this.getEmptyState() : 
+                            filteredProductReviews.map(review => 
+                                this.createReviewElement(review).outerHTML
+                            ).join('')
+                        }
+                    </div>
+                `;
+            }
+
+            createReviewElement(review) {
+                const element = document.createElement('div');
+                element.className = 'review-item';
+                element.innerHTML = `
+                    <div class="review-header">
+                        <div class="review-main-info">
+                            <div class="reviewer-avatar">${review.customerInitial}</div>
+                            <div class="reviewer-details">
+                                <h4>${review.customerName}</h4>
+                                <div class="product-name">${review.productName}</div>
+                                <div class="review-date">${review.dateFormatted}</div>
+                            </div>
+                        </div>
+                        <div class="review-rating">
+                            ${this.generateStarsHTML(review.rating)}
+                        </div>
+                    </div>
+                    
+                    <div class="review-content">
+                        <div class="review-text">${review.comment}</div>
+                    </div>
+                    
+                    <div class="review-actions">
+                        <button class="action-btn ${review.isLiked ? 'liked' : ''}" onclick="reviewsSystem.toggleLike(${review.id}, this)">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                            </svg>
+                            <span>Curtir (${review.likes})</span>
+                        </button>
+                        
+                        ${review.hasResponse ? '' : 
+                            `<button class="action-btn" onclick="reviewsSystem.showResponseForm(${review.id})">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M10 9V5l-7 7 7 7v-4.1c5 0 8.5 1.6 11 5.1-1-5-4-10-11-11z"/>
+                                </svg>
+                                <span>Responder</span>
+                            </button>`
+                        }
+                        
+                        <button class="action-btn danger" onclick="reviewsSystem.deleteReview(${review.id})">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M9,3V4H4V6H5V19A2,2 0 0,0 7,21H17A2,2 0 0,0 19,19V6H20V4H15V3H9M7,6H17V19H7V6M9,8V17H11V8H9M13,8V17H15V8H13Z"/>
+                            </svg>
+                            <span>Excluir</span>
+                        </button>
+                    </div>
+                    
+                    ${review.hasResponse ? 
+                        `<div class="producer-response">
+                            <div class="response-header">
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                                    <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2Z"/>
+                                </svg>
+                                <span class="response-label">Resposta do Produtor</span>
+                            </div>
+                            <div class="response-text">${review.response}</div>
+                            <div class="response-actions">
+                                <button class="action-btn" onclick="reviewsSystem.editResponse(${review.id})">
+                                    <svg viewBox="0 0 24 24">
+                                        <path d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z"/>
+                                    </svg>
+                                    <span>Editar</span>
+                                </button>
+                                <button class="action-btn danger" onclick="reviewsSystem.removeResponse(${review.id})">
+                                    <svg viewBox="0 0 24 24">
+                                        <path d="M9,3V4H4V6H5V19A2,2 0 0,0 7,21H17A2,2 0 0,0 19,19V6H20V4H15V3H9M7,6H17V19H7V6M9,8V17H11V8H9M13,8V17H15V8H13Z"/>
+                                    </svg>
+                                    <span>Remover Resposta</span>
+                                </button>
+                            </div>
+                        </div>` : ''
+                    }
+                    
+                    <div class="response-form" id="responseForm_${review.id}" style="display: none;">
+                        <textarea class="response-textarea" id="responseText_${review.id}" placeholder="Digite sua resposta..."></textarea>
+                        <div class="form-actions">
+                            <button class="btn btn-secondary" onclick="reviewsSystem.hideResponseForm(${review.id})">Cancelar</button>
+                            <button class="btn btn-primary" onclick="reviewsSystem.submitResponse(${review.id})">Enviar Resposta</button>
+                        </div>
+                    </div>
+                `;
+                
+                return element;
+            }
+
+            generateStarsHTML(rating) {
+                let starsHTML = '';
+                for (let i = 1; i <= 5; i++) {
+                    const filled = i <= rating ? 'filled' : '';
+                    starsHTML += `
+                        <svg class="star ${filled}" viewBox="0 0 24 24">
+                            <path d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.45,13.97L5.82,21L12,17.27Z"/>
+                        </svg>
+                    `;
+                }
+                return starsHTML;
+            }
+
+            getEmptyState() {
+                return `
+                    <div class="empty-state" style="padding: 40px;">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.45,13.97L5.82,21L12,17.27Z"/>
+                        </svg>
+                        <h3>Nenhuma avaliação encontrada</h3>
+                        <p>Não há avaliações que correspondam aos filtros selecionados.</p>
+                    </div>
+                `;
+            }
+
+            matchesFilters(review) {
+                const productFilter = document.getElementById('productFilter').value;
+                const ratingFilter = document.getElementById('ratingFilter').value;
+                const responseFilter = document.getElementById('responseFilter').value;
+
+                if (productFilter && review.productId.toString() !== productFilter) {
+                    return false;
+                }
+
+                if (ratingFilter && review.rating.toString() !== ratingFilter) {
+                    return false;
+                }
+
+                if (responseFilter === 'responded' && !review.hasResponse) {
+                    return false;
+                }
+
+                if (responseFilter === 'pending' && review.hasResponse) {
+                    return false;
+                }
+
+                return true;
+            }
+
+            applyFilters() {
+                this.filteredReviews = this.allReviews.filter(review => this.matchesFilters(review));
+                this.applySorting();
+            }
+
+            applySorting() {
+                const sortBy = document.getElementById('sortFilter').value;
+
+                this.filteredReviews.sort((a, b) => {
+                    switch (sortBy) {
+                        case 'recent':
+                            return new Date(b.date) - new Date(a.date);
+                        case 'oldest':
+                            return new Date(a.date) - new Date(b.date);
+                        case 'rating_high':
+                            return b.rating - a.rating;
+                        case 'rating_low':
+                            return a.rating - b.rating;
+                        default:
+                            return new Date(b.date) - new Date(a.date);
+                    }
+                });
+
+                this.renderCurrentView();
+            }
+
+            updateStats() {
+                const totalReviews = this.allReviews.length;
+                const avgRating = totalReviews > 0 ? 
+                    (this.allReviews.reduce((sum, r) => sum + r.rating, 0) / totalReviews).toFixed(1) : 0;
+                
+                const respondedReviews = this.allReviews.filter(r => r.hasResponse).length;
+                const responseRate = totalReviews > 0 ? Math.round((respondedReviews / totalReviews) * 100) : 0;
+                const pendingResponses = totalReviews - respondedReviews;
+
+                document.getElementById('avgRating').textContent = avgRating;
+                document.getElementById('totalReviews').textContent = totalReviews;
+                document.getElementById('responseRate').textContent = `${responseRate}%`;
+                document.getElementById('pendingResponses').textContent = pendingResponses;
+            }
+
+            // Ações das avaliações
+            toggleLike(reviewId, button) {
+                const review = this.allReviews.find(r => r.id === reviewId);
+                if (review) {
+                    review.isLiked = !review.isLiked;
+                    
+                    if (review.isLiked) {
+                        review.likes += 1;
+                        button.classList.add('liked');
+                        this.showNotification('Curtida adicionada!', 'success');
+                    } else {
+                        review.likes = Math.max(0, review.likes - 1);
+                        button.classList.remove('liked');
+                        this.showNotification('Curtida removida!', 'success');
+                    }
+                    
+                    button.querySelector('span').textContent = `Curtir (${review.likes})`;
+                }
+            }
+
+            showResponseForm(reviewId) {
+                document.getElementById(`responseForm_${reviewId}`).style.display = 'block';
+                document.getElementById(`responseText_${reviewId}`).focus();
+            }
+
+            hideResponseForm(reviewId) {
+                document.getElementById(`responseForm_${reviewId}`).style.display = 'none';
+                document.getElementById(`responseText_${reviewId}`).value = '';
+            }
+
+            async submitResponse(reviewId) {
+                const textarea = document.getElementById(`responseText_${reviewId}`);
+                const responseText = textarea.value.trim();
+                
+                if (!responseText) {
+                    this.showNotification('Por favor, digite uma resposta!', 'error');
+                    return;
+                }
+                
+                const review = this.allReviews.find(r => r.id === reviewId);
+                if (!review) return;
+
+                try {
+                    const response = await apiFetch(`/reviews/reviews/${reviewId}/reply/`, {
+                        method: 'PATCH',
+                        body: JSON.stringify({ producer_reply: responseText }),
+                    });
+                    if (!response.ok) throw new Error('Falha ao enviar resposta');
+
+                    review.hasResponse = true;
+                    review.response = responseText;
+
+                    this.hideResponseForm(reviewId);
+                    this.renderCurrentView();
+                    this.updateStats();
+                    this.showNotification('Resposta enviada com sucesso!', 'success');
+                } catch (error) {
+                    console.error('Erro ao enviar resposta:', error);
+                    this.showNotification('Não foi possível enviar a resposta. Tente novamente.', 'error');
+                }
+            }
+
+            editResponse(reviewId) {
+                const review = this.allReviews.find(r => r.id === reviewId);
+                if (review) {
+                    this.reviewToEdit = review;
+                    document.getElementById('editResponseText').value = review.response;
+                    document.getElementById('editModal').classList.add('active');
+                }
+            }
+
+            removeResponse(reviewId) {
+                const review = this.allReviews.find(r => r.id === reviewId);
+                if (review) {
+                    review.hasResponse = false;
+                    review.response = '';
+                    this.renderCurrentView();
+                    this.updateStats();
+                    this.showNotification('Resposta removida!', 'success');
+                }
+            }
+
+            deleteReview(reviewId) {
+                this.reviewToDelete = reviewId;
+                document.getElementById('deleteModal').classList.add('active');
+            }
+
+            confirmDelete() {
+                if (this.reviewToDelete) {
+                    const index = this.allReviews.findIndex(r => r.id === this.reviewToDelete);
+                    if (index !== -1) {
+                        const review = this.allReviews[index];
+                        this.allReviews.splice(index, 1);
+                        
+                        // Atualizar produtos
+                        const product = this.products.find(p => p.id === review.productId);
+                        if (product) {
+                            product.reviews = product.reviews.filter(r => r.id !== this.reviewToDelete);
+                            product.totalReviews = product.reviews.length;
+                            if (product.reviews.length > 0) {
+                                product.avgRating = Number((product.reviews.reduce((sum, r) => sum + r.rating, 0) / product.reviews.length).toFixed(1));
+                            } else {
+                                product.avgRating = 0;
+                            }
+                        }
+                        
+                        this.applyFilters();
+                        this.updateStats();
+                        this.showNotification('Avaliação excluída com sucesso!', 'success');
+                    }
+                    this.closeDeleteModal();
+                }
+            }
+
+            closeDeleteModal() {
+                document.getElementById('deleteModal').classList.remove('active');
+                this.reviewToDelete = null;
+            }
+
+            closeEditModal() {
+                document.getElementById('editModal').classList.remove('active');
+                this.reviewToEdit = null;
+            }
+
+            saveEditedResponse() {
+                const newResponse = document.getElementById('editResponseText').value.trim();
+                
+                if (!newResponse) {
+                    this.showNotification('Por favor, digite uma resposta!', 'error');
+                    return;
+                }
+                
+                if (this.reviewToEdit) {
+                    this.reviewToEdit.response = newResponse;
+                    this.renderCurrentView();
+                    this.showNotification('Resposta editada com sucesso!', 'success');
+                    this.closeEditModal();
+                }
+            }
+
+            showNotification(message, type = 'success', duration = 4000) {
+                const container = document.getElementById('notificationContainer');
+                const notification = document.createElement('div');
+                notification.className = `notification ${type}`;
+                
+                notification.innerHTML = `
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                        ${this.getNotificationIcon(type)}
+                    </svg>
+                    <span>${message}</span>
+                    <button class="notification-close" onclick="this.parentElement.remove()">&times;</button>
+                `;
+                
+                container.appendChild(notification);
+                
+                setTimeout(() => notification.classList.add('show'), 100);
+                
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                    setTimeout(() => notification.remove(), 300);
+                }, duration);
+            }
+
+            getNotificationIcon(type) {
+                const icons = {
+                    success: '<path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>',
+                    error: '<path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/>',
+                    info: '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>'
+                };
+                return icons[type] || icons.info;
+            }
+        }
+
+        // Instância global
+        const reviewsSystem = new ReviewsSystem();
+
+        // Funções globais
+        function switchView(viewType) {
+    reviewsSystem.switchView(viewType);
+}
+
+        function applyFilters() {
+            reviewsSystem.applyFilters();
+        }
+
+        function applySorting() {
+            reviewsSystem.applySorting();
+        }
+
+        function closeDeleteModal() {
+            reviewsSystem.closeDeleteModal();
+        }
+
+        function confirmDelete() {
+            reviewsSystem.confirmDelete();
+        }
+
+        function closeEditModal() {
+            reviewsSystem.closeEditModal();
+        }
+
+        function saveEditedResponse() {
+            reviewsSystem.saveEditedResponse();
+        }
+
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Sistema de avaliações inicializado com sucesso!');
+        });
+
+        // FUNÇÕES PARA O MENU MOBILE
+function toggleMobileMenu() {
+    const sidebar = document.getElementById('sidebar');
+    sidebar.classList.toggle('mobile-open');
+}
+
+// EVENT LISTENERS
+document.addEventListener('DOMContentLoaded', function() {
+    // Fecha o menu mobile quando clica fora
+    document.addEventListener('click', function(e) {
+        const sidebar = document.getElementById('sidebar');
+        const menuToggle = document.querySelector('.mobile-menu-toggle');
+        
+        if (window.innerWidth <= 768 && 
+            !sidebar.contains(e.target) && 
+            !menuToggle.contains(e.target) && 
+            sidebar.classList.contains('mobile-open')) {
+            sidebar.classList.remove('mobile-open');
+        }
+    });
+
+    // Fecha modal quando clica fora
+    document.addEventListener('click', function(e) {
+        const modal = document.getElementById('exportModal');
+        if (e.target === modal) {
+            closeExportModal();
+        }
+    });
+});
+    </script>
+</body>
+</html>

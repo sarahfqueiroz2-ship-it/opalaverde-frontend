@@ -1,0 +1,3441 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpalaVerde - Produtos Orgânicos em Pedro II</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8faf8;
+        }
+
+    
+.sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 280px;
+    height: 100vh;
+    background: linear-gradient(180deg, #1a4a14, #2d5a27);
+    color: white;
+    z-index: 1000;
+    box-shadow: 3px 0 15px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar-header {
+    padding: 25px 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    text-align: center;
+    flex-shrink: 0;  /* Não encolhe */
+}
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+
+        .logo-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .logo-icon img{
+            width: 50px;
+            height: 50px;
+            position: absolute;
+        }
+
+        .tagline {
+            font-size: 0.85rem;
+            color: #b8d4b8;
+            margin-top: 5px;
+        }
+
+.nav-menu {
+    padding: 20px 0;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+        .nav-item {
+            margin: 3px 0;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 15px 25px;
+            color: #e8f5e8;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: rgba(255,255,255,0.1);
+            border-left-color: #4CAF50;
+            color: white;
+        }
+
+        .nav-icon {
+            width: 20px;
+            margin-right: 15px;
+            text-align: center;
+        }
+
+  .user-profile {
+    padding: 20px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    background: rgba(0,0,0,0.2);
+    flex-shrink: 0;
+    margin-top: auto; /* ← ADICIONE ESTA LINHA */
+}
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: #4CAF50;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .main-content {
+            margin-left: 280px;
+            min-height: 100vh;
+        }
+
+       
+        .top-bar {
+            background: white;
+            padding: 20px 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .search-container {
+            flex: 1;
+            max-width: 500px;
+            position: relative;
+           
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 45px 12px 20px;
+            border: 2px solid #e0e8e0;
+            border-radius: 25px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
+
+        .search-btn {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #4CAF50;
+            color: white;
+            border: none;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .search-btn:hover {
+            background: #45a049;
+        }
+
+        .user-actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .cart-btn {
+            position: relative;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .cart-btn:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #ff4444;
+            color: white;
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        
+        .hero-section {
+            height: 90vh;
+            background: linear-gradient(135deg, rgba(29, 74, 20, 0.85), rgba(45, 90, 39, 0.75)),
+                        url('https://images.unsplash.com/photo-1542838132-92c53300491e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(ellipse at center, transparent 0%, rgba(0,0,0,0.2) 100%);
+        }
+
+        .hero-content {
+            text-align: center;
+            z-index: 2;
+            position: relative;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-content h2 {
+            font-size: 4.5rem;
+            font-weight: 900;
+            margin-bottom: 25px;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.4);
+            line-height: 1.1;
+            letter-spacing: -2px;
+        }
+
+        .hero-subtitle {
+            font-size: 1.8rem;
+            font-weight: 300;
+            margin-bottom: 15px;
+            color: #a8e6a3;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .hero-content p {
+            font-size: 1.4rem;
+            margin-bottom: 40px;
+            max-width: 650px;
+            margin-left: auto;
+            margin-right: auto;
+            opacity: 0.95;
+            line-height: 1.6;
+            font-weight: 400;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary, .btn-secondary {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: white;
+            color: #2d5a27;
+        }
+
+        .btn-primary:hover {
+            background: #f0f0f0;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+
+        .btn-secondary:hover {
+            background: white;
+            color: #2d5a27;
+        }
+
+        
+        .features-section {
+            padding: 80px 30px;
+            background: white;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            color: #2d5a27;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 60px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .feature-card {
+            text-align: center;
+            padding: 40px 30px;
+            border-radius: 20px;
+            background: #f8faf8;
+            border: 2px solid #e8f5e8;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(76, 175, 80, 0.1);
+            border-color: #4CAF50;
+        }
+
+        .feature-icon {
+            width: 85px;
+            height: 85px;
+            background: linear-gradient(135deg, #4CAF50, #66BB6A);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px;
+            box-shadow: 0 10px 30px rgba(76, 175, 80, 0.3);
+            position: relative;
+        }
+
+        .feature-icon img{
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+
+        }
+
+      
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            color: #2d5a27;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .feature-card p {
+            color: #666;
+            line-height: 1.7;
+        }
+
+        .products-section {
+            padding: 80px 30px;
+            background: #f8faf8;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+        }
+
+        .product-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+
+        .product-image {
+            height: 220px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-card:nth-child(1) .product-image {
+            background-image: url('https://images.unsplash.com/photo-1622206151226-18ca2c9ab4a1?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80');
+        }
+
+        .product-card:nth-child(2) .product-image {
+            background-image: url('https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80');
+        }
+
+        .product-card:nth-child(3) .product-image {
+            background-image: url('https://images.unsplash.com/photo-1592841200221-a6898f307baa?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80');
+        }
+
+        .product-card:nth-child(4) .product-image {
+            background-image: url('https://images.unsplash.com/photo-1551754655-cd27e38d2076?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80');
+        }
+
+        .product-card:nth-child(5) .product-image {
+            background-image: url('https://images.unsplash.com/photo-1508747703725-719777637510?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80');
+        }
+
+        .product-card:nth-child(6) .product-image {
+            background-image: url('https://images.unsplash.com/photo-1628773822503-930a7eaecf80?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80');
+        }
+
+        .product-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, transparent 0%, rgba(45, 90, 39, 0.1) 100%);
+            transition: all 0.3s ease;
+        }
+
+        .product-card:hover .product-image::before {
+            background: linear-gradient(135deg, transparent 0%, rgba(45, 90, 39, 0.2) 100%);
+        }
+
+        .product-info {
+            padding: 25px;
+        }
+
+        .product-name {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2d5a27;
+            margin-bottom: 8px;
+        }
+
+        .product-producer {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+
+        .product-price {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #4CAF50;
+            margin-bottom: 15px;
+        }
+
+        .add-to-cart {
+            width: 100%;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .add-to-cart:hover {
+            background: #45a049;
+        }
+
+      
+        .footer {
+            background: #2d5a27;
+            color: white;
+            text-align: center;
+            padding: 40px 30px;
+        }
+
+        .footer p {
+            margin-bottom: 10px;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: #b8d4b8;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
+
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 250px;
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            
+
+            .hero-content h2 {
+                font-size: 2.5rem;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .top-bar {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .search-container {
+                max-width: 100%;
+            }
+        }
+
+        
+
+
+
+/* Sistema de Busca Melhorado */
+.search-results {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #e0e8e0;
+    border-top: none;
+    border-radius: 0 0 15px 15px;
+    max-height: 300px;
+    overflow-y: auto;
+    z-index: 1000;
+    display: none;
+}
+
+.search-result-item {
+    padding: 12px 20px;
+    border-bottom: 1px solid #f0f0f0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: background 0.2s ease;
+}
+
+.search-result-item:hover {
+    background: #f8faf8;
+}
+
+.search-result-item:last-child {
+    border-bottom: none;
+}
+
+.search-result-image {
+    width: 40px;
+    height: 40px;
+    background: #f0f0f0;
+    border-radius: 6px;
+    background-size: cover;
+    background-position: center;
+}
+
+.search-result-info h4 {
+    margin: 0 0 4px 0;
+    color: #2d5a27;
+    font-size: 0.9rem;
+}
+
+.search-result-info p {
+    margin: 0;
+    color: #666;
+    font-size: 0.8rem;
+}
+
+.search-result-price {
+    margin-left: auto;
+    color: #4CAF50;
+    font-weight: 600;
+}
+
+/* Testimonials Section */
+.testimonials-section {
+    padding: 80px 30px;
+    background: linear-gradient(135deg, #f8faf8 0%, #e8f5e8 100%);
+}
+
+.testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.testimonial-card {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+    position: relative;
+}
+
+.testimonial-card::before {
+    content: '"';
+    position: absolute;
+    top: -10px;
+    left: 20px;
+    font-size: 4rem;
+    color: #4CAF50;
+    font-family: serif;
+}
+
+.testimonial-text {
+    font-style: italic;
+    line-height: 1.6;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.testimonial-author {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.author-avatar {
+    width: 50px;
+    height: 50px;
+    background: #4CAF50;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+}
+
+.author-info h4 {
+    margin: 0 0 5px 0;
+    color: #2d5a27;
+}
+
+.author-info p {
+    margin: 0;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.rating {
+    margin-left: auto;
+    color: #ffc107;
+}
+
+/* Estatísticas */
+.stats-section {
+    padding: 60px 30px;
+    background: #2d5a27;
+    color: white;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 40px;
+    max-width: 1000px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.stat-item h3 {
+    font-size: 3rem;
+    font-weight: 900;
+    margin-bottom: 10px;
+    color: #4CAF50;
+}
+
+.stat-item p {
+    font-size: 1.1rem;
+    opacity: 0.9;
+}
+
+/* Loading States */
+.loading {
+    position: relative;
+    pointer-events: none;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #4CAF50;
+    border-top: 2px solid transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    transform: translate(-50%, -50%);
+}
+
+@keyframes spin {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* Melhorias Responsivas */
+@media (max-width: 768px) {
+    
+    
+    .testimonials-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .search-container {
+        margin-bottom: 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .cta-buttons {
+        gap: 15px;
+    }
+    
+    .btn-primary, .btn-secondary {
+        padding: 12px 25px;
+        font-size: 1rem;
+    }
+}
+
+/* Adicione este CSS ao final do arquivo de estilos existente */
+
+/* Formulário de Feedback */
+.feedback-form-container {
+    max-width: 800px;
+    margin: 0 auto 60px;
+    padding: 0 20px;
+}
+
+.feedback-form-card {
+    background: white;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    border: 2px solid #e8f5e8;
+}
+
+.feedback-form-card h3 {
+    color: #2d5a27;
+    font-size: 1.6rem;
+    margin-bottom: 25px;
+    text-align: center;
+    font-weight: 600;
+}
+
+.feedback-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #2d5a27;
+    font-size: 0.95rem;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    padding: 12px 15px;
+    border: 2px solid #e0e8e0;
+    border-radius: 10px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    font-family: inherit;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #4CAF50;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.char-counter {
+    margin-top: 5px;
+    font-size: 0.8rem;
+    color: #666;
+    text-align: right;
+}
+
+.char-counter.warning {
+    color: #ff9800;
+}
+
+.char-counter.danger {
+    color: #f44336;
+}
+
+/* Sistema de Avaliação por Estrelas */
+.rating-input {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 10px;
+}
+
+.rating-input .star {
+    font-size: 2rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: #ddd;
+}
+
+.rating-input .star:hover,
+.rating-input .star.active {
+    color: #ffc107;
+    transform: scale(1.1);
+}
+
+.rating-input .star.active {
+    text-shadow: 0 0 5px rgba(255, 193, 7, 0.5);
+}
+
+/* Botão de Enviar */
+.submit-feedback-btn {
+    background: linear-gradient(135deg, #4CAF50, #66BB6A);
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 10px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.submit-feedback-btn:hover {
+    background: linear-gradient(135deg, #45a049, #5aa85d);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(76, 175, 80, 0.3);
+}
+
+.submit-feedback-btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.submit-feedback-btn .btn-loading {
+    display: none;
+}
+
+.submit-feedback-btn.loading .btn-text {
+    display: none;
+}
+
+.submit-feedback-btn.loading .btn-loading {
+    display: inline;
+}
+
+/* Animação de Sucesso */
+.feedback-success {
+    background: linear-gradient(135deg, #4CAF50, #66BB6A);
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    margin-bottom: 30px;
+    animation: slideInFromTop 0.5s ease-out;
+}
+
+@keyframes slideInFromTop {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Novo Card de Feedback */
+.testimonial-card.new {
+    animation: slideInFromBottom 0.6s ease-out;
+    border: 2px solid #4CAF50;
+}
+
+@keyframes slideInFromBottom {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .feedback-form-card {
+        padding: 30px 20px;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .rating-input .star {
+        font-size: 1.8rem;
+    }
+}
+
+/* Adicione este CSS ao final dos estilos existentes */
+
+/* Botões de Ação nos Comentários */
+.comment-actions {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    display: flex;
+    gap: 8px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.testimonial-card {
+    position: relative;
+}
+
+.testimonial-card:hover .comment-actions {
+    opacity: 1;
+}
+
+.action-btn {
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 6px 12px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    backdrop-filter: blur(5px);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.action-btn:hover {
+    background: white;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    transform: translateY(-1px);
+}
+
+.edit-btn {
+    color: #2196F3;
+    border-color: #2196F3;
+}
+
+.edit-btn:hover {
+    background: #e3f2fd;
+    color: #1976D2;
+}
+
+.delete-btn {
+    color: #f44336;
+    border-color: #f44336;
+}
+
+.delete-btn:hover {
+    background: #ffebee;
+    color: #d32f2f;
+}
+
+/* Modal de Edição */
+.edit-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.edit-modal.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.edit-modal-content {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    max-width: 500px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
+}
+
+.edit-modal.active .edit-modal-content {
+    transform: scale(1);
+}
+
+.edit-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.edit-modal-header h3 {
+    margin: 0;
+    color: #2d5a27;
+    font-size: 1.4rem;
+}
+
+.close-modal {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #666;
+    padding: 5px;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+}
+
+.close-modal:hover {
+    background: #f0f0f0;
+    color: #333;
+}
+
+.edit-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.edit-form .form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.edit-form label {
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #2d5a27;
+}
+
+.edit-form input,
+.edit-form select,
+.edit-form textarea {
+    padding: 12px 15px;
+    border: 2px solid #e0e8e0;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: border-color 0.3s ease;
+}
+
+.edit-form input:focus,
+.edit-form select:focus,
+.edit-form textarea:focus {
+    outline: none;
+    border-color: #4CAF50;
+}
+
+.edit-form textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.edit-form-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: flex-end;
+    margin-top: 10px;
+}
+
+.save-btn, .cancel-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.save-btn {
+    background: #4CAF50;
+    color: white;
+}
+
+.save-btn:hover {
+    background: #45a049;
+}
+
+.save-btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}
+
+.cancel-btn {
+    background: #f5f5f5;
+    color: #333;
+    border: 1px solid #ddd;
+}
+
+.cancel-btn:hover {
+    background: #e0e0e0;
+}
+
+/* Modal de Confirmação de Exclusão */
+.delete-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2001;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.delete-modal.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.delete-modal-content {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
+}
+
+.delete-modal.active .delete-modal-content {
+    transform: scale(1);
+}
+
+.delete-modal h3 {
+    color: #f44336;
+    margin-bottom: 15px;
+    font-size: 1.3rem;
+}
+
+.delete-modal p {
+    color: #666;
+    margin-bottom: 25px;
+    line-height: 1.5;
+}
+
+.delete-modal-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+.confirm-delete, .cancel-delete {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 100px;
+}
+
+.confirm-delete {
+    background: #f44336;
+    color: white;
+}
+
+.confirm-delete:hover {
+    background: #d32f2f;
+}
+
+.cancel-delete {
+    background: #f5f5f5;
+    color: #333;
+    border: 1px solid #ddd;
+}
+
+.cancel-delete:hover {
+    background: #e0e0e0;
+}
+
+/* Indicador de Comentário Editado */
+.edited-indicator {
+    font-size: 0.7rem;
+    color: #999;
+    font-style: italic;
+    margin-top: 5px;
+}
+
+/* Animação de Exclusão */
+.testimonial-card.deleting {
+    animation: fadeOutScale 0.4s ease-out forwards;
+}
+
+@keyframes fadeOutScale {
+    to {
+        opacity: 0;
+        transform: scale(0.8);
+        margin: 0;
+        padding: 0;
+        height: 0;
+    }
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .edit-modal-content {
+        padding: 20px;
+        margin: 20px;
+    }
+    
+    .delete-modal-content {
+        padding: 20px;
+        margin: 20px;
+    }
+    
+    .comment-actions {
+        opacity: 1; /* Sempre visível em mobile */
+        position: relative;
+        top: auto;
+        right: auto;
+        justify-content: flex-end;
+        margin-bottom: 10px;
+    }
+    
+    .action-btn {
+        padding: 8px 12px;
+        font-size: 0.85rem;
+    }
+}
+
+
+.mobile-menu-toggle {
+    display: none;
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 1001;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    width: 50px;
+    height: 50px;
+    border-radius: 8px;
+    font-size: 18px;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    transition: all 0.3s ease;
+}
+
+.mobile-menu-toggle:hover {
+    background: #45a049;
+    transform: translateY(-2px);
+}
+
+.mobile-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 998;
+}
+
+.mobile-overlay.show {
+    display: block;
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+    .mobile-menu-toggle {
+        display: block;
+    }
+    
+    .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+    }
+    
+    .sidebar.mobile-open {
+        transform: translateX(0);
+    }
+    
+    .main-content {
+        margin-left: 0 !important;
+    }
+}
+
+@media (min-width: 769px) {
+    .sidebar {
+        transform: translateX(0) !important;
+    }
+    
+    .mobile-overlay {
+        display: none !important;
+    }
+}
+
+
+/* Modal de Logout */
+.logout-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 3000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(3px);
+}
+
+.logout-modal.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.logout-modal-content {
+    background: white;
+    padding: 35px;
+    border-radius: 20px;
+    max-width: 420px;
+    width: 90%;
+    text-align: center;
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    border: 2px solid #e8f5e8;
+}
+
+.logout-modal.active .logout-modal-content {
+    transform: scale(1);
+}
+
+.logout-icon {
+    width: 70px;
+    height: 70px;
+    background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 25px;
+    box-shadow: 0 8px 25px rgba(255, 107, 107, 0.3);
+}
+
+.logout-icon svg {
+    width: 35px;
+    height: 35px;
+    fill: white;
+}
+
+.logout-modal h3 {
+    color: #2d5a27;
+    margin-bottom: 15px;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.logout-modal p {
+    color: #666;
+    margin-bottom: 30px;
+    line-height: 1.6;
+    font-size: 1rem;
+}
+
+.logout-modal-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.confirm-logout, .cancel-logout {
+    padding: 12px 25px;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 120px;
+}
+
+.confirm-logout {
+    background: linear-gradient(135deg, #f44336, #d32f2f);
+    color: white;
+}
+
+.confirm-logout:hover {
+    background: linear-gradient(135deg, #d32f2f, #c62828);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(244, 67, 54, 0.4);
+}
+
+.cancel-logout {
+    background: #f5f5f5;
+    color: #333;
+    border: 2px solid #e0e0e0;
+}
+
+.cancel-logout:hover {
+    background: #e8f5e8;
+    border-color: #4CAF50;
+    color: #2d5a27;
+}
+
+.logout-btn {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 12px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    margin-top: 15px;
+    width: 100%;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.logout-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.4);
+}
+
+.logout-btn svg {
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
+}
+
+@media (max-width: 480px) {
+    .logout-modal-content {
+        padding: 25px;
+        margin: 20px;
+    }
+    
+    .logout-modal-actions {
+        flex-direction: column;
+    }
+    
+    .confirm-logout, .cancel-logout {
+        width: 100%;
+    }
+}
+    </style>
+    <script src="api.js?v=3"></script>
+</head>
+<body>
+    <button class="mobile-menu-toggle" id="mobileToggle">☰</button>
+<div class="mobile-overlay" id="mobileOverlay"></div>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <div class="logo-icon">
+                    <img src="logo1.png" alt="">
+                </div>
+                <h1>OpalaVerde</h1>
+            </div>
+            <p class="tagline">Orgânicos de Pedro II</p>
+        </div>
+
+        <nav class="nav-menu">
+            <div class="nav-item">
+                <a href="inicial_cliente.html" class="nav-link active">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M10 20V14H14V20H19V12H22L12 3L2 12H5V20H10Z"/>
+                        </svg>
+                    </span>
+                    Home/Inicial
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="catalogo_de_produtos.html" class="nav-link">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3ZM19 19H5V5H19V19Z"/>
+                        </svg>
+                    </span>
+                    Catálogo de Produtos
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="carrinho.html" class="nav-link">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M7 18C5.9 18 5.01 18.9 5.01 20S5.9 22 7 22 9 21.1 9 20 8.1 18 7 18ZM1 2V4H3L6.6 11.59L5.25 14.04C5.09 14.32 5 14.65 5 15C5 16.1 5.9 17 7 17H19V15H7.42C7.28 15 7.17 14.89 7.17 14.75L7.2 14.63L8.1 13H15.55C16.3 13 16.96 12.59 17.3 11.97L20.88 5.48C20.96 5.34 21 5.17 21 5C21 4.45 20.55 4 20 4H5.21L4.27 2H1ZM17 18C15.9 18 15.01 18.9 15.01 20S15.9 22 17 22 19 21.1 19 20 18.1 18 17 18Z"/>
+                        </svg>
+                    </span>
+                    Carrinho
+                </a>
+            </div>
+           
+            <div class="nav-item">
+                <a href="meu-perfil-cliente.html" class="nav-link">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M12 12C14.21 12 16 10.21 16 8C16 5.79 14.21 4 12 4C9.79 4 8 5.79 8 8C8 10.21 9.79 12 12 12ZM12 14C9.33 14 4 15.34 4 18V20H20V18C20 15.34 14.67 14 12 14Z"/>
+                        </svg>
+                    </span>
+                    Minha Conta
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="historico-pedidos.html" class="nav-link">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M19 7V4H5V7H19ZM21 2H3C1.9 2 1 2.9 1 4V7C1 8.1 1.9 9 3 9H4V19C4 20.1 4.9 21 6 21H18C19.1 21 20 20.1 20 19V9H21C22.1 9 23 8.1 23 7V4C23 2.9 22.1 2 21 2Z"/>
+                        </svg>
+                    </span>
+                    Histórico de Pedidos
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="lista_favoritos.html" class="nav-link">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M12 21.35L10.55 20.03C5.4 15.36 2 12.28 2 8.5C2 5.42 4.42 3 7.5 3C9.24 3 10.91 3.81 12 5.09C13.09 3.81 14.76 3 16.5 3C19.58 3 22 5.42 22 8.5C22 12.28 18.6 15.36 13.45 20.04L12 21.35Z"/>
+                        </svg>
+                    </span>
+                    Lista de Favoritos
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="sobre-nos.html" class="nav-link">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M11 7H13V9H11V7ZM11 11H13V17H11V11ZM12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20Z"/>
+                        </svg>
+                    </span>
+                    Sobre Nós
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="contate-nos.html" class="nav-link">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M20 4H4C2.9 4 2.01 4.9 2.01 6L2 18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V6C22 4.9 21.1 4 20 4ZM20 8L12 13L4 8V6L12 11L20 6V8Z"/>
+                        </svg>
+                    </span>
+                    Contato
+                </a>
+            </div>
+          
+    
+
+        <div class="user-profile">
+            <div class="user-info">
+                <div class="user-avatar">M</div>
+                <div>
+                    <div style="font-weight: 600;">Maria Silva</div>
+                    <div style="font-size: 0.8rem; color: #b8d4b8;">Cliente</div>
+                </div>
+            </div>
+            
+            <button class="logout-btn" onclick="showLogoutModal()">
+                <svg viewBox="0 0 24 24">
+                    <path d="M17 7L15.59 8.41L18.17 11H8V13H18.17L15.59 15.59L17 17L22 12L17 7ZM4 5H12V3H4C2.9 3 2 3.9 2 5V19C2 20.1 2.9 21 4 21H12V19H4V5Z"/>
+                </svg>
+                Sair
+            </button>
+        </div>
+        
+    </aside>
+
+  
+    <main class="main-content">
+        
+        <!-- Top Bar -->
+        <div class="top-bar">            
+            <div class="search-container">
+                <input type="text" class="search-input" placeholder="Buscar produtos orgânicos..." id="searchInput">
+                <button class="search-btn" onclick="performSearch()">🔍</button>
+                <div class="search-results" id="searchResults"></div>
+            </div>
+    
+            
+        </div>
+    
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="hero-content">
+                <div class="hero-subtitle">Produtos Orgânicos</div>
+                <h2>Cultivando vida, <br>colhendo saúde</h2>
+                <p>Conectamos você aos melhores produtores de Pedro II. Alimentos frescos, sustentáveis e certificados, cultivados com amor e respeito pela natureza.</p>
+                <div class="cta-buttons">
+                    <a href="catalogo_de_produtos.html" class="btn-primary">Explorar Produtos</a>
+                    <a href="#features" class="btn-secondary">Conhecer Mais</a>
+                </div>
+            </div>
+        </section>
+    
+        <!-- Features Section -->
+        <section class="features-section" id="features">
+            <h2 class="section-title">Por que escolher OpalaVerde?</h2>
+            <p class="section-subtitle">Uma plataforma completa para conectar você aos melhores produtos orgânicos da região</p>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg width="45" height="45" viewBox="0 0 45 45" fill="white">
+                            <circle cx="22.5" cy="22.5" r="18" fill="white" stroke="currentColor" stroke-width="2"/>
+                            <text x="22.5" y="18" text-anchor="middle" font-size="8" fill="#4CAF50" font-weight="bold">100%</text>
+                            <text x="22.5" y="28" text-anchor="middle" font-size="6" fill="#4CAF50">Orgânico</text>
+                        </svg>
+                    </div>
+                    <h3>100% Orgânico</h3>
+                    <p>Produtos certificados, livres de agrotóxicos e pesticidas. Qualidade garantida diretamente do produtor.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" width="45" height="45" fill="white">
+                            <path d="M18,18.5A1.5,1.5 0 0,1 16.5,17A1.5,1.5 0 0,1 18,15.5A1.5,1.5 0 0,1 19.5,17A1.5,1.5 0 0,1 18,18.5M19.5,9.5L21.46,12H17V9.5M6,18.5A1.5,1.5 0 0,1 4.5,17A1.5,1.5 0 0,1 6,15.5A1.5,1.5 0 0,1 7.5,17A1.5,1.5 0 0,1 6,18.5M20,8H17V4H3C1.89,4 1,4.89 1,6V17H3A3,3 0 0,0 6,20A3,3 0 0,0 9,17H15A3,3 0 0,0 18,20A3,3 0 0,0 21,17H23V12L20,8Z"/>
+                        </svg>
+                    </div>
+                    <h3>Entrega Rápida</h3>
+                    <p>Logística regional eficiente. Produtos frescos entregues em até 24 horas na região de Pedro II.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" width="45" height="45" fill="white">
+                            <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,16.5L6.5,12L8,10.5L11,13.5L16,8.5L17.5,10L11,16.5Z"/>
+                        </svg>
+                    </div>
+                    <h3>Produtores Locais</h3>
+                    <p>Apoie a agricultura familiar da região. Conheça a história e origem de cada produto que você consome.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" width="45" height="45" fill="white">
+                            <path d="M17,8C8,10 5.9,16.17 3.82,21.34L5.71,22L6.66,19.7C7.14,19.87 7.64,20 8,20C19,20 22,3 22,3C21,5 14,5.25 9,6.25C4,7.25 2,11.5 2,13.5C2,15.5 3.75,17.25 3.75,17.25C7,8 17,8 17,8Z"/>
+                        </svg>
+                    </div>
+                    <h3>Sustentável</h3>
+                    <p>Contribua para a preservação ambiental e redução da pegada de carbono com consumo consciente.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" width="45" height="45" fill="white">
+                            <path d="M7,15H9C9,16.08 10.37,17 12,17C13.63,17 15,16.08 15,15C15,13.9 13.96,13.5 11.76,12.97C9.64,12.44 7,11.78 7,9C7,7.21 8.47,5.69 10.5,5.18V3H13.5V5.18C15.53,5.69 17,7.21 17,9H15C15,7.92 13.63,7 12,7C10.37,7 9,7.92 9,9C9,10.1 10.04,10.5 12.24,11.03C14.36,11.56 17,12.22 17,15C17,16.79 15.53,18.31 13.5,18.82V21H10.5V18.82C8.47,18.31 7,16.79 7,15Z"/>
+                        </svg>
+                    </div>
+                    <h3>Preços Justos</h3>
+                    <p>Economia direta entre produtor e consumidor. Preços competitivos sem intermediários desnecessários.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" width="45" height="45" fill="white">
+                            <path d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.63L12,2L9.19,8.63L2,9.24L7.46,13.97L5.82,21L12,17.27Z"/>
+                        </svg>
+                    </div>
+                    <h3>Qualidade Premium</h3>
+                    <p>Sistema de avaliações e garantia de qualidade. Sua satisfação é nossa prioridade número um.</p>
+                </div>
+            </div>
+        </section>
+    
+        
+    
+        <!-- Products Section -->
+        <section class="products-section">
+            <h2 class="section-title">Produtos em Destaque</h2>
+            <p class="section-subtitle">Os favoritos dos nossos clientes, frescos e selecionados</p>
+            
+            <div class="products-grid" id="productsGrid">
+                <!-- Produtos serão carregados via JavaScript -->
+            </div>
+        </section>
+    
+        <!-- Substitua a seção testimonials-section existente por esta: -->
+
+<!-- Testimonials/Feedback Section -->
+<section class="testimonials-section">
+    <h2 class="section-title">O que nossos clientes dizem</h2>
+    <p class="section-subtitle">Compartilhe sua experiência e veja o que outros clientes acham</p>
+    
+    <!-- Formulário de Feedback -->
+    <div class="feedback-form-container">
+        <div class="feedback-form-card">
+            <h3>Deixe seu feedback</h3>
+            <form id="feedbackForm" class="feedback-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="customerName">Seu nome:</label>
+                        <input type="text" id="customerName" name="customerName" required placeholder="Digite seu nome">
+                    </div>
+                    <div class="form-group">
+                        <label for="customerTime">Cliente há quanto tempo?</label>
+                        <select id="customerTime" name="customerTime" required>
+                            <option value="">Selecione...</option>
+                            <option value="Menos de 1 mês">Menos de 1 mês</option>
+                            <option value="1-6 meses">1-6 meses</option>
+                            <option value="6 meses - 1 ano">6 meses - 1 ano</option>
+                            <option value="1-2 anos">1-2 anos</option>
+                            <option value="Mais de 2 anos">Mais de 2 anos</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="rating">Avaliação:</label>
+                    <div class="rating-input" id="ratingInput">
+                        <span class="star" data-rating="1">★</span>
+                        <span class="star" data-rating="2">★</span>
+                        <span class="star" data-rating="3">★</span>
+                        <span class="star" data-rating="4">★</span>
+                        <span class="star" data-rating="5">★</span>
+                    </div>
+                    <input type="hidden" id="rating" name="rating" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="feedbackText">Seu comentário:</label>
+                    <textarea id="feedbackText" name="feedbackText" required 
+                              placeholder="Conte-nos sobre sua experiência com a OpalaVerde..."
+                              rows="4" maxlength="300"></textarea>
+                    <small class="char-counter">0/300 caracteres</small>
+                </div>
+                
+                <button type="submit" class="submit-feedback-btn">
+                    <span class="btn-text">Enviar Feedback</span>
+                    <span class="btn-loading" style="display: none;">Enviando...</span>
+                </button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Feedbacks dos Clientes -->
+    <div class="testimonials-grid" id="testimonialsGrid">
+        <!-- Feedbacks iniciais (podem ser mantidos como exemplos) -->
+        <div class="testimonial-card">
+            <p class="testimonial-text">Os produtos são sempre fresquíssimos e chegam no prazo combinado. A qualidade é excepcional, você consegue sentir a diferença dos orgânicos!</p>
+            <div class="testimonial-author">
+                <div class="author-avatar">M</div>
+                <div class="author-info">
+                    <h4>Maria Santos</h4>
+                    <p>Cliente há 2 anos</p>
+                </div>
+                <div class="rating">★★★★★</div>
+            </div>
+        </div>
+        
+        <div class="testimonial-card">
+            <p class="testimonial-text">Finalmente encontrei uma plataforma que conecta diretamente com os produtores locais. Preços justos e produtos de altíssima qualidade!</p>
+            <div class="testimonial-author">
+                <div class="author-avatar">J</div>
+                <div class="author-info">
+                    <h4>João Lima</h4>
+                    <p>Cliente há 1 ano</p>
+                </div>
+                <div class="rating">★★★★★</div>
+            </div>
+        </div>
+        
+        <div class="testimonial-card">
+            <p class="testimonial-text">A entrega é super rápida e o atendimento é excelente. Minha família só consome orgânicos da OpalaVerde agora!</p>
+            <div class="testimonial-author">
+                <div class="author-avatar">A</div>
+                <div class="author-info">
+                    <h4>Ana Carolina</h4>
+                    <p>Cliente há 6 meses</p>
+                </div>
+                <div class="rating">★★★★★</div>
+            </div>
+        </div>
+    </div>
+</section>
+    
+        <!-- Footer -->
+        <footer class="footer">
+            <p>&copy; 2025 OpalaVerde - Todos os direitos reservados</p>
+            <p>Conectando Pedro II aos melhores produtos orgânicos</p>
+            <div class="footer-links">
+                <a href="#" onclick="showModal('privacy')">Política de Privacidade</a>
+                <a href="#" onclick="showModal('terms')">Termos de Uso</a>
+                <a href="#" onclick="showModal('faq')">FAQ</a>
+                <a href="#" onclick="openSupport()">Suporte</a>
+            </div>
+        </footer>
+
+        <!-- Adicione estes modais antes do fechamento da tag </main> -->
+
+<!-- Modal de Edição -->
+<div class="edit-modal" id="editModal">
+    <div class="edit-modal-content">
+        <div class="edit-modal-header">
+            <h3>Editar Comentário</h3>
+            <button class="close-modal" onclick="closeEditModal()">&times;</button>
+        </div>
+        <form class="edit-form" id="editForm">
+            <div class="form-group">
+                <label for="editName">Nome:</label>
+                <input type="text" id="editName" name="editName" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="editTime">Cliente há quanto tempo?</label>
+                <select id="editTime" name="editTime" required>
+                    <option value="">Selecione...</option>
+                    <option value="Menos de 1 mês">Menos de 1 mês</option>
+                    <option value="1-6 meses">1-6 meses</option>
+                    <option value="6 meses - 1 ano">6 meses - 1 ano</option>
+                    <option value="1-2 anos">1-2 anos</option>
+                    <option value="Mais de 2 anos">Mais de 2 anos</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="editRating">Avaliação:</label>
+                <div class="rating-input" id="editRatingInput">
+                    <span class="star" data-rating="1">★</span>
+                    <span class="star" data-rating="2">★</span>
+                    <span class="star" data-rating="3">★</span>
+                    <span class="star" data-rating="4">★</span>
+                    <span class="star" data-rating="5">★</span>
+                </div>
+                <input type="hidden" id="editRating" name="editRating" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="editText">Comentário:</label>
+                <textarea id="editText" name="editText" required maxlength="300" rows="4"></textarea>
+                <small class="char-counter" id="editCharCounter">0/300 caracteres</small>
+            </div>
+            
+            <div class="edit-form-actions">
+                <button type="button" class="cancel-btn" onclick="closeEditModal()">Cancelar</button>
+                <button type="submit" class="save-btn">
+                    <span class="btn-text">Salvar Alterações</span>
+                    <span class="btn-loading" style="display: none;">Salvando...</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal de Confirmação de Exclusão -->
+<div class="delete-modal" id="deleteModal">
+    <div class="delete-modal-content">
+        <h3>Confirmar Exclusão</h3>
+        <p>Tem certeza que deseja excluir este comentário? Esta ação não pode ser desfeita.</p>
+        <div class="delete-modal-actions">
+            <button class="cancel-delete" onclick="closeDeleteModal()">Cancelar</button>
+            <button class="confirm-delete" onclick="confirmDelete()">Excluir</button>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal de Logout -->
+<div class="logout-modal" id="logoutModal">
+    <div class="logout-modal-content">
+        <div class="logout-icon">
+            <svg viewBox="0 0 24 24">
+                <path d="M17 7L15.59 8.41L18.17 11H8V13H18.17L15.59 15.59L17 17L22 12L17 7ZM4 5H12V3H4C2.9 3 2 3.9 2 5V19C2 20.1 2.9 21 4 21H12V19H4V5Z"/>
+            </svg>
+        </div>
+        <h3>Confirmar Saida</h3>
+        <p>Tem certeza de que deseja sair da sua conta? Voce sera redirecionado para a pagina de login.</p>
+        <div class="logout-modal-actions">
+            <button class="cancel-logout" onclick="closeLogoutModal()">Cancelar</button>
+            <button class="confirm-logout" onclick="confirmLogout()">Sair</button>
+        </div>
+    </div>
+</div>
+    </main>
+
+    <script>
+
+        let currentUserData = null;
+let userPersonalData = {};
+
+// Inicializar sistema de usuário
+function initUserSystem() {
+    // Exige login válido (token JWT real) como cliente
+    const user = requireAuth(['cliente']);
+    if (!user) return false;
+
+    // A partir daqui o login JÁ é válido: um erro de exibição não deve
+    // mais mandar o usuário de volta para o login.
+    currentUserData = user;
+    try {
+        loadUserPersonalData();
+    } catch (error) {
+        console.error('Erro ao carregar dados pessoais:', error);
+    }
+    try {
+        updateUserInterface();
+    } catch (error) {
+        console.error('Erro ao atualizar a interface do usuário:', error);
+    }
+    return true;
+}
+
+// Carregar dados pessoais do usuário
+function loadUserPersonalData() {
+    const storageKey = `userData_${currentUserData.email}`;
+    const savedData = localStorage.getItem(storageKey);
+    
+    if (savedData) {
+        try {
+            userPersonalData = JSON.parse(savedData);
+        } catch (error) {
+            console.error('Erro ao carregar dados pessoais:', error);
+            userPersonalData = {};
+        }
+    }
+    
+    // Mesclar com dados da sessão se necessário
+    userPersonalData = {
+        feedbacks: userPersonalData.feedbacks || [],
+        favorites: userPersonalData.favorites || [],
+        cart: userPersonalData.cart || [],
+        preferences: userPersonalData.preferences || {},
+        ...userPersonalData
+    };
+}
+
+// Salvar dados pessoais do usuário
+function saveUserPersonalData() {
+    if (!currentUserData) return;
+    
+    const storageKey = `userData_${currentUserData.email}`;
+    localStorage.setItem(storageKey, JSON.stringify(userPersonalData));
+}
+
+// Atualizar interface do usuário
+function updateUserInterface() {
+    if (!currentUserData) return;
+    
+    // Atualizar informações do perfil na sidebar
+    const userNameElement = document.querySelector('.user-info div:last-child div:first-child');
+    const userTypeElement = document.querySelector('.user-info div:last-child div:last-child');
+    const userAvatarElement = document.querySelector('.user-avatar');
+    
+    if (userNameElement) {
+        userNameElement.textContent = currentUserData.name;
+    }
+    
+    if (userTypeElement) {
+        userTypeElement.textContent = currentUserData.user_type === 'cliente' ? 'Cliente' : 'Produtor';
+    }
+    
+    if (userAvatarElement) {
+        renderAvatar(userAvatarElement, currentUserData);
+    }
+    
+    // Carregar dados específicos do usuário
+    loadUserSpecificData();
+}
+
+// Modificar a função loadUserSpecificData:
+function loadUserSpecificData() {
+    // Carregar feedbacks do usuário e globais
+    loadExistingFeedbacks();
+    
+    // Carregar carrinho do usuário
+    if (userPersonalData.cart) {
+        cart = [...userPersonalData.cart];
+        updateCartCount();
+    }
+}
+
+
+let currentEditingId = null;
+let currentDeletingId = null;
+
+// Dados dos produtos
+const products = [
+    {
+        id: 1,
+        name: "Alface Crespa Orgânica",
+        producer: "Sítio Verde Esperança - Pedro II",
+        price: 3.50,
+        unit: "unidade",
+        image: "https://images.unsplash.com/photo-1622206151226-18ca2c9ab4a1?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+        category: "folhas"
+    },
+    {
+        id: 2,
+        name: "Cenoura Baby Orgânica",
+        producer: "Fazenda Boa Terra - Pedro II",
+        price: 8.90,
+        unit: "kg",
+        image: "https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+        category: "raizes"
+    },
+    {
+        id: 3,
+        name: "Tomate Italiano Orgânico",
+        producer: "Horta da Família - Pedro II",
+        price: 12.80,
+        unit: "kg",
+        image: "https://images.unsplash.com/photo-1592841200221-a6898f307baa?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+        category: "frutas"
+    },
+    {
+        id: 4,
+        name: "Milho",
+        producer: "Sítio Verde Esperança - Pedro II",
+        price: 6.90,
+        unit: "kg",
+        image: "https://images.unsplash.com/photo-1551754655-cd27e38d2076?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+        category: "frutas"
+    },
+    {
+        id: 5,
+        name: "Cebola Roxa Orgânica",
+        producer: "Fazenda Boa Terra - Pedro II",
+        price: 7.50,
+        unit: "kg",
+        image: "https://images.unsplash.com/photo-1508747703725-719777637510?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+        category: "condimentos"
+    },
+    {
+        id: 6,
+        name: "Brócolis Ninja Orgânico",
+        producer: "Horta da Família - Pedro II",
+        price: 9.20,
+        unit: "unidade",
+        image: "https://images.unsplash.com/photo-1628773822503-930a7eaecf80?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+        category: "vegetais"
+    }
+];
+
+// Estado do carrinho
+let cart = [];
+
+// Armazenar feedbacks
+let feedbacks = [];
+
+// Inicialização
+document.addEventListener('DOMContentLoaded', function() {
+    // PRIMEIRO: Verificar e inicializar sistema de usuário
+    if (!initUserSystem()) {
+        return; // Se falhou, para a execução
+    }
+    
+    // Continuar com o resto da inicialização
+    loadProducts();
+    updateCartCount();
+    initializeSearch();
+    animateStats();
+    initializeFeedbackSystem();
+    initializeEditSystem();
+    initMobileMenu();
+    
+    // Salvar dados periodicamente
+    setInterval(saveUserPersonalData, 30000); // A cada 30 segundos
+    
+    // Salvar dados antes de fechar/sair da página
+    window.addEventListener('beforeunload', saveUserPersonalData);
+    
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.search-container')) {
+            hideSearchResults();
+        }
+    });
+});
+
+// Carregar produtos
+function loadProducts() {
+    const productsGrid = document.getElementById('productsGrid');
+    if (!productsGrid) return;
+    
+    productsGrid.innerHTML = products.map(product => `
+        <div class="product-card">
+            <div class="product-image" style="background-image: url('${product.image}')"></div>
+            <div class="product-info">
+                <h3 class="product-name">${product.name}</h3>
+                <p class="product-producer">${product.producer}</p>
+                <div class="product-price">R$ ${product.price.toFixed(2).replace('.', ',')} <span style="font-size: 0.9rem; color: #666;">/${product.unit}</span></div>
+                <button class="add-to-cart" onclick="addToCart(${product.id})">Adicionar ao Carrinho</button>
+            </div>
+        </div>
+    `).join('');
+}
+
+// Sistema de busca
+function initializeSearch() {
+    const searchInput = document.getElementById('searchInput');
+    if (!searchInput) return;
+    
+    searchInput.addEventListener('input', function(e) {
+        const query = e.target.value.toLowerCase().trim();
+        
+        if (query.length >= 2) {
+            const results = products.filter(product => 
+                product.name.toLowerCase().includes(query) ||
+                product.producer.toLowerCase().includes(query) ||
+                product.category.toLowerCase().includes(query)
+            );
+            showSearchResults(results);
+        } else {
+            hideSearchResults();
+        }
+    });
+    
+    searchInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            performSearch();
+        }
+    });
+}
+
+function showSearchResults(results) {
+    const searchResults = document.getElementById('searchResults');
+    if (!searchResults) return;
+    
+    if (results.length === 0) {
+        searchResults.innerHTML = '<div style="padding: 20px; text-align: center; color: #666;">Nenhum produto encontrado</div>';
+    } else {
+        searchResults.innerHTML = results.slice(0, 5).map(product => `
+            <div class="search-result-item" onclick="selectProduct(${product.id})">
+                <div class="search-result-image" style="background-image: url('${product.image}')"></div>
+                <div class="search-result-info">
+                    <h4>${product.name}</h4>
+                    <p>${product.producer}</p>
+                </div>
+                <div class="search-result-price">R$ ${product.price.toFixed(2).replace('.', ',')}</div>
+            </div>
+        `).join('');
+    }
+    
+    searchResults.style.display = 'block';
+}
+
+function hideSearchResults() {
+    const searchResults = document.getElementById('searchResults');
+    if (searchResults) {
+        searchResults.style.display = 'none';
+    }
+}
+
+function selectProduct(productId) {
+    const product = products.find(p => p.id === productId);
+    if (product) {
+        addToCart(productId);
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput) {
+            searchInput.value = '';
+        }
+        hideSearchResults();
+    }
+}
+
+function performSearch() {
+    const searchInput = document.getElementById('searchInput');
+    if (!searchInput) return;
+    
+    const query = searchInput.value.trim();
+    if (query) {
+        // Simular redirecionamento para página de resultados
+        alert(`Buscando por: "${query}"\n\nEsta funcionalidade redirecionaria para a página de catálogo com os resultados filtrados.`);
+    }
+}
+
+// Sistema do carrinho
+function addToCart(productId) {
+    const product = products.find(p => p.id === productId);
+    if (!product) return;
+    
+    const existingItem = cart.find(item => item.id === productId);
+    
+    if (existingItem) {
+        existingItem.quantity += 1;
+    } else {
+        cart.push({
+            ...product,
+            quantity: 1
+        });
+    }
+    
+    updateCartCount();
+    updateCartDisplay();
+    showAddToCartFeedback(productId);
+}
+
+function removeFromCart(productId) {
+    cart = cart.filter(item => item.id !== productId);
+    updateCartCount();
+    updateCartDisplay();
+}
+
+function updateQuantity(productId, change) {
+    const item = cart.find(item => item.id === productId);
+    if (item) {
+        item.quantity += change;
+        if (item.quantity <= 0) {
+            removeFromCart(productId);
+        } else {
+            updateCartCount();
+            updateCartDisplay();
+        }
+    }
+}
+
+function updateCartCount() {
+    const cartCountElement = document.getElementById('cartCount');
+    if (cartCountElement) {
+        const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+        cartCountElement.textContent = totalItems;
+    }
+}
+
+function updateCartDisplay() {
+    const cartItems = document.getElementById('cartItems');
+    const cartTotal = document.getElementById('cartTotal');
+    
+    if (!cartItems || !cartTotal) return;
+    
+    if (cart.length === 0) {
+        cartItems.innerHTML = '<div class="empty-cart">Seu carrinho está vazio<br><small>Adicione produtos para continuar</small></div>';
+        cartTotal.textContent = 'R$ 0,00';
+        return;
+    }
+    
+    cartItems.innerHTML = cart.map(item => `
+        <div class="cart-item">
+            <div class="cart-item-image" style="background-image: url('${item.image}')"></div>
+            <div class="cart-item-info">
+                <div class="cart-item-name">${item.name}</div>
+                <div class="cart-item-price">R$ ${item.price.toFixed(2).replace('.', ',')} /${item.unit}</div>
+                <div class="quantity-controls">
+                    <button class="quantity-btn" onclick="updateQuantity(${item.id}, -1)">-</button>
+                    <span class="quantity">${item.quantity}</span>
+                    <button class="quantity-btn" onclick="updateQuantity(${item.id}, 1)">+</button>
+                    <button class="remove-item" onclick="removeFromCart(${item.id})">Remover</button>
+                </div>
+            </div>
+        </div>
+    `).join('');
+    
+    const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    cartTotal.textContent = `R$ ${total.toFixed(2).replace('.', ',')}`;
+}
+
+function showAddToCartFeedback(productId) {
+    const buttons = document.querySelectorAll('.add-to-cart');
+    const button = Array.from(buttons).find(btn => 
+        btn.getAttribute('onclick') && btn.getAttribute('onclick').includes(productId.toString())
+    );
+    
+    if (button) {
+        const originalText = button.textContent;
+        const originalBg = button.style.background;
+        
+        button.textContent = 'Adicionado!';
+        button.style.background = '#45a049';
+        button.classList.add('loading');
+        
+        setTimeout(() => {
+            button.textContent = originalText;
+            button.style.background = originalBg;
+            button.classList.remove('loading');
+        }, 1500);
+    }
+}
+
+
+
+
+
+// Animação das estatísticas
+function animateStats() {
+    const stats = [
+        { id: 'stat-products', target: 150, suffix: '+' },
+        { id: 'stat-producers', target: 25, suffix: '+' },
+        { id: 'stat-customers', target: 1200, suffix: '+' },
+        { id: 'stat-deliveries', target: 5000, suffix: '+' }
+    ];
+    
+    const statsSection = document.querySelector('.stats-section');
+    if (!statsSection) return;
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                stats.forEach(stat => {
+                    animateNumber(stat.id, stat.target, stat.suffix);
+                });
+                observer.disconnect();
+            }
+        });
+    });
+    
+    observer.observe(statsSection);
+}
+
+function animateNumber(elementId, target, suffix = '') {
+    const element = document.getElementById(elementId);
+    if (!element) return;
+    
+    const duration = 2000;
+    const steps = 60;
+    const increment = target / steps;
+    let current = 0;
+    
+    const timer = setInterval(() => {
+        current += increment;
+        if (current >= target) {
+            current = target;
+            clearInterval(timer);
+        }
+        element.textContent = Math.floor(current) + suffix;
+    }, duration / steps);
+}
+
+// Funções auxiliares
+function showModal(type) {
+    let content = '';
+    
+    switch(type) {
+        case 'privacy':
+            content = 'Política de Privacidade\n\nSeus dados são protegidos e utilizados apenas para melhorar sua experiência de compra.';
+            break;
+        case 'terms':
+            content = 'Termos de Uso\n\nAo utilizar nossa plataforma, você concorda com nossas condições de uso e políticas.';
+            break;
+        case 'faq':
+            content = 'FAQ - Perguntas Frequentes\n\n• Como funciona a entrega?\n• Quais formas de pagamento aceitas?\n• Como garantir a qualidade orgânica?';
+            break;
+    }
+    
+    alert(content);
+}
+
+function openSupport() {
+    alert('Suporte OpalaVerde\n\n📞 WhatsApp: (86) 9999-9999\n📧 Email: suporte@opalaverde.com.br\n🕒 Atendimento: Seg-Sex 8h às 18h');
+}
+
+
+
+window.addEventListener('resize', checkScreenSize);
+checkScreenSize();
+
+
+
+// Smooth scroll para links internos
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+            target.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+    });
+});
+
+// Lazy loading para imagens (se necessário)
+if ('IntersectionObserver' in window) {
+    const imageObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const img = entry.target;
+                img.classList.remove('lazy');
+                observer.unobserve(img);
+            }
+        });
+    });
+    
+    document.querySelectorAll('img[data-src]').forEach(img => {
+        imageObserver.observe(img);
+    });
+}
+
+// ========== SISTEMA DE FEEDBACK ==========
+
+// Inicializar sistema de feedback
+function initializeFeedbackSystem() {
+    const stars = document.querySelectorAll('.rating-input .star');
+    const feedbackForm = document.getElementById('feedbackForm');
+    const feedbackText = document.getElementById('feedbackText');
+    const charCounter = document.querySelector('.char-counter');
+    
+    if (!stars.length || !feedbackForm || !feedbackText || !charCounter) return;
+    
+    // Sistema de estrelas
+    stars.forEach((star, index) => {
+        star.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const rating = parseInt(star.dataset.rating);
+            document.getElementById('rating').value = rating;
+            
+            // Atualizar visual das estrelas
+            stars.forEach((s, i) => {
+                if (i < rating) {
+                    s.classList.add('active');
+                } else {
+                    s.classList.remove('active');
+                }
+            });
+        });
+        
+        star.addEventListener('mouseenter', () => {
+            const rating = parseInt(star.dataset.rating);
+            stars.forEach((s, i) => {
+                if (i < rating) {
+                    s.style.color = '#ffc107';
+                } else {
+                    s.style.color = '#ddd';
+                }
+            });
+        });
+    });
+    
+    // Reset hover
+    const ratingInput = document.querySelector('.rating-input');
+    if (ratingInput) {
+        ratingInput.addEventListener('mouseleave', () => {
+            const currentRating = parseInt(document.getElementById('rating').value) || 0;
+            stars.forEach((s, i) => {
+                if (i < currentRating) {
+                    s.style.color = '#ffc107';
+                } else {
+                    s.style.color = '#ddd';
+                }
+            });
+        });
+    }
+    
+    // Contador de caracteres
+    feedbackText.addEventListener('input', (e) => {
+        const currentLength = e.target.value.length;
+        const maxLength = 300;
+        
+        charCounter.textContent = `${currentLength}/${maxLength} caracteres`;
+        
+        if (currentLength > maxLength * 0.9) {
+            charCounter.classList.add('danger');
+            charCounter.classList.remove('warning');
+        } else if (currentLength > maxLength * 0.7) {
+            charCounter.classList.add('warning');
+            charCounter.classList.remove('danger');
+        } else {
+            charCounter.classList.remove('warning', 'danger');
+        }
+    });
+    
+    // Submissão do formulário
+    feedbackForm.addEventListener('submit', handleFeedbackSubmit);
+}
+
+// Substituir a função handleFeedbackSubmit existente:
+function handleFeedbackSubmit(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    if (!currentUserData) {
+        alert('Erro: Usuário não identificado. Faça login novamente.');
+        return false;
+    }
+    
+    const formData = new FormData(e.target);
+    const submitBtn = e.target.querySelector('.submit-feedback-btn');
+    
+    if (!submitBtn) return false;
+    
+    const name = formData.get('customerName')?.trim() || '';
+    const time = formData.get('customerTime') || '';
+    const rating = parseInt(formData.get('rating')) || 0;
+    const text = formData.get('feedbackText')?.trim() || '';
+    
+    if (!name || !time || !rating || !text) {
+        alert('Por favor, preencha todos os campos obrigatórios.');
+        return false;
+    }
+    
+    if (text.length > 300) {
+        alert('O comentário deve ter no máximo 300 caracteres.');
+        return false;
+    }
+    
+    submitBtn.classList.add('loading');
+    submitBtn.disabled = true;
+    
+    setTimeout(() => {
+        try {
+            const newFeedback = {
+                id: Date.now(),
+                userId: currentUserData.email, // Identificador único do usuário
+                name: name,
+                time: time,
+                rating: rating,
+                text: text,
+                date: new Date(),
+                edited: false
+            };
+            
+            // Adicionar ao array global E aos dados pessoais do usuário
+            feedbacks.unshift(newFeedback);
+            userPersonalData.feedbacks = userPersonalData.feedbacks || [];
+            userPersonalData.feedbacks.unshift(newFeedback);
+            
+            // Salvar dados pessoais
+            saveUserPersonalData();
+            
+            addFeedbackToDOM(newFeedback);
+            showSuccessMessage();
+            
+            // Reset form
+            e.target.reset();
+            document.getElementById('rating').value = '';
+            document.querySelectorAll('.rating-input .star').forEach(star => {
+                star.classList.remove('active');
+                star.style.color = '#ddd';
+            });
+            const charCounter = document.querySelector('.char-counter');
+            if (charCounter) {
+                charCounter.textContent = '0/300 caracteres';
+                charCounter.classList.remove('warning', 'danger');
+            }
+            
+        } catch (error) {
+            console.error('Erro ao processar feedback:', error);
+            alert('Erro ao enviar feedback. Tente novamente.');
+        }
+        
+        submitBtn.classList.remove('loading');
+        submitBtn.disabled = false;
+        
+    }, 2000);
+    
+    return false;
+}
+
+// Modificar função addFeedbackToDOM para incluir controles de edição apenas para o usuário:
+function addFeedbackToDOM(feedback) {
+    const testimonialsGrid = document.getElementById('testimonialsGrid');
+    if (!testimonialsGrid) return;
+    
+    const feedbackCard = document.createElement('div');
+    feedbackCard.className = 'testimonial-card new';
+    feedbackCard.setAttribute('data-feedback-id', feedback.id);
+    
+    const starsDisplay = '★'.repeat(feedback.rating) + '☆'.repeat(5 - feedback.rating);
+    
+    // Mostrar botões de edição apenas se for o próprio usuário
+    const canEdit = currentUserData && feedback.userId === currentUserData.email;
+    
+    feedbackCard.innerHTML = `
+        ${canEdit ? `
+            <div class="comment-actions">
+                <button type="button" class="action-btn edit-btn" onclick="openEditModal(${feedback.id})" title="Editar comentário">
+                    Editar
+                </button>
+                <button type="button" class="action-btn delete-btn" onclick="openDeleteModal(${feedback.id})" title="Excluir comentário">
+                    Excluir
+                </button>
+            </div>
+        ` : ''}
+        <p class="testimonial-text">${feedback.text}</p>
+        ${feedback.edited ? '<div class="edited-indicator">Editado</div>' : ''}
+        <div class="testimonial-author">
+            <div class="author-avatar">${feedback.name.charAt(0).toUpperCase()}</div>
+            <div class="author-info">
+                <h4>${feedback.name}</h4>
+                <p>Cliente ${feedback.time.toLowerCase()}</p>
+            </div>
+            <div class="rating">${starsDisplay}</div>
+        </div>
+    `;
+    
+    testimonialsGrid.insertBefore(feedbackCard, testimonialsGrid.firstChild);
+    
+    setTimeout(() => {
+        feedbackCard.classList.remove('new');
+    }, 600);
+}
+
+// Modificar função openEditModal para verificar permissões:
+function openEditModal(feedbackId) {
+    const feedback = feedbacks.find(f => f.id === feedbackId);
+    if (!feedback) return;
+    
+    // Verificar se o usuário pode editar este feedback
+    if (!currentUserData || feedback.userId !== currentUserData.email) {
+        alert('Você só pode editar seus próprios comentários.');
+        return;
+    }
+    
+    currentEditingId = feedbackId;
+    
+    // ... resto da função permanece igual
+    const editName = document.getElementById('editName');
+    const editTime = document.getElementById('editTime');
+    const editRating = document.getElementById('editRating');
+    const editText = document.getElementById('editText');
+    const editCharCounter = document.getElementById('editCharCounter');
+    
+    if (!editName || !editTime || !editRating || !editText || !editCharCounter) return;
+    
+    editName.value = feedback.name;
+    editTime.value = feedback.time;
+    editRating.value = feedback.rating;
+    editText.value = feedback.text;
+    
+    const editStars = document.querySelectorAll('#editRatingInput .star');
+    editStars.forEach((star, index) => {
+        if (index < feedback.rating) {
+            star.classList.add('active');
+            star.style.color = '#ffc107';
+        } else {
+            star.classList.remove('active');
+            star.style.color = '#ddd';
+        }
+    });
+    
+    editCharCounter.textContent = `${feedback.text.length}/300 caracteres`;
+    editCharCounter.classList.remove('warning', 'danger');
+    if (feedback.text.length > 270) {
+        editCharCounter.classList.add('danger');
+    } else if (feedback.text.length > 210) {
+        editCharCounter.classList.add('warning');
+    }
+    
+    const editModal = document.getElementById('editModal');
+    if (editModal) {
+        editModal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+// Adicionar esta função para carregar feedbacks com verificação de permissão
+function loadExistingFeedbacks() {
+    const testimonialsGrid = document.getElementById('testimonialsGrid');
+    if (!testimonialsGrid) return;
+    
+    // Carregar feedbacks globais (todos os usuários)
+    const globalFeedbacks = [
+        {
+            id: 1,
+            userId: 'maria@example.com',
+            name: "maria seila",
+            time: "Mais de 2 anos",
+            rating: 5,
+            text: "Os produtos são sempre fresquíssimos e chegam no prazo combinado. A qualidade é excepcional, você consegue sentir a diferença dos orgânicos!",
+            date: new Date('2023-01-15'),
+            edited: false
+        },
+        {
+            id: 2,
+            userId: 'joao@example.com',
+            name: "João Lima",
+            time: "1-2 anos",
+            rating: 5,
+            text: "Finalmente encontrei uma plataforma que conecta diretamente com os produtores locais. Preços justos e produtos de altíssima qualidade!",
+            date: new Date('2023-06-20'),
+            edited: false
+        },
+        {
+            id: 3,
+            userId: 'ana@example.com',
+            name: "Ana Carolina",
+            time: "6 meses - 1 ano",
+            rating: 5,
+            text: "A entrega é super rápida e o atendimento é excelente. Minha família só consome orgânicos da OpalaVerde agora!",
+            date: new Date('2023-12-10'),
+            edited: false
+        }
+    ];
+    
+    // Mesclar com feedbacks do usuário atual (se houver)
+    const allFeedbacks = [...globalFeedbacks];
+    
+    if (userPersonalData.feedbacks) {
+        // Adicionar feedbacks pessoais que não estão nos globais
+        userPersonalData.feedbacks.forEach(personalFeedback => {
+            if (!allFeedbacks.find(f => f.id === personalFeedback.id)) {
+                allFeedbacks.push(personalFeedback);
+            }
+        });
+    }
+    
+    // Ordenar por data (mais recentes primeiro)
+    allFeedbacks.sort((a, b) => new Date(b.date) - new Date(a.date));
+    
+    // Limpar e recriar feedbacks
+    const existingCards = testimonialsGrid.querySelectorAll('.testimonial-card');
+    existingCards.forEach(card => card.remove());
+    
+    allFeedbacks.forEach(feedback => {
+        addFeedbackToDOM(feedback);
+    });
+    
+    // Atualizar array global
+    feedbacks = [...allFeedbacks];
+}
+
+// NOTA: a segunda declaração de addFeedbackToDOM (que não verificava o dono
+// do comentário, mostrando Editar/Excluir pra qualquer um) foi removida.
+// A versão correta e segura está definida mais acima neste arquivo.
+
+// Mostrar mensagem de sucesso
+function showSuccessMessage() {
+    const formContainer = document.querySelector('.feedback-form-container');
+    if (!formContainer) return;
+    
+    // Criar mensagem de sucesso
+    const successMessage = document.createElement('div');
+    successMessage.className = 'feedback-success';
+    successMessage.innerHTML = `
+        <h4 style="margin: 0 0 10px 0;">Obrigado pelo seu feedback!</h4>
+        <p style="margin: 0;">Seu comentário foi adicionado e já está visível para outros clientes.</p>
+    `;
+    
+    // Inserir antes do formulário
+    formContainer.insertBefore(successMessage, formContainer.firstChild);
+    
+    // Remover após 5 segundos
+    setTimeout(() => {
+        if (successMessage.parentNode) {
+            successMessage.remove();
+        }
+    }, 5000);
+    
+    // Scroll suave para ver o novo feedback
+    setTimeout(() => {
+        const testimonialsGrid = document.getElementById('testimonialsGrid');
+        if (testimonialsGrid) {
+            testimonialsGrid.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+    }, 500);
+}
+
+// ========== SISTEMA DE EDIÇÃO E EXCLUSÃO ==========
+
+function initializeEditSystem() {
+    const editStars = document.querySelectorAll('#editRatingInput .star');
+    const editForm = document.getElementById('editForm');
+    const editText = document.getElementById('editText');
+    const editCharCounter = document.getElementById('editCharCounter');
+    
+    if (!editStars.length || !editForm || !editText || !editCharCounter) return;
+    
+    // Sistema de estrelas do modal de edição
+    editStars.forEach((star, index) => {
+        star.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const rating = parseInt(star.dataset.rating);
+            document.getElementById('editRating').value = rating;
+            
+            editStars.forEach((s, i) => {
+                if (i < rating) {
+                    s.classList.add('active');
+                    s.style.color = '#ffc107';
+                } else {
+                    s.classList.remove('active');
+                    s.style.color = '#ddd';
+                }
+            });
+        });
+        
+        star.addEventListener('mouseenter', () => {
+            const rating = parseInt(star.dataset.rating);
+            editStars.forEach((s, i) => {
+                s.style.color = i < rating ? '#ffc107' : '#ddd';
+            });
+        });
+    });
+    
+    // Reset hover para estrelas de edição
+    const editRatingInput = document.getElementById('editRatingInput');
+    if (editRatingInput) {
+        editRatingInput.addEventListener('mouseleave', () => {
+            const currentRating = parseInt(document.getElementById('editRating').value) || 0;
+            editStars.forEach((s, i) => {
+                s.style.color = i < currentRating ? '#ffc107' : '#ddd';
+            });
+        });
+    }
+    
+    // Contador de caracteres para edição
+    editText.addEventListener('input', (e) => {
+        const currentLength = e.target.value.length;
+        editCharCounter.textContent = `${currentLength}/300 caracteres`;
+        
+        if (currentLength > 270) {
+            editCharCounter.classList.add('danger');
+            editCharCounter.classList.remove('warning');
+        } else if (currentLength > 210) {
+            editCharCounter.classList.add('warning');
+            editCharCounter.classList.remove('danger');
+        } else {
+            editCharCounter.classList.remove('warning', 'danger');
+        }
+    });
+    
+    // Submissão do formulário de edição
+    editForm.addEventListener('submit', handleEditSubmit);
+    
+    // Fechar modais com ESC
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            const editModal = document.getElementById('editModal');
+            const deleteModal = document.getElementById('deleteModal');
+            
+            if (editModal && editModal.classList.contains('active')) {
+                closeEditModal();
+            }
+            if (deleteModal && deleteModal.classList.contains('active')) {
+                closeDeleteModal();
+            }
+        }
+    });
+    
+    // Fechar modais clicando fora
+    const editModal = document.getElementById('editModal');
+    const deleteModal = document.getElementById('deleteModal');
+    
+    if (editModal) {
+        editModal.addEventListener('click', (e) => {
+            if (e.target === e.currentTarget) {
+                closeEditModal();
+            }
+        });
+    }
+    
+    if (deleteModal) {
+        deleteModal.addEventListener('click', (e) => {
+            if (e.target === e.currentTarget) {
+                closeDeleteModal();
+            }
+        });
+    }
+}
+
+function openEditModal(feedbackId) {
+    const feedback = feedbacks.find(f => f.id === feedbackId);
+    if (!feedback) return;
+    
+    currentEditingId = feedbackId;
+    
+    // Preencher formulário
+    const editName = document.getElementById('editName');
+    const editTime = document.getElementById('editTime');
+    const editRating = document.getElementById('editRating');
+    const editText = document.getElementById('editText');
+    const editCharCounter = document.getElementById('editCharCounter');
+    
+    if (!editName || !editTime || !editRating || !editText || !editCharCounter) return;
+    
+    editName.value = feedback.name;
+    editTime.value = feedback.time;
+    editRating.value = feedback.rating;
+    editText.value = feedback.text;
+    
+    // Atualizar estrelas
+    const editStars = document.querySelectorAll('#editRatingInput .star');
+    editStars.forEach((star, index) => {
+        if (index < feedback.rating) {
+            star.classList.add('active');
+            star.style.color = '#ffc107';
+        } else {
+            star.classList.remove('active');
+            star.style.color = '#ddd';
+        }
+    });
+    
+    // Atualizar contador de caracteres
+    editCharCounter.textContent = `${feedback.text.length}/300 caracteres`;
+    editCharCounter.classList.remove('warning', 'danger');
+    if (feedback.text.length > 270) {
+        editCharCounter.classList.add('danger');
+    } else if (feedback.text.length > 210) {
+        editCharCounter.classList.add('warning');
+    }
+    
+    // Mostrar modal
+    const editModal = document.getElementById('editModal');
+    if (editModal) {
+        editModal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+// Função para fechar modal de edição
+function closeEditModal() {
+    const editModal = document.getElementById('editModal');
+    if (editModal) {
+        editModal.classList.remove('active');
+    }
+    document.body.style.overflow = 'auto';
+    currentEditingId = null;
+    
+    // Reset formulário
+    const editForm = document.getElementById('editForm');
+    const editRating = document.getElementById('editRating');
+    const editCharCounter = document.getElementById('editCharCounter');
+    
+    if (editForm) editForm.reset();
+    if (editRating) editRating.value = '';
+    if (editCharCounter) {
+        editCharCounter.textContent = '0/300 caracteres';
+        editCharCounter.classList.remove('warning', 'danger');
+    }
+    
+    // Reset estrelas
+    document.querySelectorAll('#editRatingInput .star').forEach(star => {
+        star.classList.remove('active');
+        star.style.color = '#ddd';
+    });
+    
+    // Reset botão se estava em loading
+    const submitBtn = document.querySelector('#editForm .save-btn');
+    if (submitBtn) {
+        submitBtn.classList.remove('loading');
+        submitBtn.disabled = false;
+    }
+}
+
+// Função para abrir modal de exclusão
+function openDeleteModal(feedbackId) {
+    currentDeletingId = feedbackId;
+    const deleteModal = document.getElementById('deleteModal');
+    if (deleteModal) {
+        deleteModal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+// Função para fechar modal de exclusão
+function closeDeleteModal() {
+    const deleteModal = document.getElementById('deleteModal');
+    if (deleteModal) {
+        deleteModal.classList.remove('active');
+    }
+    document.body.style.overflow = 'auto';
+    currentDeletingId = null;
+}
+
+// Função para confirmar exclusão
+function confirmDelete() {
+    if (!currentDeletingId || !currentUserData) return;
+    
+    const feedback = feedbacks.find(f => f.id === currentDeletingId);
+    if (!feedback || feedback.userId !== currentUserData.email) {
+        alert('Erro: Você só pode excluir seus próprios comentários.');
+        closeDeleteModal();
+        return;
+    }
+    
+    const feedbackCard = document.querySelector(`[data-feedback-id="${currentDeletingId}"]`);
+    
+    if (feedbackCard) {
+        feedbackCard.classList.add('deleting');
+        
+        setTimeout(() => {
+            // Remover do array global
+            feedbacks = feedbacks.filter(f => f.id !== currentDeletingId);
+            
+            // Remover dos dados pessoais
+            userPersonalData.feedbacks = userPersonalData.feedbacks.filter(f => f.id !== currentDeletingId);
+            
+            // Salvar dados pessoais
+            saveUserPersonalData();
+            
+            if (feedbackCard.parentNode) {
+                feedbackCard.remove();
+            }
+            
+            closeDeleteModal();
+            showDeleteSuccessMessage();
+        }, 400);
+    } else {
+        feedbacks = feedbacks.filter(f => f.id !== currentDeletingId);
+        userPersonalData.feedbacks = userPersonalData.feedbacks.filter(f => f.id !== currentDeletingId);
+        saveUserPersonalData();
+        closeDeleteModal();
+        showDeleteSuccessMessage();
+    }
+}
+
+// Processar edição
+function handleEditSubmit(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    if (!currentEditingId || !currentUserData) return false;
+    
+    const formData = new FormData(e.target);
+    const submitBtn = e.target.querySelector('.save-btn');
+    
+    if (!submitBtn) return false;
+    
+    const name = formData.get('editName')?.trim() || '';
+    const time = formData.get('editTime') || '';
+    const rating = parseInt(formData.get('editRating')) || 0;
+    const text = formData.get('editText')?.trim() || '';
+    
+    if (!name || !time || !rating || !text) {
+        alert('Por favor, preencha todos os campos.');
+        return false;
+    }
+    
+    if (text.length > 300) {
+        alert('O comentário deve ter no máximo 300 caracteres.');
+        return false;
+    }
+    
+    const feedback = feedbacks.find(f => f.id === currentEditingId);
+    if (!feedback || feedback.userId !== currentUserData.email) {
+        alert('Erro: Você só pode editar seus próprios comentários.');
+        closeEditModal();
+        return false;
+    }
+    
+    submitBtn.classList.add('loading');
+    submitBtn.disabled = true;
+    
+    setTimeout(() => {
+        try {
+            // Atualizar no array global
+            const feedbackIndex = feedbacks.findIndex(f => f.id === currentEditingId);
+            if (feedbackIndex !== -1) {
+                feedbacks[feedbackIndex] = {
+                    ...feedbacks[feedbackIndex],
+                    name: name,
+                    time: time,
+                    rating: rating,
+                    text: text,
+                    edited: true,
+                    editedDate: new Date()
+                };
+                
+                // Atualizar nos dados pessoais do usuário
+                const personalFeedbackIndex = userPersonalData.feedbacks.findIndex(f => f.id === currentEditingId);
+                if (personalFeedbackIndex !== -1) {
+                    userPersonalData.feedbacks[personalFeedbackIndex] = {...feedbacks[feedbackIndex]};
+                }
+                
+                // Salvar dados pessoais
+                saveUserPersonalData();
+                
+                updateFeedbackInDOM(feedbacks[feedbackIndex]);
+            }
+            
+            closeEditModal();
+            showEditSuccessMessage();
+            
+        } catch (error) {
+            console.error('Erro ao editar feedback:', error);
+            alert('Erro ao salvar alterações. Tente novamente.');
+        }
+        
+        submitBtn.classList.remove('loading');
+        submitBtn.disabled = false;
+        
+    }, 1500);
+    
+    return false;
+}
+
+// Atualizar feedback no DOM
+function updateFeedbackInDOM(feedback) {
+    const feedbackCard = document.querySelector(`[data-feedback-id="${feedback.id}"]`);
+    if (!feedbackCard) return;
+    
+    const starsDisplay = '★'.repeat(feedback.rating) + '☆'.repeat(5 - feedback.rating);
+    
+    // Atualizar apenas o conteúdo, mantendo o elemento existente
+    feedbackCard.innerHTML = `
+        <div class="comment-actions">
+            <button type="button" class="action-btn edit-btn" onclick="openEditModal(${feedback.id})" title="Editar comentário">
+                Editar
+            </button>
+            <button type="button" class="action-btn delete-btn" onclick="openDeleteModal(${feedback.id})" title="Excluir comentário">
+                Excluir
+            </button>
+        </div>
+        <p class="testimonial-text">${feedback.text}</p>
+        <div class="edited-indicator">Editado</div>
+        <div class="testimonial-author">
+            <div class="author-avatar">${feedback.name.charAt(0).toUpperCase()}</div>
+            <div class="author-info">
+                <h4>${feedback.name}</h4>
+                <p>Cliente ${feedback.time.toLowerCase()}</p>
+            </div>
+            <div class="rating">${starsDisplay}</div>
+        </div>
+    `;
+    
+    // Destacar brevemente para mostrar que foi editado
+    feedbackCard.style.border = '2px solid #4CAF50';
+    feedbackCard.style.boxShadow = '0 0 15px rgba(76, 175, 80, 0.3)';
+    
+    setTimeout(() => {
+        feedbackCard.style.border = '';
+        feedbackCard.style.boxShadow = '';
+    }, 3000);
+}
+
+// Mensagens de sucesso
+function showEditSuccessMessage() {
+    const testimonialsSection = document.querySelector('.testimonials-section');
+    const testimonialsGrid = document.querySelector('.testimonials-grid');
+    
+    if (!testimonialsSection || !testimonialsGrid) return;
+    
+    const message = document.createElement('div');
+    message.className = 'feedback-success';
+    message.innerHTML = `
+        <h4 style="margin: 0 0 10px 0;">Comentário editado com sucesso!</h4>
+        <p style="margin: 0;">Suas alterações foram salvas.</p>
+    `;
+    
+    testimonialsSection.insertBefore(message, testimonialsGrid);
+    
+    setTimeout(() => {
+        if (message.parentNode) {
+            message.remove();
+        }
+    }, 4000);
+}
+
+function showDeleteSuccessMessage() {
+    const testimonialsSection = document.querySelector('.testimonials-section');
+    const testimonialsGrid = document.querySelector('.testimonials-grid');
+    
+    if (!testimonialsSection || !testimonialsGrid) return;
+    
+    const message = document.createElement('div');
+    message.className = 'feedback-success';
+    message.style.background = 'linear-gradient(135deg, #f44336, #ef5350)';
+    message.innerHTML = `
+        <h4 style="margin: 0 0 10px 0;">Comentário excluído!</h4>
+        <p style="margin: 0;">O comentário foi removido com sucesso.</p>
+    `;
+    
+    testimonialsSection.insertBefore(message, testimonialsGrid);
+    
+    setTimeout(() => {
+        if (message.parentNode) {
+            message.remove();
+        }
+    }, 4000);
+}
+
+// Função de debug (opcional)
+function debugFeedbacks() {
+    console.log('Feedbacks atuais:', feedbacks);
+    console.log('Comentários no DOM:', document.querySelectorAll('.testimonial-card').length);
+    console.log('ID atual de edição:', currentEditingId);
+    console.log('ID atual de exclusão:', currentDeletingId);
+}
+
+function initMobileMenu() {
+    const toggleBtn = document.getElementById('mobileToggle');
+    const overlay = document.getElementById('mobileOverlay');
+    const sidebar = document.getElementById('sidebar');
+    
+    if (!toggleBtn || !sidebar) {
+        console.log('Elementos do menu mobile não encontrados');
+        return;
+    }
+    
+    // Função para abrir/fechar menu
+    function toggleMenu() {
+        const isOpen = sidebar.classList.contains('mobile-open');
+        
+        if (isOpen) {
+            // Fechar
+            sidebar.classList.remove('mobile-open');
+            if (overlay) overlay.classList.remove('show');
+            toggleBtn.innerHTML = '☰';
+            document.body.style.overflow = '';
+        } else {
+            // Abrir
+            sidebar.classList.add('mobile-open');
+            if (overlay) overlay.classList.add('show');
+            toggleBtn.innerHTML = '✕';
+            document.body.style.overflow = 'hidden';
+        }
+    }
+    
+    // Event listeners
+    toggleBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        toggleMenu();
+    });
+    
+    // Fechar ao clicar no overlay
+    if (overlay) {
+        overlay.addEventListener('click', function(e) {
+            e.preventDefault();
+            toggleMenu();
+        });
+    }
+    
+    // Fechar ao clicar em links do menu (apenas em mobile)
+    const menuLinks = sidebar.querySelectorAll('.nav-link');
+    menuLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            if (window.innerWidth <= 768 && sidebar.classList.contains('mobile-open')) {
+                setTimeout(toggleMenu, 200);
+            }
+        });
+    });
+    
+    // Fechar menu quando a tela ficar maior que 768px
+    window.addEventListener('resize', () => {
+        if (window.innerWidth > 768 && sidebar.classList.contains('mobile-open')) {
+            sidebar.classList.remove('mobile-open');
+            if (overlay) overlay.classList.remove('show');
+            toggleBtn.innerHTML = '☰';
+            document.body.style.overflow = '';
+        }
+    });
+    
+    // Fechar com tecla ESC
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && sidebar.classList.contains('mobile-open')) {
+            toggleMenu();
+        }
+    });
+}
+
+
+// Sistema de Logout
+function showLogoutModal() {
+    const logoutModal = document.getElementById('logoutModal');
+    if (logoutModal) {
+        logoutModal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+function closeLogoutModal() {
+    const logoutModal = document.getElementById('logoutModal');
+    if (logoutModal) {
+        logoutModal.classList.remove('active');
+        document.body.style.overflow = 'auto';
+    }
+}
+
+function confirmLogout() {
+    // Salvar dados se necessário
+    if (typeof saveUserPersonalData === 'function') {
+        saveUserPersonalData();
+    }
+
+    // Logout real: limpa os tokens JWT e os dados do usuário
+    apiLogout();
+
+    // Redirecionar para login
+    window.location.href = 'login.html';
+}
+
+// Fechar modal com ESC
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        const logoutModal = document.getElementById('logoutModal');
+        if (logoutModal && logoutModal.classList.contains('active')) {
+            closeLogoutModal();
+        }
+    }
+});
+
+// Fechar modal clicando fora
+document.addEventListener('click', function(e) {
+    const logoutModal = document.getElementById('logoutModal');
+    if (e.target === logoutModal) {
+        closeLogoutModal();
+    }
+});
+    </script>
+</body>
+</html>

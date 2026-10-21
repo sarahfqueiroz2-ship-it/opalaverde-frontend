@@ -892,7 +892,7 @@
                         <span>Total</span>
                         <span>${formatMoney(total)}</span>
                     </div>
-                    <button class="checkout-btn" onclick="finalizarPedido()">Finalizar Pedido</button>
+                    <button class="checkout-btn" onclick="finalizarPedido()">Solicitar pedido e combinar pagamento</button>
                     <a href="catalogo_de_produtos.html" class="continue-shopping">Continuar Comprando</a>
                 </div>
             `;
@@ -936,6 +936,7 @@
                     body: JSON.stringify({
                         items: cart.map(item => ({ product: item.id, quantity: item.quantity })),
                         delivery_address: 'Combinar retirada/entrega com o cliente',
+                        fulfillment_method: 'arrange',
                     }),
                 });
 
@@ -948,7 +949,7 @@
                     showToast(mensagem, 'error');
                     if (checkoutBtn) {
                         checkoutBtn.disabled = false;
-                        checkoutBtn.textContent = 'Finalizar Pedido';
+                        checkoutBtn.textContent = 'Solicitar pedido e combinar pagamento';
                     }
                     return;
                 }
@@ -958,6 +959,9 @@
 
                 showToast('Pedido realizado com sucesso!', 'success');
 
+                const recipients = [...new Map(data.items.filter(i => i.producer).map(i => [i.producer, {id:i.producer, nome:i.producer_name || 'Produtor'}])).values()];
+                showChatStep(data, recipients);
+                return;
                 const whatsappLinks = buildWhatsappLinks(data);
                 if (whatsappLinks.length > 0) {
                     showWhatsappStep(whatsappLinks);
@@ -971,9 +975,20 @@
                 showToast('Não foi possível conectar ao servidor. Tente novamente.', 'error');
                 if (checkoutBtn) {
                     checkoutBtn.disabled = false;
-                    checkoutBtn.textContent = 'Finalizar Pedido';
+                    checkoutBtn.textContent = 'Solicitar pedido e combinar pagamento';
                 }
             }
+        }
+
+        function showChatStep(order, recipients) {
+            const layout = document.getElementById('cartLayout');
+            layout.replaceChildren();
+            const box = document.createElement('div'); box.className='empty-cart'; box.style.gridColumn='1 / -1';
+            const heading=document.createElement('h3');heading.textContent=`Pedido #${order.id} solicitado!`;
+            const info=document.createElement('p');info.textContent='Pagamento pendente: converse com cada produtor para combinar Pix, dinheiro ou outra forma. Nenhuma cobrança foi feita pelo site.';
+            box.append(heading,info);
+            recipients.forEach(p=>{const a=document.createElement('a');a.href=`conversas.html?recipient=${encodeURIComponent(p.id)}&order=${encodeURIComponent(order.id)}`;a.textContent='Conversar com '+p.nome;a.style.cssText='display:block;margin:14px;color:#287b44;font-weight:bold';box.append(a)});
+            const hist=document.createElement('a');hist.href='historico-pedidos.html';hist.textContent='Ver meus pedidos';box.append(hist);layout.append(box);
         }
 
         // Monta uma mensagem de WhatsApp pronta para cada produtor do pedido
@@ -1123,5 +1138,6 @@
             initMobileMenu();
         });
     </script>
+<script src="site-config-public.js?v=1"></script>
 </body>
 </html>

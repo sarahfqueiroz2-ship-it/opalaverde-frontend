@@ -1709,46 +1709,11 @@ function removeActiveSession(email) {
 
             // Atualizar dados (simulação)
             refreshData() {
-                this.showNotification('Atualizando dados...', 'success');
-                // Simular nova venda
-                setTimeout(() => {
-                    this.generateNewSale();
-                    this.updateDisplay();
-                    this.showNotification('Dados atualizados! Nova venda adicionada.', 'success');
-                }, 1500);
+                window.location.reload();
             }
 
             // Gerar nova venda (simulação)
-            generateNewSale() {
-                const products = [
-                    { name: 'Tomate Orgânico', price: 8.50 },
-                    { name: 'Alface Crespa', price: 3.20 },
-                    { name: 'Cenoura Baby', price: 6.80 }
-                ];
-                const customers = ['Maria Silva', 'João Santos', 'Ana Costa'];
-                
-                const customer = customers[Math.floor(Math.random() * customers.length)];
-                const product = products[Math.floor(Math.random() * products.length)];
-                const quantity = Math.floor(Math.random() * 3) + 1;
-                
-                const newSale = {
-                    id: Date.now(),
-                    date: new Date(),
-                    customer: customer,
-                    products: [{
-                        name: product.name,
-                        price: product.price,
-                        quantity: quantity,
-                        subtotal: product.price * quantity
-                    }],
-                    totalQuantity: quantity,
-                    totalValue: product.price * quantity,
-                    status: 'Entregue'
-                };
-                
-                this.allSales.unshift(newSale);
-                this.filteredSales.unshift(newSale);
-            }
+
         }
 
         // Instância global do sistema
@@ -2156,5 +2121,6 @@ exportSystem.configure({
 <div class="export-modal-overlay" id="exportModal">
     
 </div>
+<script src="site-config-public.js?v=1"></script>
 </body>
 </html>

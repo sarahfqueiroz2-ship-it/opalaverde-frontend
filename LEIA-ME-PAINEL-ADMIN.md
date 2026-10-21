@@ -1,0 +1,1 @@
+Painel administrativo reformulado. Inicie o frontend nesta pasta e abra configuracoes-do-site-admin.html. Os seis campos existentes usam /api/accounts/admin-site-settings/. As demais abas são informativas e oferecem links para as páginas de gerenciamento já existentes. Não foi alterado o backend.

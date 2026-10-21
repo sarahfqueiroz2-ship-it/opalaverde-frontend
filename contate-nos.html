@@ -638,9 +638,9 @@
             <div class="info-box">
                 <h3>Outros Contatos</h3>
 
-                <p><b> Telefone:</b> (86) 9 94090-6183</p>
-                <p><b> E-mail:</b> Opalaverde@gmail.com</p>
-                <p><b> Localização:</b> Pedro II — Piauí</p>
+                <p><b> Telefone:</b> <span data-site-field="contact_phone">Carregando...</span></p>
+                <p><b> E-mail:</b> <span data-site-field="contact_email">Carregando...</span></p>
+                <p><b> Localização:</b> <span data-site-field="address">Carregando...</span></p>
 
                 <iframe src="https://www.google.com/maps/embed?pb=!1m18..."></iframe>
             </div>
@@ -728,5 +728,36 @@
     });
 </script>
 
+<script>
+// Informações públicas configuradas pelo administrador no Django.
+(function () {
+    const endpoint = 'http://127.0.0.1:8000/api/accounts/site-settings/public/';
+    const fields = ['contact_phone', 'contact_email', 'address'];
+    async function carregarContatos() {
+        try {
+            const response = await fetch(endpoint, {cache: 'no-store', headers: {'Accept': 'application/json'}});
+            if (!response.ok) throw new Error('HTTP ' + response.status);
+            const data = await response.json();
+            for (const field of fields) {
+                const element = document.querySelector('[data-site-field="' + field + '"]');
+                if (element) element.textContent = typeof data[field] === 'string' && data[field].trim() ? data[field].trim() : 'Não informado';
+            }
+            if (typeof data.site_name === 'string' && data.site_name.trim()) {
+                document.title = 'Contato - ' + data.site_name.trim();
+                const brand = document.querySelector('.sidebar-header h1');
+                if (brand) brand.textContent = data.site_name.trim();
+            }
+        } catch (error) {
+            console.error('Não foi possível carregar os contatos do Django:', error);
+            for (const field of fields) {
+                const element = document.querySelector('[data-site-field="' + field + '"]');
+                if (element) element.textContent = 'Indisponível no momento';
+            }
+        }
+    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', carregarContatos);
+    else carregarContatos();
+})();
+</script>
 </body>
 </html>

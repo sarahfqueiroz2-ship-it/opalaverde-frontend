@@ -1,0 +1,1 @@
+Chat: botão Minhas mensagens adicionado aos painéis principais; conversas.html preserva conversa selecionada durante a sessão e permite voltar ao painel; API alterna automaticamente entre localhost e Render. Abra cliente e produtor em navegadores/perfis distintos para testar.

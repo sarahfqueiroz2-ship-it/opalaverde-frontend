@@ -1837,7 +1837,7 @@
     <p class="section-subtitle">Compartilhe sua experiência e veja o que outros clientes acham</p>
     
     <!-- Formulário de Feedback -->
-    <div class="feedback-form-container">
+    <div class="feedback-form-container" style="display:none !important" aria-hidden="true">
         <div class="feedback-form-card">
             <h3>Deixe seu feedback</h3>
             <form id="feedbackForm" class="feedback-form">
@@ -2128,62 +2128,35 @@ let currentEditingId = null;
 let currentDeletingId = null;
 
 // Dados dos produtos
-const products = [
-    {
-        id: 1,
-        name: "Alface Crespa Orgânica",
-        producer: "Sítio Verde Esperança - Pedro II",
-        price: 3.50,
-        unit: "unidade",
-        image: "https://images.unsplash.com/photo-1622206151226-18ca2c9ab4a1?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-        category: "folhas"
-    },
-    {
-        id: 2,
-        name: "Cenoura Baby Orgânica",
-        producer: "Fazenda Boa Terra - Pedro II",
-        price: 8.90,
-        unit: "kg",
-        image: "https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-        category: "raizes"
-    },
-    {
-        id: 3,
-        name: "Tomate Italiano Orgânico",
-        producer: "Horta da Família - Pedro II",
-        price: 12.80,
-        unit: "kg",
-        image: "https://images.unsplash.com/photo-1592841200221-a6898f307baa?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-        category: "frutas"
-    },
-    {
-        id: 4,
-        name: "Milho",
-        producer: "Sítio Verde Esperança - Pedro II",
-        price: 6.90,
-        unit: "kg",
-        image: "https://images.unsplash.com/photo-1551754655-cd27e38d2076?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-        category: "frutas"
-    },
-    {
-        id: 5,
-        name: "Cebola Roxa Orgânica",
-        producer: "Fazenda Boa Terra - Pedro II",
-        price: 7.50,
-        unit: "kg",
-        image: "https://images.unsplash.com/photo-1508747703725-719777637510?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-        category: "condimentos"
-    },
-    {
-        id: 6,
-        name: "Brócolis Ninja Orgânico",
-        producer: "Horta da Família - Pedro II",
-        price: 9.20,
-        unit: "unidade",
-        image: "https://images.unsplash.com/photo-1628773822503-930a7eaecf80?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-        category: "vegetais"
+let products = [];
+
+// O catálogo público vem exclusivamente de cadastros persistidos no backend.
+async function fetchRealProducts() {
+    const grid = document.getElementById('productsGrid');
+    if (grid) grid.textContent = 'Carregando produtos...';
+    try {
+        let url = '/catalog/products/';
+        const found = [];
+        for (let page = 0; page < 30 && url; page++) {
+            const response = await apiFetch(url);
+            if (!response.ok) throw new Error('Não foi possível consultar o catálogo');
+            const data = await response.json();
+            const records = Array.isArray(data) ? data : (data.results || []);
+            found.push(...records);
+            url = Array.isArray(data) ? null : data.next;
+        }
+        products = found.filter(p => p.active !== false && Number(p.stock) > 0).map(p => ({
+            id: p.id, name: p.name, producer: p.producer_name || 'Produtor cadastrado',
+            price: Number(p.price), unit: p.unit || 'unidade',
+            image: p.images?.[0]?.image || '', category: p.category_slug || ''
+        }));
+        loadProducts();
+    } catch (error) {
+        console.error('Falha ao buscar produtos reais:', error);
+        products = [];
+        if (grid) grid.textContent = 'Não foi possível carregar os produtos. Tente novamente mais tarde.';
     }
-];
+}
 
 // Estado do carrinho
 let cart = [];
@@ -2199,11 +2172,11 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Continuar com o resto da inicialização
-    loadProducts();
+    fetchRealProducts();
     updateCartCount();
     initializeSearch();
     animateStats();
-    initializeFeedbackSystem();
+    // Formulário local de depoimentos desativado: somente registros persistidos na API.
     initializeEditSystem();
     initMobileMenu();
     
@@ -2225,6 +2198,7 @@ function loadProducts() {
     const productsGrid = document.getElementById('productsGrid');
     if (!productsGrid) return;
     
+    if (!products.length) { productsGrid.textContent = 'Nenhum produto disponível no momento.'; return; }
     productsGrid.innerHTML = products.map(product => `
         <div class="product-card">
             <div class="product-image" style="background-image: url('${product.image}')"></div>
@@ -2789,69 +2763,25 @@ function openEditModal(feedbackId) {
 }
 
 // Adicionar esta função para carregar feedbacks com verificação de permissão
-function loadExistingFeedbacks() {
-    const testimonialsGrid = document.getElementById('testimonialsGrid');
-    if (!testimonialsGrid) return;
-    
-    // Carregar feedbacks globais (todos os usuários)
-    const globalFeedbacks = [
-        {
-            id: 1,
-            userId: 'maria@example.com',
-            name: "maria seila",
-            time: "Mais de 2 anos",
-            rating: 5,
-            text: "Os produtos são sempre fresquíssimos e chegam no prazo combinado. A qualidade é excepcional, você consegue sentir a diferença dos orgânicos!",
-            date: new Date('2023-01-15'),
-            edited: false
-        },
-        {
-            id: 2,
-            userId: 'joao@example.com',
-            name: "João Lima",
-            time: "1-2 anos",
-            rating: 5,
-            text: "Finalmente encontrei uma plataforma que conecta diretamente com os produtores locais. Preços justos e produtos de altíssima qualidade!",
-            date: new Date('2023-06-20'),
-            edited: false
-        },
-        {
-            id: 3,
-            userId: 'ana@example.com',
-            name: "Ana Carolina",
-            time: "6 meses - 1 ano",
-            rating: 5,
-            text: "A entrega é super rápida e o atendimento é excelente. Minha família só consome orgânicos da OpalaVerde agora!",
-            date: new Date('2023-12-10'),
-            edited: false
-        }
-    ];
-    
-    // Mesclar com feedbacks do usuário atual (se houver)
-    const allFeedbacks = [...globalFeedbacks];
-    
-    if (userPersonalData.feedbacks) {
-        // Adicionar feedbacks pessoais que não estão nos globais
-        userPersonalData.feedbacks.forEach(personalFeedback => {
-            if (!allFeedbacks.find(f => f.id === personalFeedback.id)) {
-                allFeedbacks.push(personalFeedback);
-            }
-        });
+async function loadExistingFeedbacks() {
+    const grid = document.getElementById('testimonialsGrid');
+    if (!grid) return;
+    grid.replaceChildren();
+    feedbacks = [];
+    try {
+        const response = await apiFetch('/reviews/reviews/');
+        if (!response.ok) throw new Error('Erro ao consultar avaliações');
+        const data = await response.json();
+        const entries = Array.isArray(data) ? data : (data.results || []);
+        // Avaliações são de produtos, não depoimentos gerais sobre a plataforma.
+        // Não as apresentamos como depoimentos do site sem autorização/contexto.
+        grid.textContent = entries.length
+            ? 'As avaliações reais estão disponíveis nas páginas dos respectivos produtos.'
+            : 'Ainda não há avaliações de produtos cadastradas.';
+    } catch (error) {
+        console.error(error);
+        grid.textContent = 'Não foi possível carregar as avaliações.';
     }
-    
-    // Ordenar por data (mais recentes primeiro)
-    allFeedbacks.sort((a, b) => new Date(b.date) - new Date(a.date));
-    
-    // Limpar e recriar feedbacks
-    const existingCards = testimonialsGrid.querySelectorAll('.testimonial-card');
-    existingCards.forEach(card => card.remove());
-    
-    allFeedbacks.forEach(feedback => {
-        addFeedbackToDOM(feedback);
-    });
-    
-    // Atualizar array global
-    feedbacks = [...allFeedbacks];
 }
 
 // NOTA: a segunda declaração de addFeedbackToDOM (que não verificava o dono
@@ -3437,5 +3367,7 @@ document.addEventListener('click', function(e) {
     }
 });
     </script>
+<a id="opalaverde-chat-entry" href="conversas.html" aria-label="Abrir minhas mensagens" style="position:fixed;bottom:22px;right:22px;z-index:99999;background:#176b38;color:white;text-decoration:none;padding:14px 18px;border-radius:30px;box-shadow:0 4px 18px #0004;font:600 15px Arial,sans-serif">✉ Minhas mensagens</a>
+<script src="site-config-public.js?v=1"></script>
 </body>
 </html>

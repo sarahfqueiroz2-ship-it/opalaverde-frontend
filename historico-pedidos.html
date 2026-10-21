@@ -1779,6 +1779,8 @@ function updateUserPersonalData(newData) {
 let currentOrderToCancel = null;
 // Mapeia "#123" (texto exibido) -> id real do pedido no backend, usado no cancelamento
 let realOrdersMap = {};
+let supportOrdersMap = {};
+let currentSupportOrderId = null;
 
 // Insere no topo da lista os pedidos reais do cliente, vindos do backend
 async function renderRealOrders() {
@@ -1830,6 +1832,7 @@ async function renderRealOrders() {
     const html = pedidos.map(pedido => {
         const orderNumber = '#' + pedido.id;
         realOrdersMap[orderNumber] = pedido.id;
+        supportOrdersMap[pedido.id] = pedido;
 
         const dataObj = new Date(pedido.created_at);
         const dataFormatada = dataObj.toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' }) +
@@ -1847,12 +1850,16 @@ async function renderRealOrders() {
                             <div class="product-price">R$ ${parseFloat(item.subtotal).toFixed(2).replace('.', ',')}</div>
                         </div>`).join('');
 
+        const cancellationInfo = pedido.status === 'cancelled' && pedido.cancellation_reason
+            ? `<p style="padding:12px;margin:12px 0;background:#fff2f2;border-left:4px solid #d32f2f;white-space:pre-wrap;"><strong>Motivo do cancelamento:</strong> ${String(pedido.cancellation_reason).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}</p>`
+            : '';
+
         const actionsHtml = pedido.status === 'cancelled'
             ? `<button class="btn btn-secondary btn-small" onclick="showReceipt('${orderNumber}')">Ver Comprovante</button>
-               <button class="btn btn-secondary btn-small" onclick="showSupportModal()">Falar com Suporte</button>`
+               <button class="btn btn-secondary btn-small" onclick="showSupportModal(${pedido.id})">Falar com Suporte</button>`
             : `<button class="btn btn-secondary btn-small" onclick="showReceipt('${orderNumber}')">Ver Comprovante</button>
                <button class="btn btn-danger btn-small" onclick="showCancelModal('${orderNumber}')">Cancelar Pedido</button>
-               <button class="btn btn-secondary btn-small" onclick="showSupportModal()">Falar com Suporte</button>`;
+               <button class="btn btn-secondary btn-small" onclick="showSupportModal(${pedido.id})">Falar com Suporte</button>`;
 
         return `
             <div class="order-card" data-status="${info.cssClass}" data-date="${dataObj.toISOString().split('T')[0]}">
@@ -1876,6 +1883,7 @@ async function renderRealOrders() {
                     <div style="display: flex; gap: 10px; flex-wrap: wrap;">
                         ${actionsHtml}
                     </div>
+                    ${cancellationInfo}
                 </div>
             </div>`;
     }).join('');
@@ -1900,7 +1908,11 @@ function closeCancelModal() {
 
 // Função para confirmar cancelamento
 async function confirmCancel() {
-    const reason = document.getElementById('cancelReason').value;
+    const reason = document.getElementById('cancelReason').value.trim();
+    if (reason.length < 10 || reason.length > 1000) {
+        showNotification('Explique o motivo com 10 a 1000 caracteres.');
+        return;
+    }
     
     if (currentOrderToCancel) {
         // Se for um pedido real (veio do backend), cancela de verdade via API
@@ -1909,7 +1921,7 @@ async function confirmCancel() {
             try {
                 const response = await apiFetch(`/orders/orders/${realOrderId}/update_status/`, {
                     method: 'PATCH',
-                    body: JSON.stringify({ status: 'cancelled' }),
+                    body: JSON.stringify({ status: 'cancelled', cancellation_reason: reason }),
                 });
                 if (!response.ok) {
                     const data = await response.json().catch(() => ({}));
@@ -1945,7 +1957,7 @@ async function confirmCancel() {
             actionsDiv.innerHTML = `
                 <button class="btn btn-primary btn-small">Refazer Pedido</button>
                 <button class="btn btn-secondary btn-small" onclick="showReceipt('${currentOrderToCancel}')">Baixar Comprovante</button>
-                <button class="btn btn-secondary btn-small" onclick="showSupportModal()">Falar com Suporte</button>
+                <button class="btn btn-secondary btn-small" onclick="showSupportModal(${pedido.id})">Falar com Suporte</button>
             `;
             
             // Adicionar motivo do cancelamento se fornecido
@@ -1969,32 +1981,77 @@ async function confirmCancel() {
     closeCancelModal();
 }
 
-// Função para mostrar modal de suporte
-function showSupportModal() {
+// Abre suporte vinculado ao pedido escolhido.
+function showSupportModal(orderId) {
+    currentSupportOrderId = Number(orderId);
     document.getElementById('supportModal').style.display = 'block';
     document.body.style.overflow = 'hidden';
 }
 
-// Função para fechar modal de suporte
 function closeSupportModal() {
     document.getElementById('supportModal').style.display = 'none';
     document.body.style.overflow = '';
 }
 
-// Função para contatar suporte
+// Usa somente destinatários reais informados pela API.
 function contactSupport(type) {
-    let message = '';
-    
-    if (type === 'admin') {
-        message = 'Redirecionando para chat com administradores...';
-        // Aqui você pode adicionar a lógica para redirecionar para o chat dos admins
-    } else if (type === 'owner') {
-        message = 'Redirecionando para chat com o proprietário...';
-        // Aqui você pode adicionar a lógica para redirecionar para o chat do proprietário
+    const pedido = supportOrdersMap[currentSupportOrderId];
+    if (!pedido) {
+        showNotification('Não foi possível identificar o pedido. Atualize a página e tente novamente.');
+        return;
     }
-    
-    showNotification(message);
+
+    if (type === 'admin') {
+        closeSupportModal();
+        apiFetchJSON('/orders/conversations/start-support/', {
+            method: 'POST',
+            body: JSON.stringify({})
+        }).then(conversa => {
+            if (!conversa || !Number.isSafeInteger(Number(conversa.id))) {
+                throw new Error('Resposta inválida do atendimento.');
+            }
+            sessionStorage.setItem('opalaverde_active_conversation', String(conversa.id));
+            window.location.href = 'conversas.html';
+        }).catch(erro => {
+            console.error('Erro ao iniciar atendimento administrativo:', erro);
+            showNotification(erro?.data?.detail || 'Não foi possível abrir o atendimento com administradores.');
+        });
+        return;
+    }
+
+    if (type !== 'owner') return;
+
+    const produtores = new Map();
+    for (const item of (pedido.items || [])) {
+        const id = Number(item.producer_id ?? item.producer);
+        if (Number.isSafeInteger(id) && id > 0) {
+            produtores.set(id, item.producer_name || `Produtor ${id}`);
+        }
+    }
+
+    if (!produtores.size) {
+        showNotification('A API não informou o ID do produtor deste pedido. É necessário ajustar o serializer no backend.');
+        return;
+    }
+
+    let id;
+    if (produtores.size === 1) {
+        id = [...produtores.keys()][0];
+    } else {
+        const opcoes = [...produtores.entries()];
+        const escolha = prompt('Escolha o produtor pelo número:\n' +
+            opcoes.map(([_, nome], i) => `${i + 1} - ${nome}`).join('\n'));
+        if (escolha === null) return;
+        const posicao = Number(escolha) - 1;
+        if (!Number.isInteger(posicao) || posicao < 0 || posicao >= opcoes.length) {
+            showNotification('Seleção inválida.');
+            return;
+        }
+        id = opcoes[posicao][0];
+    }
+
     closeSupportModal();
+    window.location.href = `conversas.html?recipient=${encodeURIComponent(id)}&order=${encodeURIComponent(pedido.id)}`;
 }
 
 // Função para mostrar comprovante
@@ -2334,5 +2391,7 @@ document.addEventListener('click', function(e) {
 });
 
     </script>
+<a id="opalaverde-chat-entry" href="conversas.html" aria-label="Abrir minhas mensagens" style="position:fixed;bottom:22px;right:22px;z-index:99999;background:#176b38;color:white;text-decoration:none;padding:14px 18px;border-radius:30px;box-shadow:0 4px 18px #0004;font:600 15px Arial,sans-serif">✉ Minhas mensagens</a>
+<script src="site-config-public.js?v=1"></script>
 </body>
 </html>

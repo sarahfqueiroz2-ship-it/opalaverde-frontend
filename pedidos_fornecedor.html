@@ -1519,66 +1519,7 @@ function removeActiveSession(email) {
                 this.selectedStatus = null;
             }
 
-            generateSampleOrders() {
-                const customers = [
-                    { name: 'Maria Silva', phone: '(86) 99999-1234', address: 'Rua das Flores, 123, Centro' },
-                    { name: 'João Santos', phone: '(86) 99999-5678', address: 'Av. Principal, 456, Bairro Novo' },
-                    { name: 'Ana Costa', phone: '(86) 99999-9012', address: 'Rua Verde, 789, Vila Esperança' },
-                    { name: 'Pedro Lima', phone: '(86) 99999-3456', address: 'Praça Central, 321, Centro' },
-                    { name: 'Carla Oliveira', phone: '(86) 99999-7890', address: 'Rua da Paz, 654, Jardim Feliz' }
-                ];
 
-                const products = [
-                    { name: 'Alface Orgânica', price: 4.50, image: 'A' },
-                    { name: 'Tomate Cereja', price: 8.00, image: 'T' },
-                    { name: 'Cenoura Baby', price: 6.50, image: 'C' },
-                    { name: 'Rúcula Fresca', price: 5.00, image: 'R' },
-                    { name: 'Couve Manteiga', price: 3.50, image: 'CM' },
-                    { name: 'Beterraba Orgânica', price: 7.00, image: 'B' },
-                    { name: 'Brócolis Fresco', price: 9.50, image: 'BR' },
-                    { name: 'Espinafre Baby', price: 6.00, image: 'E' }
-                ];
-
-                const statuses = ['received', 'preparing', 'ready', 'delivered'];
-                const orders = [];
-
-                for (let i = 1; i <= 25; i++) {
-                    const date = new Date();
-                    date.setDate(date.getDate() - Math.floor(Math.random() * 30));
-                    
-                    const customer = customers[Math.floor(Math.random() * customers.length)];
-                    const numProducts = Math.floor(Math.random() * 4) + 1;
-                    const orderProducts = [];
-                    let total = 0;
-
-                    for (let j = 0; j < numProducts; j++) {
-                        const product = products[Math.floor(Math.random() * products.length)];
-                        const quantity = Math.floor(Math.random() * 3) + 1;
-                        const subtotal = product.price * quantity;
-                        
-                        orderProducts.push({
-                            ...product,
-                            quantity,
-                            subtotal
-                        });
-                        total += subtotal;
-                    }
-
-                    const status = statuses[Math.floor(Math.random() * statuses.length)];
-                    
-                    orders.push({
-                        id: 1000 + i,
-                        date: date,
-                        customer: customer,
-                        products: orderProducts,
-                        total: total,
-                        status: status,
-                        notes: `Pedido ${status === 'delivered' ? 'entregue' : 'em andamento'}`
-                    });
-                }
-
-                return orders.sort((a, b) => b.date - a.date);
-            }
 
             getStatusInfo(status) {
                 const statusInfo = {
@@ -1597,6 +1538,11 @@ function removeActiveSession(email) {
                         color: '#9C27B0',
                         description: 'Pedido pronto, aguardando coleta'
                     },
+                    cancelled: {
+                        label: 'Recusado / cancelado',
+                        color: '#d32f2f',
+                        description: 'É obrigatório informar o motivo ao cliente'
+                    },
                     delivered: {
                         label: 'Entregue',
                         color: '#4CAF50',
@@ -1608,9 +1554,9 @@ function removeActiveSession(email) {
 
             getNextStatuses(currentStatus) {
                 const statusFlow = {
-                    received: ['preparing'],
-                    preparing: ['ready'],
-                    ready: ['delivered'],
+                    received: ['preparing', 'cancelled'],
+                    preparing: ['ready', 'cancelled'],
+                    ready: ['delivered', 'cancelled'],
                     delivered: []
                 };
                 return statusFlow[currentStatus] || [];
@@ -1625,7 +1571,7 @@ function removeActiveSession(email) {
                 };
 
                 this.orders.forEach(order => {
-                    stats[order.status]++;
+                    if (Object.prototype.hasOwnProperty.call(stats, order.status)) stats[order.status]++;
                 });
 
                 document.getElementById('receivedCount').textContent = stats.received;
@@ -1901,12 +1847,21 @@ function removeActiveSession(email) {
                     const oldStatus = this.getStatusInfo(order.status).label;
                     const newStatus = this.getStatusInfo(this.selectedStatus).label;
 
+                    // Recusa exige justificativa salva no banco, antes da mudança de status.
+                    let cancellationReason = '';
+                    if (this.selectedStatus === 'cancelled') {
+                        cancellationReason = (window.prompt('Explique ao cliente o motivo da recusa (mínimo de 10 caracteres):') || '').trim();
+                        if (cancellationReason.length < 10 || cancellationReason.length > 1000) {
+                            this.showNotification('A justificativa deve ter entre 10 e 1000 caracteres.', 'warning');
+                            return;
+                        }
+                    }
                     // Se for um pedido real (veio do backend), atualiza de verdade lá
                     if (order.isReal && order.realOrderId) {
                         try {
                             const response = await apiFetch(`/orders/orders/${order.realOrderId}/update_status/`, {
                                 method: 'PATCH',
-                                body: JSON.stringify({ status: this.selectedStatus }),
+                                body: JSON.stringify({ status: this.selectedStatus, cancellation_reason: cancellationReason }),
                             });
                             if (!response.ok) {
                                 const data = await response.json().catch(() => ({}));
@@ -1921,6 +1876,7 @@ function removeActiveSession(email) {
                     }
 
                     order.status = this.selectedStatus;
+                    if (cancellationReason) order.cancellation_reason = cancellationReason;
                     
                     this.closeStatusModal();
                     this.updateStats();
@@ -2001,7 +1957,7 @@ function removeActiveSession(email) {
                 preparing: 'preparing',
                 ready: 'ready',
                 delivered: 'delivered',
-                cancelled: 'received',
+                cancelled: 'cancelled',
             };
 
             const meuId = currentUserData ? currentUserData.id : null;
@@ -2028,7 +1984,9 @@ function removeActiveSession(email) {
                     })),
                     total: itensParaExibir.reduce((acc, item) => acc + parseFloat(item.subtotal), 0),
                     status: statusMap[pedido.status] || 'received',
-                    notes: pedido.notes || 'Pedido real feito pelo cliente na loja'
+                    notes: pedido.notes || 'Pedido real feito pelo cliente na loja',
+                    cancellation_reason: pedido.cancellation_reason || '',
+                    fulfillment_method: pedido.fulfillment_method || 'arrange'
                 };
             });
 
@@ -2525,5 +2483,7 @@ document.getElementById('exportModal').addEventListener('click', function(e) {
     }
 });
     </script>
+<a id="opalaverde-chat-entry" href="conversas.html" aria-label="Abrir minhas mensagens" style="position:fixed;bottom:22px;right:22px;z-index:99999;background:#176b38;color:white;text-decoration:none;padding:14px 18px;border-radius:30px;box-shadow:0 4px 18px #0004;font:600 15px Arial,sans-serif">✉ Minhas mensagens</a>
+<script src="site-config-public.js?v=1"></script>
 </body>
 </html>

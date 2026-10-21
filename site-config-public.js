@@ -1,6 +1,6 @@
 /* Public site settings. Safe DOM updates; no HTML injection. */
 (function () {
-  const endpoint = 'http://127.0.0.1:8000/api/accounts/site-settings/public/';
+  const endpoint = 'https://opalaverde-backend.onrender.com/api/accounts/site-settings/public/';
   function text(el, value) { if (el && typeof value === 'string' && value.trim()) el.textContent = value; }
   function apply(data) {
     if (!data || typeof data !== 'object') return;

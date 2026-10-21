@@ -7,7 +7,7 @@
  * quando for para produção (ex: 'https://opalaverde-backend.onrender.com/api').
  */
 
-const API_BASE_URL = 'http://127.0.0.1:8000/api';
+const API_BASE_URL = "https://opalaverde-backend.onrender.com";
 // ===== GERENCIAMENTO DE TOKENS (JWT) =====
 const TokenManager = {
     getAccess: () => localStorage.getItem('access_token'),
